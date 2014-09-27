@@ -13,11 +13,10 @@
 enum UIState {
     UI_DRAW_LINE = 0,
     UI_DRAWING_LINE,
-    UI_MOVE_CANVAS,
-    UI_MOVING_CANVAS,
     UI_SELECT,
-    UI_SELECTING,
-    UI_DRAGGING
+    UI_MOVING_POINT,
+    UI_MOVING_LINE,
+    UI_MOVE_CANVAS
 };
 
 class ofApp : public ofBaseApp {
@@ -67,6 +66,11 @@ public:
     ofPoint canvas_offset; // for dragging the canvas
 
     ofPoint start_click;
+
+    bool selected_point;
+    ofPoint *selected_point_p;
+    bool selected_line;
+    Line *selected_line_p;
 
     // grid of points and lines
 //==============================================================================

@@ -56,9 +56,6 @@ void ofApp::setup(){
     delete[] grid_v;
     delete[] points_v;
 
-    // default start state
-    ui_state = UI_SELECT;
-
     Button::font.setup("DejaVuSansMono.ttf");
 
     // ui layout settings
@@ -102,4 +99,9 @@ void ofApp::setup(){
     button->icon.loadImage(ofToDataPath("icons/minus/icon.png"));
     ofAddListener(button->click_event, this, &ofApp::ZoomOutButtonClick);
     buttons.push_back(button);
+
+    // default start state
+    ui_state = UI_SELECT;
+    selected_point = NULL;
+    selected_line = NULL;
 }
