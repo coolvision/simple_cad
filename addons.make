@@ -1,0 +1,7 @@
+ofxSvg
+ofxVectorGraphics
+ofxXmlSettings
+ofxFontStash
+ofxMSAInteractiveObject
+ofxSimpleGuiToo
+ofxUnicode
