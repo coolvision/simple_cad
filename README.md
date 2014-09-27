@@ -7,7 +7,7 @@ using openframeworks addons:
 - ofxMSAInteractiveObject
 
 2do
-+ add dragging of the points and lines
+++ add dragging of the points and lines
 - add snapping to a grid, and snapping to points
 - add zooming
 - draw the line's length in mm
