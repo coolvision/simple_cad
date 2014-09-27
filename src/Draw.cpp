@@ -75,14 +75,28 @@ void Line::draw() {
     ofEnableSmoothing();
     ofEnableAntiAliasing();
 
-    ofSetColor(ofColor::black);
+    if (selected[2]) {
+        ofSetColor(ofColor::orangeRed);
+    } else {
+        ofSetColor(ofColor::black);
+    }
     ofSetLineWidth(1.0f);
 
     ofLine(p[0], p[1]);
 
     ofFill();
-    ofCircle(p[0], 3.0f);
-    ofCircle(p[1], 3.0f);
+    if (selected[0] || selected[2]) {
+        ofSetColor(ofColor::orangeRed);
+    } else {
+        ofSetColor(ofColor::black);
+    }
+    ofCircle(p[0], 4.0f);
+    if (selected[1] || selected[2]) {
+        ofSetColor(ofColor::orangeRed);
+    } else {
+        ofSetColor(ofColor::black);
+    }
+    ofCircle(p[1], 4.0f);
 
     ofDisableAntiAliasing();
 
