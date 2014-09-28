@@ -4,8 +4,8 @@ using openframeworks addons:
 - ofxMSAInteractiveObject
 
 to do:
-~~- add dragging of the points and lines~~
-~~- add snapping to a grid~~
+- ~~add dragging of the points and lines~~
+- ~~add snapping to a grid~~
 - draw polylines
 - edit polylines
 - select and drag polylines
