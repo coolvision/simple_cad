@@ -24,7 +24,11 @@ void Button::draw() {
     }
     ofRect(x, y, width, height);
 
-    ofSetColor(text_color);
+    if (hover || selected) {
+        ofSetColor(ofColor::orangeRed);
+    } else {
+        ofSetColor(ofColor::black);
+    }
     icon.draw((int) (x + 3), (int) y + 3);
 
     ofPopStyle();

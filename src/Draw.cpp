@@ -18,10 +18,10 @@ void ofApp::draw(){
     // objects
 //==============================================================================
     for (int i = 0; i < lines.size(); i++) {
-        lines[i].draw();
+        drawLine(&lines[i]);
     }
     if (ui_state == UI_DRAWING_LINE) {
-        curr_line.draw();
+        drawLine(&curr_line);
     }
 
     // buttons
@@ -33,15 +33,27 @@ void ofApp::draw(){
         buttons[i]->draw();
     }
 
+    if (was_selected_point) {
+        add_line->draw();
+        if (add_line->hover) {
+            ofSetColor(ofColor::orangeRed);
+            ofCircle(*selected_point_p, 4.0f);
+        }
+    }
+
     // info
 //==============================================================================
+
+    ofPoint p;
+    p.x = ((int)ofGetMouseX() / points_step) * points_step;
+    p.y = ((int)ofGetMouseY() / points_step) * points_step;
 
     ofSetColor(0.0f);
     font.draw("FPS: " + ofToString((int)ofGetFrameRate()), 16,
               ofGetWindowWidth() - 130, 20);
     font.draw("zoom: 100%", 16,
               ofGetWindowWidth() - 130, 40);
-    font.draw("x: " + ofToString(ofGetMouseX()) + " y: " + ofToString(ofGetMouseY()),
+    font.draw("x: " + ofToString(p.x) + " y: " + ofToString(p.y),
               16,
               ofGetWindowWidth() - 130, 60);
     
@@ -68,37 +80,58 @@ void ofApp::drawGrid() {
     ofPopStyle();
 }
 
-void Line::draw() {
+void ofApp::drawLine(Polyline *l) {
 
     ofPushStyle();
 
     ofEnableSmoothing();
     ofEnableAntiAliasing();
 
-    if (selected[2]) {
-        ofSetColor(ofColor::orangeRed);
-    } else {
-        ofSetColor(ofColor::black);
-    }
+
     ofSetLineWidth(1.0f);
 
-    ofLine(p[0], p[1]);
+    for (int i = 0; i < l->p.size()-1; i++) {
+        if (l->selected_line[i]) {
+            ofSetColor(ofColor::orangeRed);
+        } else {
+            if (l->hover) {
+                ofSetColor(100);
+            } else {
+                ofSetColor(ofColor::black);
+            }
+        }
+        ofLine(l->p[i], l->p[i+1]);
+    }
 
-    ofFill();
-    if (selected[0] || selected[2]) {
-        ofSetColor(ofColor::orangeRed);
+    if (l->hover) {
+        ofSetColor(100);
     } else {
-        ofSetColor(ofColor::black);
+
     }
-    ofCircle(p[0], 4.0f);
-    if (selected[1] || selected[2]) {
-        ofSetColor(ofColor::orangeRed);
-    } else {
+    for (int i = 0; i < l->p.size(); i++) {
         ofSetColor(ofColor::black);
+        if (i == 0) {
+            ofSetColor(ofColor::red);
+        }
+        if (i == l->p.size()-1) {
+            ofSetColor(ofColor::green);
+        }
+        if (!l->selected_p[i]) {
+            ofCircle(l->p[i], 4.0f);
+        }
     }
-    ofCircle(p[1], 4.0f);
+    ofSetColor(ofColor::black);
+    ofDrawBitmapString(ofToString(l->p.size()), l->p[0] + ofPoint(20, 20));
+
+    ofSetColor(ofColor::orangeRed);
+    for (int i = 0; i < l->p.size(); i++) {
+        if (l->selected_p[i]) {
+            ofCircle(l->p[i], 4.0f);
+        }
+    }
+
+
 
     ofDisableAntiAliasing();
-
-    ofPopStyle();
+    ofDisableSmoothing();
 }

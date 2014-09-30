@@ -10,14 +10,20 @@
 
 #include "ofMain.h"
 
-class Line {
+class Polyline {
 public:
-    Line() {
-        selected[0] = false;
-        selected[1] = false;
-        selected[2] = false;
+    Polyline() {
+        selected = false;
+        p.resize(2);
+        selected_p.resize(2);
+        selected_p[0] = false;
+        selected_p[1] = false;
     };
-    ofPoint p[2]; // points in mm
-    bool selected[3]; // select one of the points or the whole line
-    void draw();
+    deque<ofPoint> p;
+
+    deque<bool> selected_p; // points selection
+    deque<bool> selected_line; // line segments selection
+
+    bool selected;  // whole polyline selection
+    bool hover; // highlighting with mouse hover
 };

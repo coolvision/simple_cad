@@ -19,6 +19,7 @@ void ofApp::setup(){
 
     ofSetFrameRate(30);
 
+//==============================================================================
     float w = ofGetWindowWidth();
     float h = ofGetWindowHeight();
 
@@ -56,6 +57,7 @@ void ofApp::setup(){
     delete[] grid_v;
     delete[] points_v;
 
+//==============================================================================
     Button::font.setup("DejaVuSansMono.ttf");
 
     // ui layout settings
@@ -69,26 +71,26 @@ void ofApp::setup(){
     int start_y = margin_top;
     int inc_y = button_h + margin_bottom;
 
-    Button *button = new Button("select", margin_left,
+    select_button = new Button("select", margin_left,
                                 start_y, button_w, button_h);
-    button->icon.loadImage(ofToDataPath("icons/cursor/icon.png"));
-    ofAddListener(button->click_event, this, &ofApp::SelectButtonClick);
-    buttons.push_back(button);
-    button->selected = true;
+    select_button->icon.loadImage(ofToDataPath("icons/cursor/icon.png"));
+    ofAddListener(select_button->click_event, this, &ofApp::SelectButtonClick);
+    buttons.push_back(select_button);
+    select_button->selected = true;
 
-    button = new Button("draw line",
+    line_button = new Button("draw line",
                         margin_left, start_y + inc_y * 1, button_w, button_h);
-    button->icon.loadImage(ofToDataPath("icons/line/icon.png"));
-    ofAddListener(button->click_event, this, &ofApp::LineButtonClick);
-    buttons.push_back(button);
+    line_button->icon.loadImage(ofToDataPath("icons/polyline/icon.png"));
+    ofAddListener(line_button->click_event, this, &ofApp::LineButtonClick);
+    buttons.push_back(line_button);
 
-    button = new Button("move", margin_left,
+    move_button = new Button("move", margin_left,
                         start_y + inc_y * 2, button_w, button_h);
-    button->icon.loadImage(ofToDataPath("icons/move/icon.png"));
-    ofAddListener(button->click_event, this, &ofApp::MoveButtonClick);
-    buttons.push_back(button);
+    move_button->icon.loadImage(ofToDataPath("icons/move/icon.png"));
+    ofAddListener(move_button->click_event, this, &ofApp::MoveButtonClick);
+    buttons.push_back(move_button);
 
-    button = new Button("zoom in",
+    Button *button = new Button("zoom in",
                         margin_left, start_y + inc_y * 3, button_w, button_h);
     button->icon.loadImage(ofToDataPath("icons/plus/icon.png"));
     ofAddListener(button->click_event, this, &ofApp::ZoomInButtonClick);
@@ -100,6 +102,13 @@ void ofApp::setup(){
     ofAddListener(button->click_event, this, &ofApp::ZoomOutButtonClick);
     buttons.push_back(button);
 
+    add_line = new Button("draw line",
+                        margin_left, start_y + inc_y * 1, button_w, button_h);
+    add_line->icon.loadImage(ofToDataPath("icons/polyline/icon.png"));
+    ofAddListener(add_line->click_event, this, &ofApp::addLineClick);
+    buttons.push_back(add_line);
+
+//==============================================================================
     // default start state
     ui_state = UI_SELECT;
     selected_point = NULL;
