@@ -18,7 +18,7 @@ void ofApp::draw(){
     // objects
 //==============================================================================
     for (int i = 0; i < lines.size(); i++) {
-        drawLine(&lines[i]);
+        drawLine(lines[i]);
     }
     if (ui_state == UI_DRAWING_LINE) {
         drawLine(&curr_line);
@@ -87,50 +87,44 @@ void ofApp::drawLine(Polyline *l) {
     ofEnableSmoothing();
     ofEnableAntiAliasing();
 
+    if (l->closed) {
+        l->path.setFilled(true);
+        l->path.setFillColor(ofColor(200, 200, 200, 200));
+    } else {
+        l->path.setFilled(false);
+    }
+    l->path.draw();
 
     ofSetLineWidth(1.0f);
-
-    for (int i = 0; i < l->p.size()-1; i++) {
-        if (l->selected_line[i]) {
+    ofSetColor(ofColor::black);
+    for (Vertex *v = l->front; v != NULL && v->next != NULL; v = v->next) {
+        if (v->hover && v->next->hover) {
             ofSetColor(ofColor::orangeRed);
         } else {
-            if (l->hover) {
-                ofSetColor(100);
-            } else {
-                ofSetColor(ofColor::black);
-            }
+            ofSetColor(ofColor::black);
         }
-        ofLine(l->p[i], l->p[i+1]);
+        ofLine(*v, *v->next);
+        if (v->next == l->front) break; // closed polylines
     }
 
-    if (l->hover) {
-        ofSetColor(100);
-    } else {
+    ofSetColor(ofColor::red);
+    ofCircle(*l->front, 8.0f);
 
-    }
-    for (int i = 0; i < l->p.size(); i++) {
-        ofSetColor(ofColor::black);
-        if (i == 0) {
-            ofSetColor(ofColor::red);
-        }
-        if (i == l->p.size()-1) {
-            ofSetColor(ofColor::green);
-        }
-        if (!l->selected_p[i]) {
-            ofCircle(l->p[i], 4.0f);
-        }
-    }
     ofSetColor(ofColor::black);
-    ofDrawBitmapString(ofToString(l->p.size()), l->p[0] + ofPoint(20, 20));
+    for (Vertex *v = l->front; v != NULL; v = v->next) {
+        if (!v->hover) {
+            ofCircle(*v, 4.0f);
+        }
+        if (v->next == l->front) break; // closed polylines
+    }
 
     ofSetColor(ofColor::orangeRed);
-    for (int i = 0; i < l->p.size(); i++) {
-        if (l->selected_p[i]) {
-            ofCircle(l->p[i], 4.0f);
+    for (Vertex *v = l->front; v != NULL; v = v->next) {
+        if (v->hover) {
+            ofCircle(*v, 4.0f);
         }
+        if (v->next == l->front) break; // closed polylines
     }
-
-
 
     ofDisableAntiAliasing();
     ofDisableSmoothing();

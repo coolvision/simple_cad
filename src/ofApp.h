@@ -62,7 +62,7 @@ public:
 
     // content storage & vis
 //==============================================================================
-    vector<Polyline> lines;
+    vector<Polyline *> lines;
     void drawLine(Polyline *l);
 
     // UI state machine
@@ -75,23 +75,20 @@ public:
 
     ofPoint start_click;
 
-    ofPoint add_line_start;
-
     bool was_selected_point;
 
     // points selection
     bool selected_point;
-    ofPoint *selected_point_p;
-    int selected_point_i;
-
+    Vertex *selected_point_p;
     // line segments selection
     bool selected_line;
-    ofPoint *selected_line_p[2];
-    bool selected_line_i[2];
-
+    Vertex *selected_line_p[2];
     // polyline selection
     bool selected_polyline;
-    int selected_polyline_i;
+    Polyline *seselected_polyline_p;
+
+    Polyline *connectLine(ofPoint *p1, ofPoint *p2);
+    Polyline *connectPolyline(Polyline *p);
 
     // grid of points and lines
 //==============================================================================

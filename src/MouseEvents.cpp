@@ -30,7 +30,7 @@ float segmentDistance(ofPoint v, ofPoint w, ofPoint p) {
     return (p - projection).length();
 }
 
-void ofApp::mouseMoved(int x, int y ){
+void ofApp::mouseMoved(int x, int y ) {
 
     ofPoint p(x, y);
 
@@ -42,62 +42,53 @@ void ofApp::mouseMoved(int x, int y ){
         selected_line = false;
 
         for (int i = 0; i < lines.size(); i++) {
-            for (int j = 0; j < lines[i].selected_p.size(); j++) {
-                lines[i].selected_p[j] = false;
-                lines[i].selected_line[j] = false;
+            for (Vertex *v = lines[i]->front; v != NULL; v = v->next) {
+                v->hover = false;
+                if (v->next == lines[i]->front) break; // closed polylines
             }
-            lines[i].selected = false;
-            lines[i].hover = false;
+            lines[i]->hover = false;
         }
 
         // check selection of points
         float min_d = FLT_MAX;
-        int min_d_i = -1;
-        int min_d_j = -1;
+        Vertex *min_d_v = NULL;
         for (int i = 0; i < lines.size(); i++) {
-            for (int j = 0; j < lines[i].p.size(); j++) {
-                float d0 = (p - lines[i].p[j]).length();
+            for (Vertex *v = lines[i]->front; v != NULL; v = v->next) {
+                float d0 = (p - *v).length();
                 if (d0 < 15.0f && d0 < min_d) {
                     min_d = d0;
-                    min_d_i = i;
-                    min_d_j = j;
-
+                    min_d_v = v;
                 }
+                if (v->next == lines[i]->front) break; // closed polylines
             }
         }
-        if (min_d_j >= 0) {
-            lines[min_d_i].selected_p[min_d_j] = true;
-            selected_point_p = &lines[min_d_i].p[min_d_j];
-            selected_point_i = min_d_j;
-            selected_polyline_i = min_d_i;
+        if (min_d_v != NULL) {
+            selected_point_p = min_d_v;
             selected_point = true;
             was_selected_point = true;
-            lines[min_d_i].hover = true;
+            min_d_v->hover = true;
+            min_d_v->p->hover = true;
         }
 
         for (int i = 0; i < lines.size(); i++) {
             // check selection of line segments
-            for (int j = 0; j < lines[i].p.size()-1; j++) {
-                float d = segmentDistance(lines[i].p[j], lines[i].p[j+1], p);
+            for (Vertex *v = lines[i]->front; v != NULL && v->next != NULL; v = v->next) {
+                float d = segmentDistance(*v, *v->next, p);
                 if (d < 15.0f && !selected_point) {
 
-                    // hightlight line segment and 2 points
-                    lines[i].selected_line[j] = true;
-                    lines[i].selected_p[j] = true;
-                    lines[i].selected_p[j+1] = true;
-
-                    selected_line_p[0] = &lines[i].p[j];
-                    selected_line_p[1] = &lines[i].p[j+1];
-
+                    selected_line_p[0] = v;
+                    selected_line_p[1] = v->next;
                     selected_line = true;
-                    selected_line_i[0] = j;
-                    selected_line_i[1] = j+1;
-                    lines[i].hover = true;
+
+                    v->hover = true;
+                    v->next->hover = true;
+                    v->p->hover = true;
                     break;
                 }
                 if (selected_line) {
                     break;
                 }
+                if (v->next == lines[i]->front) break; // closed polylines
             }
         }
 
@@ -108,27 +99,29 @@ void ofApp::mouseMoved(int x, int y ){
     }
 }
 
-void ofApp::mouseDragged(int x, int y, int button){
+void ofApp::mouseDragged(int x, int y, int button) {
 
     ofPoint p(x, y);
 
     if (ui_state == UI_DRAWING_LINE) {
-        curr_line.p[0] = start_click;
-        curr_line.p[1] = p;
+        *curr_line.back = p;
         add_line->x = p.x + 5;
         add_line->y = p.y - 29;
     }
 
     if (ui_state == UI_MOVING_POINT) {
         *selected_point_p = p;
+        selected_point_p->p->updatePath();
         add_line->x = p.x + 5;
         add_line->y = p.y - 29;
     }
 
     if (ui_state == UI_MOVING_LINE) {
 
-        *selected_line_p[0] = curr_line.p[0] + (p - start_click);
-        *selected_line_p[1] = curr_line.p[1] + (p - start_click);
+        *selected_line_p[0] = *curr_line.front + (p - start_click);
+        *selected_line_p[1] = *curr_line.back + (p - start_click);
+
+        selected_line_p[0]->p->updatePath();
 
         if (was_selected_point) {
             ofPoint p1 = *selected_point_p;
@@ -138,7 +131,7 @@ void ofApp::mouseDragged(int x, int y, int button){
     }
 }
 
-void ofApp::mousePressed(int x, int y, int button){
+void ofApp::mousePressed(int x, int y, int button) {
 
     ofPoint p = snap(ofPoint(x, y));
 
@@ -147,8 +140,9 @@ void ofApp::mousePressed(int x, int y, int button){
     // start drawing a line
     if (ui_state == UI_DRAW_LINE) {
         ui_state = UI_DRAWING_LINE;
-        curr_line.p[0] = start_click;
-        curr_line.p[1] = p;
+        curr_line.release();
+        curr_line.addBack(start_click);
+        curr_line.addBack(p);
     }
 
     // find selected objects:
@@ -161,13 +155,27 @@ void ofApp::mousePressed(int x, int y, int button){
         }
         if (selected_line) {
             ui_state = UI_MOVING_LINE;
-            curr_line.p[0] = *selected_line_p[0];
-            curr_line.p[1] = *selected_line_p[1];
+            curr_line.release();
+            curr_line.addBack(*selected_line_p[0]);
+            curr_line.addBack(*selected_line_p[1]);
         }
     }
 }
 
-void ofApp::mouseReleased(int x, int y, int button){
+// connect to an existing polyline, or add a new one
+Polyline *ofApp::connectLine(ofPoint *p1, ofPoint *p2) {
+
+
+
+}
+
+// check if endpoints overlap, and if they do, connect the polylines
+Polyline *ofApp::connectPolyline(Polyline *p) {
+
+
+}
+
+void ofApp::mouseReleased(int x, int y, int button) {
 
     ofPoint p = snap(ofPoint(x, y));
 
@@ -175,37 +183,42 @@ void ofApp::mouseReleased(int x, int y, int button){
     if (ui_state == UI_DRAWING_LINE) {
         ui_state = UI_DRAW_LINE;
 
-        bool add_point = false;
+        bool new_line = true;
+
         for (int i = 0; i < lines.size(); i++) {
-            if (start_click == lines[i].p.front()) {
-                lines[i].p.push_front(p);
-                lines[i].selected_p.push_front(false);
-                add_point = true;
-            } else if (p == lines[i].p.front()) {
-                lines[i].p.push_front(start_click);
-                lines[i].selected_p.push_front(false);
-                add_point = true;
-            } else if (start_click == lines[i].p.back()) {
-                lines[i].p.push_back(p);
-                lines[i].selected_p.push_back(false);
-                add_point = true;
-            } else if (p == lines[i].p.back()) {
-                lines[i].p.push_back(p);
-                lines[i].selected_p.push_back(false);
-                add_point = true;
+            if (lines[i]->closed) continue;
+            if ((start_click == *lines[i]->front && p == *lines[i]->back) ||
+                (start_click == *lines[i]->back && p == *lines[i]->front)) {
+                // does it, by chance close the polyline?
+                lines[i]->back->next = lines[i]->front;
+                lines[i]->front->prev = lines[i]->back;
+                lines[i]->closed = true;
+                new_line = false;
+            } else if (start_click == *lines[i]->front) {
+                lines[i]->addFront(p);
+                new_line = false;
+            } else if (p == *lines[i]->front) {
+                lines[i]->addFront(start_click);
+                new_line = false;
+            } else if (start_click == *lines[i]->back) {
+                lines[i]->addBack(p);
+                new_line = false;
+            } else if (p == *lines[i]->back) {
+                lines[i]->addBack(start_click);
+                new_line = false;
             }
         }
 
-        if (add_point) {
-            // check if this closes the polyline
+        // check if the second point is connected to anything
+        if (!new_line) {
+
 
         }
 
-        if (!add_point) {
-            Polyline l;
-            l.p[0] = start_click;
-            l.p[1] = p;
-            lines.push_back(l);
+        if (new_line) {
+            *curr_line.back = p;
+            lines.push_back(new Polyline());
+            lines.back()->cloneFrom(&curr_line);
         }
 
         ui_state = UI_SELECT;
@@ -220,24 +233,17 @@ void ofApp::mouseReleased(int x, int y, int button){
     }
 
     if (ui_state == UI_MOVING_POINT) {
-
-        // if it's an end-point of a polyline,
-        // check if it got connected to another line
-
         ui_state = UI_SELECT;
         *selected_point_p = p;
         add_line->x = p.x + 5;
         add_line->y = p.y - 29;
     }
-    
+
     if (ui_state == UI_MOVING_LINE) {
 
-        // one of the points can get connected to a polyline
-
-
         ui_state = UI_SELECT;
-        *selected_line_p[0] = curr_line.p[0] + (p - start_click);
-        *selected_line_p[1] = curr_line.p[1] + (p - start_click);
+        *selected_line_p[0] = *curr_line.front + (p - start_click);
+        *selected_line_p[1] = *curr_line.back + (p - start_click);
 
         if (was_selected_point) {
             ofPoint p1 = *selected_point_p;
