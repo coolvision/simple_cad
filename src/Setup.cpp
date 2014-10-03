@@ -71,42 +71,75 @@ void ofApp::setup(){
     int start_y = margin_top;
     int inc_y = button_h + margin_bottom;
 
+    canvas_toolbar.y = start_y;
+    canvas_toolbar.x = margin_left;
+    canvas_toolbar.button_h = 24;
+    canvas_toolbar.button_w = 24;
+    canvas_toolbar.margin = margin_bottom;
+    cursor_toolbar.horizontal = false;
+
+    int i = 0;
+
     select_button = new Button("select", margin_left,
                                 start_y, button_w, button_h);
     select_button->icon.loadImage(ofToDataPath("icons/cursor/icon.png"));
     ofAddListener(select_button->click_event, this, &ofApp::SelectButtonClick);
-    buttons.push_back(select_button);
-    select_button->selected = true;
+    canvas_toolbar.buttons.push_back(select_button);
+    select_button->hover = true;
+    i++;
 
     line_button = new Button("draw line",
-                        margin_left, start_y + inc_y * 1, button_w, button_h);
+                        margin_left, start_y + inc_y * i, button_w, button_h);
     line_button->icon.loadImage(ofToDataPath("icons/polyline/icon.png"));
     ofAddListener(line_button->click_event, this, &ofApp::LineButtonClick);
-    buttons.push_back(line_button);
+    canvas_toolbar.buttons.push_back(line_button);
+    i++;
+
+    vertex_button = new Button("add vertex",
+                             margin_left, start_y + inc_y * i, button_w, button_h);
+    vertex_button->icon.loadImage(ofToDataPath("icons/dot/icon.png"));
+    ofAddListener(vertex_button->click_event, this, &ofApp::VertexButtonClick);
+    canvas_toolbar.buttons.push_back(vertex_button);
+    i++;
 
     move_button = new Button("move", margin_left,
-                        start_y + inc_y * 2, button_w, button_h);
+                        start_y + inc_y * i, button_w, button_h);
     move_button->icon.loadImage(ofToDataPath("icons/move/icon.png"));
     ofAddListener(move_button->click_event, this, &ofApp::MoveButtonClick);
-    buttons.push_back(move_button);
+    canvas_toolbar.buttons.push_back(move_button);
+    i++;
 
     Button *button = new Button("zoom in",
-                        margin_left, start_y + inc_y * 3, button_w, button_h);
+                        margin_left, start_y + inc_y * i, button_w, button_h);
     button->icon.loadImage(ofToDataPath("icons/plus/icon.png"));
     ofAddListener(button->click_event, this, &ofApp::ZoomInButtonClick);
-    buttons.push_back(button);
+    canvas_toolbar.buttons.push_back(button);
 
     button = new Button("zoom out",
-                        margin_left, start_y + inc_y * 4, button_w, button_h);
+                        margin_left, start_y + inc_y * i, button_w, button_h);
     button->icon.loadImage(ofToDataPath("icons/minus/icon.png"));
     ofAddListener(button->click_event, this, &ofApp::ZoomOutButtonClick);
-    buttons.push_back(button);
+    canvas_toolbar.buttons.push_back(button);
 
-    add_line = new Button("draw line",
-                        margin_left, start_y + inc_y * 1, button_w, button_h);
+    cursor_toolbar.y = 0.0f;
+    cursor_toolbar.x = 0.0f;
+    cursor_toolbar.button_h = button_h;
+    cursor_toolbar.button_w = button_w;
+    cursor_toolbar.margin = 5;
+    cursor_toolbar.horizontal = true;
+
+    add_line = new Button("draw line", -100, -100, button_w, button_h);
     add_line->icon.loadImage(ofToDataPath("icons/polyline/icon.png"));
-    ofAddListener(add_line->click_event, this, &ofApp::addLineClick);
-    buttons.push_back(add_line);
+    ofAddListener(add_line->click_event, this, &ofApp::LineButtonClick);
+    cursor_toolbar.buttons.push_back(add_line);
+
+    add_vertex = new Button("add vertex", -100, -100, button_w, button_h);
+    add_vertex->icon.loadImage(ofToDataPath("icons/dot/icon.png"));
+    ofAddListener(add_vertex->click_event, this, &ofApp::VertexButtonClick);
+    cursor_toolbar.buttons.push_back(add_vertex);
+
+
+    toolbar_off.set(5.0f, 29.0f);
 
 //==============================================================================
     // default start state

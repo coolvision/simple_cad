@@ -9,6 +9,38 @@
 
 ofxFontStash Button::font;
 
+void Toolbar::draw() {
+    for (int i = 0; i < buttons.size(); i++) {
+        buttons[i]->draw();
+    }
+}
+
+void Toolbar::updatePosition(float x, float y) {
+
+    this->x = x;
+    this->y = y;
+
+    if (horizontal) {
+        int start_x = x;
+        int inc_x = button_w + margin;
+        for (int i = 0; i < buttons.size(); i++) {
+            buttons[i]->x = x + inc_x * i;
+            buttons[i]->y = y;
+        }
+        width = buttons.size() * button_w + (buttons.size() - 1) * margin;
+        height = button_h;
+    } else {
+        int start_y = y;
+        int inc_y = button_h + margin;
+        for (int i = 0; i < buttons.size(); i++) {
+            buttons[i]->x = x;
+            buttons[i]->y = y + inc_y * i;
+        }
+        width = button_w;
+        height = buttons.size() * button_h + (buttons.size() - 1) * margin;;
+    }
+}
+
 void Button::draw() {
 
     if (isMouseOver()) {
@@ -41,8 +73,9 @@ Button::Button(string label, int x, int y, int w, int h) {
     enableMouseEvents();
 
     selected = false;
+    hover = false;
     dragging = false;
-    draggable = true;
+    draggable = false;
 
     radio = false;
     toggle = false;
@@ -72,7 +105,6 @@ void Button::onPress(int x, int y, int button) {
     ButtonClickEventData d(this);
     ofNotifyEvent(click_event, d);
 
-    //selected = !selected;
     dragging = true;
     drag_start.set(x - this->x, y - this->y);
 }

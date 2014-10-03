@@ -8,46 +8,45 @@
 
 #include "ofApp.h"
 
-float segmentDistance(ofPoint v, ofPoint w, ofPoint p) {
-
-    // Return minimum distance between line segment vw and point p
-    float l2 = (v - w).lengthSquared();  // i.e. |w-v|^2 -  avoid a sqrt
-
-    if (l2 == 0.0) {
-        return (p, v).length();   // v == w case
-    }
-    // Consider the line extending the segment, parameterized as v + t (w - v).
-    // We find projection of point p onto the line.
-    // It falls where t = [(p-v) . (w-v)] / |w-v|^2
-    float t = (p - v).dot(w - v) / l2;
-    if (t < 0.0) {
-        return (p - v).length();       // Beyond the 'v' end of the segment
-    } else if (t > 1.0) {
-        return (p - w).length();  // Beyond the 'w' end of the segment
-    }
-    ofPoint projection = v + t * (w - v);  // Projection falls on the segment
-
-    return (p - projection).length();
-}
-
 void ofApp::mouseMoved(int x, int y ) {
 
     ofPoint p(x, y);
 
-    // find selected objects:
-    // points, lines, etc...
-    if (ui_state == UI_SELECT || ui_state == UI_DRAW_LINE) {
+    // ok, this is not such a good way to do this,
+    // check if the press is over a button
+    if (cursor_toolbar.inside(p) || canvas_toolbar.inside(p)) {
+        return;
+    }
 
-        selected_point = false;
-        selected_line = false;
+    if (ui_state == UI_ADD_VERTEX) {
+
+        resetHover();
 
         for (int i = 0; i < lines.size(); i++) {
-            for (Vertex *v = lines[i]->front; v != NULL; v = v->next) {
-                v->hover = false;
+            for (Vertex *v = lines[i]->front; v != NULL && v->next != NULL; v = v->next) {
+                float d = segmentDistance(*v, *v->next, p);
+                if (d < 15.0f) {
+                    selected_line = true;
+                    add_v = lineProjection(*v, *v->next, p);
+                    selected_line_p[0] = v;
+                    selected_line_p[1] = v->next;
+                    v->hover = true;
+                    v->next->hover = true;
+                    break;
+                }
+                if (selected_line) {
+                    break;
+                }
                 if (v->next == lines[i]->front) break; // closed polylines
             }
-            lines[i]->hover = false;
         }
+    }
+
+    if (ui_state == UI_SELECT || ui_state == UI_DRAW_LINE) {
+        // find hover objects:
+        // points, lines, etc...
+
+        resetHover();
 
         // check selection of points
         float min_d = FLT_MAX;
@@ -67,7 +66,6 @@ void ofApp::mouseMoved(int x, int y ) {
             selected_point = true;
             was_selected_point = true;
             min_d_v->hover = true;
-            min_d_v->p->hover = true;
         }
 
         for (int i = 0; i < lines.size(); i++) {
@@ -82,7 +80,6 @@ void ofApp::mouseMoved(int x, int y ) {
 
                     v->hover = true;
                     v->next->hover = true;
-                    v->p->hover = true;
                     break;
                 }
                 if (selected_line) {
@@ -93,8 +90,23 @@ void ofApp::mouseMoved(int x, int y ) {
         }
 
         if (selected_point) {
-            add_line->x = selected_point_p->x + 5;
-            add_line->y = selected_point_p->y - 29;
+            cursor_toolbar.updatePosition(selected_point_p->x + toolbar_off.x,
+                                          selected_point_p->y - toolbar_off.y);
+        }
+        if (selected_line) {
+            updateToolbar(p);
+        }
+
+        if (!selected_point && !selected_line) {
+            selected_polygon = false;
+            for (int i = 0; i < lines.size(); i++) {
+                if (!lines[i]->closed) continue;
+                lines[i]->updatePath();
+                if (lines[i]->ofp.inside(p)) {
+                    selected_polygon = true;
+                    selected_polygon_p = lines[i];
+                }
+            }
         }
     }
 }
@@ -103,17 +115,22 @@ void ofApp::mouseDragged(int x, int y, int button) {
 
     ofPoint p(x, y);
 
+    if (ui_state == UI_MOUSE_SELECTION) {
+        ofPoint r = p - start_click;
+        selection_r.set(start_click, r.x, r.y);
+    }
+
     if (ui_state == UI_DRAWING_LINE) {
         *curr_line.back = p;
-        add_line->x = p.x + 5;
-        add_line->y = p.y - 29;
+        cursor_toolbar.updatePosition(p.x + toolbar_off.x,
+                                      p.y - toolbar_off.y);
     }
 
     if (ui_state == UI_MOVING_POINT) {
         *selected_point_p = p;
         selected_point_p->p->updatePath();
-        add_line->x = p.x + 5;
-        add_line->y = p.y - 29;
+        cursor_toolbar.updatePosition(p.x + toolbar_off.x,
+                                      p.y - toolbar_off.y);
     }
 
     if (ui_state == UI_MOVING_LINE) {
@@ -123,11 +140,7 @@ void ofApp::mouseDragged(int x, int y, int button) {
 
         selected_line_p[0]->p->updatePath();
 
-        if (was_selected_point) {
-            ofPoint p1 = *selected_point_p;
-            add_line->x = p1.x + 5;
-            add_line->y = p1.y - 29;
-        }
+        updateToolbar(p);
     }
 }
 
@@ -137,6 +150,50 @@ void ofApp::mousePressed(int x, int y, int button) {
 
     start_click = p;
 
+    // ok, this is not such a good way to do this,
+    // check if the press is over a button
+    if (cursor_toolbar.inside(p) || canvas_toolbar.inside(p)) {
+        return;
+    }
+
+    // clear the selection
+    if (!selected_point && !selected_line && !selected_polygon) {
+        clearSelection();
+    }
+
+    // find hover objects:
+    // points, lines, etc...
+    if (ui_state == UI_SELECT) {
+
+        bool shift = ofGetKeyPressed(OF_KEY_SHIFT);
+
+        if (!shift) {
+            clearSelection();
+        }
+
+        // if there is a hover object, start dragging it
+        if (selected_point) {
+            selected_point_p->selected = true;
+            ui_state = UI_MOVING_POINT;
+        }
+        if (selected_line) {
+            selected_line_p[0]->selected = true;
+            selected_line_p[1]->selected = true;
+
+            ui_state = UI_MOVING_LINE;
+            curr_line.release();
+            curr_line.addBack(*selected_line_p[0]);
+            curr_line.addBack(*selected_line_p[1]);
+        }
+
+        if (selected_polygon)  {
+            for (Vertex *v = selected_polygon_p->front; v != NULL; v = v->next) {
+                v->selected = true;
+                if (v->next == selected_polygon_p->front) break;
+            }
+        }
+    }
+
     // start drawing a line
     if (ui_state == UI_DRAW_LINE) {
         ui_state = UI_DRAWING_LINE;
@@ -145,33 +202,37 @@ void ofApp::mousePressed(int x, int y, int button) {
         curr_line.addBack(p);
     }
 
-    // find selected objects:
-    // points, lines, etc...
-    if (ui_state == UI_SELECT) {
-
-        // if there is a selected object, start dragging it
-        if (selected_point) {
-            ui_state = UI_MOVING_POINT;
-        }
+    if (ui_state == UI_ADD_VERTEX) {
+        // insert a new point between the points of the hover line
         if (selected_line) {
-            ui_state = UI_MOVING_LINE;
-            curr_line.release();
-            curr_line.addBack(*selected_line_p[0]);
-            curr_line.addBack(*selected_line_p[1]);
+
+            Vertex *v0 = selected_line_p[0];
+            Vertex *v1 = selected_line_p[1];
+
+            Vertex *v = new Vertex();
+            *v = add_v;
+            v->p = v0->p;
+            v->prev = v0;
+            v->next = v1;
+            v0->next = v;
+            v1->prev = v;
+
+            unselectMode();
+            select_button->hover = true;
+
+            ui_state = UI_MOVING_POINT;
+            selected_point = true;
+            selected_line = false;
+            selected_point_p->hover = false;
+            selected_point_p = v;
+            v->hover = true;
         }
     }
-}
 
-// connect to an existing polyline, or add a new one
-Polyline *ofApp::connectLine(ofPoint *p1, ofPoint *p2) {
-
-
-
-}
-
-// check if endpoints overlap, and if they do, connect the polylines
-Polyline *ofApp::connectPolyline(Polyline *p) {
-
+    if (ui_state == UI_SELECT) {
+        ui_state = UI_MOUSE_SELECTION;
+        selection_r.set(p, 0.0f, 0.0f);
+    }
 
 }
 
@@ -179,64 +240,44 @@ void ofApp::mouseReleased(int x, int y, int button) {
 
     ofPoint p = snap(ofPoint(x, y));
 
+    if (ui_state == UI_MOUSE_SELECTION) {
+        ui_state = UI_SELECT;
+        if (selection_r.width > 10.0f && selection_r.height > 10.0f) {
+            clearSelection();
+            for (int i = 0; i < lines.size(); i++) {
+                for (Vertex *v = lines[i]->front; v != NULL; v = v->next) {
+                    if (selection_r.inside(*v)) {
+                        v->selected = true;
+                    }
+                    if (v->next == lines[i]->front) break; // closed polylines
+                }
+            }
+        }
+    }
+
     // stop the drawing / dragging / selection
     if (ui_state == UI_DRAWING_LINE) {
         ui_state = UI_DRAW_LINE;
 
-        bool new_line = true;
-
-        for (int i = 0; i < lines.size(); i++) {
-            if (lines[i]->closed) continue;
-            if ((start_click == *lines[i]->front && p == *lines[i]->back) ||
-                (start_click == *lines[i]->back && p == *lines[i]->front)) {
-                // does it, by chance close the polyline?
-                lines[i]->back->next = lines[i]->front;
-                lines[i]->front->prev = lines[i]->back;
-                lines[i]->closed = true;
-                new_line = false;
-            } else if (start_click == *lines[i]->front) {
-                lines[i]->addFront(p);
-                new_line = false;
-            } else if (p == *lines[i]->front) {
-                lines[i]->addFront(start_click);
-                new_line = false;
-            } else if (start_click == *lines[i]->back) {
-                lines[i]->addBack(p);
-                new_line = false;
-            } else if (p == *lines[i]->back) {
-                lines[i]->addBack(start_click);
-                new_line = false;
-            }
-        }
-
-        // check if the second point is connected to anything
-        if (!new_line) {
-
-
-        }
-
-        if (new_line) {
-            *curr_line.back = p;
-            lines.push_back(new Polyline());
-            lines.back()->cloneFrom(&curr_line);
-        }
+        Polyline *pl = connectLine(&start_click, &p);
+        connectPolylines(pl);
 
         ui_state = UI_SELECT;
+        unselectMode();
+        select_button->hover = true;
 
-        for (int i = 0; i < buttons.size(); i++) {
-            buttons[i]->selected = false;
-        }
-        select_button->selected = true;
-
-        add_line->x = p.x + 5;
-        add_line->y = p.y - 29;
+        cursor_toolbar.updatePosition(p.x + toolbar_off.x,
+                                      p.y - toolbar_off.y);
     }
 
     if (ui_state == UI_MOVING_POINT) {
         ui_state = UI_SELECT;
         *selected_point_p = p;
-        add_line->x = p.x + 5;
-        add_line->y = p.y - 29;
+
+        connectPolylines(selected_point_p->p);
+
+        cursor_toolbar.updatePosition(p.x + toolbar_off.x,
+                                      p.y - toolbar_off.y);
     }
 
     if (ui_state == UI_MOVING_LINE) {
@@ -245,10 +286,24 @@ void ofApp::mouseReleased(int x, int y, int button) {
         *selected_line_p[0] = *curr_line.front + (p - start_click);
         *selected_line_p[1] = *curr_line.back + (p - start_click);
 
-        if (was_selected_point) {
-            ofPoint p1 = *selected_point_p;
-            add_line->x = p1.x + 5;
-            add_line->y = p1.y - 29;
+        connectPolylines(selected_line_p[0]->p);
+        connectPolylines(selected_line_p[0]->p);
+
+        updateToolbar(p);
+    }
+}
+
+void ofApp::updateToolbar(ofPoint p) {
+
+    if (was_selected_point) {
+        float d0 = (*selected_line_p[0] - p).length();
+        float d1 = (*selected_line_p[1] - p).length();
+        if (d0 < d1) {
+            cursor_toolbar.updatePosition(selected_line_p[0]->x + toolbar_off.x,
+                                          selected_line_p[0]->y - toolbar_off.y);
+        } else {
+            cursor_toolbar.updatePosition(selected_line_p[1]->x + toolbar_off.x,
+                                          selected_line_p[1]->y - toolbar_off.y);
         }
     }
 }
@@ -260,3 +315,4 @@ ofPoint ofApp::snap(ofPoint p) {
 
     return p;
 }
+

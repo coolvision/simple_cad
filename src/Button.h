@@ -63,3 +63,16 @@ public:
 
     void draw();
 };
+
+class Toolbar: public ofRectangle {
+public:
+    vector<Button *> buttons;
+    void updatePosition(float x, float y);
+    void draw();
+
+    int button_h;
+    int button_w;
+    int margin;
+
+    bool horizontal;
+};

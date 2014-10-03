@@ -10,13 +10,16 @@
 
 #include "ofMain.h"
 
+float segmentDistance(ofPoint v, ofPoint w, ofPoint p);
+ofPoint lineProjection(ofPoint v, ofPoint w, ofPoint p);
+
 class Polyline;
 
 class Vertex: public ofPoint {
 public:
     Vertex() {
-        selected = false;
         hover = false;
+        selected = false;
         next = NULL;
         prev = NULL;
     }
@@ -40,7 +43,7 @@ inline Vertex &Vertex::operator =(const ofVec3f &p) {
 class Polyline {
 public:
     Polyline() {
-        selected = false;
+        hover = false;
         hover = false;
         front = NULL;
         back = NULL;
@@ -50,7 +53,6 @@ public:
         release();
     }
 
-    int getLength();
     void release();
     void cloneFrom(Polyline *p);
 
@@ -58,8 +60,9 @@ public:
     void addFront(ofPoint p);
     void addBack(ofPoint p);
     void reverse();
-    void connectToFront(Polyline *p);
-    void connectToBack(Polyline *p);
+    void addFront(Polyline *p);
+    void addBack(Polyline *p);
+    int getLength();
 
     bool closed;
 
@@ -72,7 +75,7 @@ public:
     // for drawing
     void updatePath();
     ofPath path;
-
+    ofPolyline ofp;
 private:
     int length;
 };

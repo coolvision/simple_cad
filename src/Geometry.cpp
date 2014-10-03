@@ -78,6 +78,48 @@ void Polyline::addFront(ofPoint p) {
     updatePath();
 }
 
+void Polyline::reverse() {
+
+    if (front == NULL) {
+        return;
+    }
+
+    Vertex *tmp;
+    Vertex *v = front;
+    for (Vertex *v = front; v != NULL; v = tmp) {
+        tmp = v->next;
+        v->next = v->prev;
+        v->prev = tmp;
+        v = tmp;
+        if (tmp == front) break; // closed polylines
+    }
+    tmp = front;
+    front = back;
+    back = tmp;
+}
+
+void Polyline::addFront(Polyline *p) {
+
+    if (front == NULL || p->closed) {
+        return;
+    }
+
+    for (Vertex *v = p->back; v != NULL; v = v->prev) {
+        addFront(ofPoint(*v));
+    }
+}
+
+void Polyline::addBack(Polyline *p) {
+
+    if (front == NULL || p->closed) {
+        return;
+    }
+
+    for (Vertex *v = p->front; v != NULL; v = v->next) {
+        addBack(ofPoint(*v));
+    }
+}
+
 void Polyline::updatePath() {
 
     path.clear();
@@ -89,23 +131,58 @@ void Polyline::updatePath() {
         path.lineTo(*v);
         if (v->next == front) break; // closed polylines
     }
+
+    ofp.clear();
+    for (Vertex *v = front; v != NULL; v = v->next) {
+        ofp.addVertex(*v);
+        if (v->next == front) break; // closed polylines
+    }
+    ofp.setClosed(closed);
+
 }
 
 int Polyline::getLength() {
-
-
+    int l = 0;
+    for (Vertex *v = front; v != NULL; v = v->next) {
+        l++;
+        if (v->next == front) break; // closed polylines
+    }
+    return l;
 }
 
+float segmentDistance(ofPoint v, ofPoint w, ofPoint p) {
 
-void Polyline::reverse() {
+    // Return minimum distance between line segment vw and point p
+    float l2 = (v - w).lengthSquared();  // i.e. |w-v|^2 -  avoid a sqrt
 
+    if (l2 == 0.0) {
+        return (p, v).length();   // v == w case
+    }
+    // Consider the line extending the segment, parameterized as v + t (w - v).
+    // We find projection of point p onto the line.
+    // It falls where t = [(p-v) . (w-v)] / |w-v|^2
+    float t = (p - v).dot(w - v) / l2;
+    if (t < 0.0) {
+        return (p - v).length();       // Beyond the 'v' end of the segment
+    } else if (t > 1.0) {
+        return (p - w).length();  // Beyond the 'w' end of the segment
+    }
+    ofPoint projection = v + t * (w - v);  // Projection falls on the segment
 
+    return (p - projection).length();
 }
 
-void Polyline::connectToFront(Polyline *p) {
+ofPoint lineProjection(ofPoint v, ofPoint w, ofPoint p) {
 
-}
+    // Return minimum distance between line segment vw and point p
+    float l2 = (v - w).lengthSquared();  // i.e. |w-v|^2 -  avoid a sqrt
+    if (l2 == 0.0) {
+        return p;   // v == w case
+    }
+    // Consider the line extending the segment, parameterized as v + t (w - v).
+    // We find projection of point p onto the line.
+    // It falls where t = [(p-v) . (w-v)] / |w-v|^2
+    float t = (p - v).dot(w - v) / l2;
 
-void Polyline::connectToBack(Polyline *p) {
-
+    return v + t * (w - v);
 }

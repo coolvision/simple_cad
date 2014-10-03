@@ -24,22 +24,26 @@ void ofApp::draw(){
         drawLine(&curr_line);
     }
 
+    if (ui_state == UI_ADD_VERTEX && selected_line) {
+        ofSetColor(ofColor::orangeRed);
+        ofCircle(add_v, 4.0f);
+    }
+
+    if (ui_state == UI_MOUSE_SELECTION) {
+        ofSetColor(150);
+        ofSetLineWidth(1.0f);
+        ofNoFill();
+        ofDisableAntiAliasing();
+        ofDisableSmoothing();
+        ofRect(selection_r);
+    }
+
+
     // buttons
 //==============================================================================
-    ofFill();
 
-    // toolbox
-    for (int i = 0; i < buttons.size(); i++) {
-        buttons[i]->draw();
-    }
-
-    if (was_selected_point) {
-        add_line->draw();
-        if (add_line->hover) {
-            ofSetColor(ofColor::orangeRed);
-            ofCircle(*selected_point_p, 4.0f);
-        }
-    }
+    canvas_toolbar.draw();
+    cursor_toolbar.draw();
 
     // info
 //==============================================================================
@@ -82,6 +86,10 @@ void ofApp::drawGrid() {
 
 void ofApp::drawLine(Polyline *l) {
 
+    if (l->front == NULL) {
+        return;
+    }
+
     ofPushStyle();
 
     ofEnableSmoothing();
@@ -98,7 +106,9 @@ void ofApp::drawLine(Polyline *l) {
     ofSetLineWidth(1.0f);
     ofSetColor(ofColor::black);
     for (Vertex *v = l->front; v != NULL && v->next != NULL; v = v->next) {
-        if (v->hover && v->next->hover) {
+        if (v->selected && v->next->selected) {
+            ofSetColor(ofColor::steelBlue);
+        } else if (v->hover && v->next->hover) {
             ofSetColor(ofColor::orangeRed);
         } else {
             ofSetColor(ofColor::black);
@@ -107,12 +117,9 @@ void ofApp::drawLine(Polyline *l) {
         if (v->next == l->front) break; // closed polylines
     }
 
-    ofSetColor(ofColor::red);
-    ofCircle(*l->front, 8.0f);
-
     ofSetColor(ofColor::black);
     for (Vertex *v = l->front; v != NULL; v = v->next) {
-        if (!v->hover) {
+        if (!v->hover && !v->selected) {
             ofCircle(*v, 4.0f);
         }
         if (v->next == l->front) break; // closed polylines
@@ -120,7 +127,15 @@ void ofApp::drawLine(Polyline *l) {
 
     ofSetColor(ofColor::orangeRed);
     for (Vertex *v = l->front; v != NULL; v = v->next) {
-        if (v->hover) {
+        if (!v->selected && v->hover) {
+            ofCircle(*v, 4.0f);
+        }
+        if (v->next == l->front) break; // closed polylines
+    }
+
+    ofSetColor(ofColor::steelBlue);
+    for (Vertex *v = l->front; v != NULL; v = v->next) {
+        if (v->selected) {
             ofCircle(*v, 4.0f);
         }
         if (v->next == l->front) break; // closed polylines
