@@ -25,7 +25,8 @@
 		53782D3F19EDFD9E00ECECE5 /* Events.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 53782D3E19EDFD9E00ECECE5 /* Events.cpp */; };
 		538878EA19D710420034248A /* Button.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 538878E719D710420034248A /* Button.cpp */; };
 		538878F119DABC500034248A /* MouseEvents.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 538878F019DABC500034248A /* MouseEvents.cpp */; };
-		53F7244A19DDF816008BC5FD /* ManageLines.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 53F7244919DDF816008BC5FD /* ManageLines.cpp */; };
+		53F7244A19DDF816008BC5FD /* ConnectLines.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 53F7244919DDF816008BC5FD /* ConnectLines.cpp */; };
+		53F7244C19DEDCDB008BC5FD /* Update.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 53F7244B19DEDCDB008BC5FD /* Update.cpp */; };
 		5A4349E9754D6FA14C0F2A3A /* tinyxmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FC5DA1C87211D4F6377DA719 /* tinyxmlparser.cpp */; };
 		5A479B04DF062DE7431FD3BF /* ofUnicode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF3CACAAE84A581E4AFA9FA7 /* ofUnicode.cpp */; };
 		603044E656EA8D499FCF7DEA /* ofxVectorGraphics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 318ABED90EADFB757FFDCCAF /* ofxVectorGraphics.cpp */; };
@@ -136,7 +137,8 @@
 		538878E719D710420034248A /* Button.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = Button.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		538878E919D710420034248A /* Button.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = Button.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		538878F019DABC500034248A /* MouseEvents.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = MouseEvents.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
-		53F7244919DDF816008BC5FD /* ManageLines.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ManageLines.cpp; sourceTree = "<group>"; };
+		53F7244919DDF816008BC5FD /* ConnectLines.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ConnectLines.cpp; sourceTree = "<group>"; };
+		53F7244B19DEDCDB008BC5FD /* Update.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Update.cpp; sourceTree = "<group>"; };
 		582921BA98D224ED41833868 /* svgtiny_gradient.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = svgtiny_gradient.cpp; path = ../../../addons/ofxSvg/libs/svgTiny/src/svgtiny_gradient.cpp; sourceTree = SOURCE_ROOT; };
 		5EAF0A3CB08E81512BB99F68 /* ofxSimpleGuiSlider2d.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxSimpleGuiSlider2d.cpp; path = ../../../addons/ofxSimpleGuiToo/src/Controls/ofxSimpleGuiSlider2d.cpp; sourceTree = SOURCE_ROOT; };
 		5F118C5DAAA61D8DB376BB3F /* svgtiny_internal.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = svgtiny_internal.h; path = ../../../addons/ofxSvg/libs/svgTiny/src/svgtiny_internal.h; sourceTree = SOURCE_ROOT; };
@@ -595,7 +597,8 @@
 				53782D3E19EDFD9E00ECECE5 /* Events.cpp */,
 				538878F019DABC500034248A /* MouseEvents.cpp */,
 				535BFE8419DC491B003C77DF /* Geometry.cpp */,
-				53F7244919DDF816008BC5FD /* ManageLines.cpp */,
+				53F7244919DDF816008BC5FD /* ConnectLines.cpp */,
+				53F7244B19DEDCDB008BC5FD /* Update.cpp */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
@@ -749,7 +752,7 @@
 				933A2227713C720CEFF80FD9 /* tinyxml.cpp in Sources */,
 				9D44DC88EF9E7991B4A09951 /* tinyxmlerror.cpp in Sources */,
 				5A4349E9754D6FA14C0F2A3A /* tinyxmlparser.cpp in Sources */,
-				53F7244A19DDF816008BC5FD /* ManageLines.cpp in Sources */,
+				53F7244A19DDF816008BC5FD /* ConnectLines.cpp in Sources */,
 				7B388D550037229D99E7F52A /* ofxFontStash.cpp in Sources */,
 				801397981E78A4CBDE809376 /* fontstash.c in Sources */,
 				522FFFB6EB3DA57CCB07EF9A /* stb_truetype.c in Sources */,
@@ -758,6 +761,7 @@
 				A0B7F6A3EC34B4F84321385D /* ofxSimpleGuiButton.cpp in Sources */,
 				E39BF54C7233C89A5BB42174 /* ofxSimpleGuiColorPicker.cpp in Sources */,
 				53782D3D19EDFD9E00ECECE5 /* Setup.cpp in Sources */,
+				53F7244C19DEDCDB008BC5FD /* Update.cpp in Sources */,
 				2DD56BBC82953D6AE0A018BF /* ofxSimpleGuiComboBox.cpp in Sources */,
 				495E773E470FF7C742646E77 /* ofxSimpleGuiContent.cpp in Sources */,
 				53782D3F19EDFD9E00ECECE5 /* Events.cpp in Sources */,

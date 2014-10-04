@@ -144,6 +144,11 @@ void ofApp::setup(){
 //==============================================================================
     // default start state
     ui_state = UI_SELECT;
-    selected_point = NULL;
-    selected_line = NULL;
+    selected_point = false;
+    selected_point_p = NULL;
+    selected_line = false;
+    selected_line_p[0] = NULL;
+    selected_line_p[1] = NULL;
+    selected_polygon = false;
+    selected_polygon_p = NULL;
 }

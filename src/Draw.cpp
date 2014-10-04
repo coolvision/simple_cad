@@ -86,7 +86,7 @@ void ofApp::drawGrid() {
 
 void ofApp::drawLine(Polyline *l) {
 
-    if (l->front == NULL) {
+    if (l->front == NULL || l->back == NULL) {
         return;
     }
 
@@ -94,6 +94,9 @@ void ofApp::drawLine(Polyline *l) {
 
     ofEnableSmoothing();
     ofEnableAntiAliasing();
+
+    ofDrawBitmapString(ofToString(l->closed) + " " + ofToString((int)l->front) + " " + ofToString((int)l->back),
+                     *l->front + ofPoint(100, 100));
 
     if (l->closed) {
         l->path.setFilled(true);
@@ -117,11 +120,23 @@ void ofApp::drawLine(Polyline *l) {
         if (v->next == l->front) break; // closed polylines
     }
 
+    ofSetColor(ofColor::red);
+    ofCircle(*l->front, 8.0f);
+
+    ofSetColor(ofColor::green);
+    ofCircle(*l->back, 10.0f);
+
     ofSetColor(ofColor::black);
     for (Vertex *v = l->front; v != NULL; v = v->next) {
         if (!v->hover && !v->selected) {
             ofCircle(*v, 4.0f);
         }
+
+        ofDrawBitmapString(ofToString((int)v), *v + ofPoint(15, 15));
+        ofDrawBitmapString(ofToString((int)v->prev), *v + ofPoint(15, 30));
+        ofDrawBitmapString(ofToString((int)v->next), *v + ofPoint(15, 45));
+        ofDrawBitmapString(ofToString((int)v->p), *v + ofPoint(15, 60));
+
         if (v->next == l->front) break; // closed polylines
     }
 

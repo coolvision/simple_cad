@@ -89,16 +89,15 @@ void ofApp::mouseMoved(int x, int y ) {
             }
         }
 
-        if (selected_point) {
+        if (selected_point && selected_point_p) {
             cursor_toolbar.updatePosition(selected_point_p->x + toolbar_off.x,
                                           selected_point_p->y - toolbar_off.y);
         }
-        if (selected_line) {
+        if (selected_line && selected_line_p[0] && selected_line_p[1]) {
             updateToolbar(p);
         }
 
         if (!selected_point && !selected_line) {
-            selected_polygon = false;
             for (int i = 0; i < lines.size(); i++) {
                 if (!lines[i]->closed) continue;
                 lines[i]->updatePath();
@@ -126,22 +125,25 @@ void ofApp::mouseDragged(int x, int y, int button) {
                                       p.y - toolbar_off.y);
     }
 
-    if (ui_state == UI_MOVING_POINT) {
+    if (ui_state == UI_MOVING_POINT && selected_point_p) {
         *selected_point_p = p;
         selected_point_p->p->updatePath();
         cursor_toolbar.updatePosition(p.x + toolbar_off.x,
                                       p.y - toolbar_off.y);
     }
 
-    if (ui_state == UI_MOVING_LINE) {
+    if (ui_state == UI_MOVING_LINE && selected_line_p[0] && selected_line_p[1]) {
 
         *selected_line_p[0] = *curr_line.front + (p - start_click);
         *selected_line_p[1] = *curr_line.back + (p - start_click);
-
         selected_line_p[0]->p->updatePath();
 
         updateToolbar(p);
     }
+
+
+
+
 }
 
 void ofApp::mousePressed(int x, int y, int button) {
@@ -172,25 +174,36 @@ void ofApp::mousePressed(int x, int y, int button) {
         }
 
         // if there is a hover object, start dragging it
-        if (selected_point) {
+        if (selected_point && selected_point_p) {
+
             selected_point_p->selected = true;
+            selection.add(selected_point_p);
+
             ui_state = UI_MOVING_POINT;
         }
-        if (selected_line) {
+
+        if (selected_line && selected_line_p[0] && selected_line_p[1]) {
+
             selected_line_p[0]->selected = true;
             selected_line_p[1]->selected = true;
+            selection.add(selected_line_p[0]);
+            selection.add(selected_line_p[1]);
 
             ui_state = UI_MOVING_LINE;
-            curr_line.release();
-            curr_line.addBack(*selected_line_p[0]);
-            curr_line.addBack(*selected_line_p[1]);
+//            curr_line.release();
+//            curr_line.addBack(*selected_line_p[0]);
+//            curr_line.addBack(*selected_line_p[1]);
         }
 
-        if (selected_polygon)  {
+        if (selected_polygon && selected_polygon_p)  {
             for (Vertex *v = selected_polygon_p->front; v != NULL; v = v->next) {
+
                 v->selected = true;
+                selection.add(v);
+
                 if (v->next == selected_polygon_p->front) break;
             }
+            ui_state = UI_MOVING_POLYGON;
         }
     }
 
@@ -204,13 +217,14 @@ void ofApp::mousePressed(int x, int y, int button) {
 
     if (ui_state == UI_ADD_VERTEX) {
         // insert a new point between the points of the hover line
-        if (selected_line) {
+        if (selected_line && selected_line_p[0] && selected_line_p[1]) {
 
             Vertex *v0 = selected_line_p[0];
             Vertex *v1 = selected_line_p[1];
 
             Vertex *v = new Vertex();
             *v = add_v;
+
             v->p = v0->p;
             v->prev = v0;
             v->next = v1;
@@ -223,7 +237,9 @@ void ofApp::mousePressed(int x, int y, int button) {
             ui_state = UI_MOVING_POINT;
             selected_point = true;
             selected_line = false;
-            selected_point_p->hover = false;
+            if (selected_point_p) {
+                selected_point_p->hover = false;
+            }
             selected_point_p = v;
             v->hover = true;
         }
@@ -242,11 +258,13 @@ void ofApp::mouseReleased(int x, int y, int button) {
 
     if (ui_state == UI_MOUSE_SELECTION) {
         ui_state = UI_SELECT;
-        if (selection_r.width > 10.0f && selection_r.height > 10.0f) {
+        ofRectangle r = selection_r;
+        r.standardize();
+        if (r.width > 10.0f && r.height > 10.0f) {
             clearSelection();
             for (int i = 0; i < lines.size(); i++) {
                 for (Vertex *v = lines[i]->front; v != NULL; v = v->next) {
-                    if (selection_r.inside(*v)) {
+                    if (r.inside(*v)) {
                         v->selected = true;
                     }
                     if (v->next == lines[i]->front) break; // closed polylines
@@ -270,7 +288,7 @@ void ofApp::mouseReleased(int x, int y, int button) {
                                       p.y - toolbar_off.y);
     }
 
-    if (ui_state == UI_MOVING_POINT) {
+    if (ui_state == UI_MOVING_POINT && selected_point_p) {
         ui_state = UI_SELECT;
         *selected_point_p = p;
 
@@ -280,31 +298,16 @@ void ofApp::mouseReleased(int x, int y, int button) {
                                       p.y - toolbar_off.y);
     }
 
-    if (ui_state == UI_MOVING_LINE) {
+    if (ui_state == UI_MOVING_LINE && selected_line_p[0] && selected_line_p[1]) {
 
         ui_state = UI_SELECT;
         *selected_line_p[0] = *curr_line.front + (p - start_click);
         *selected_line_p[1] = *curr_line.back + (p - start_click);
 
         connectPolylines(selected_line_p[0]->p);
-        connectPolylines(selected_line_p[0]->p);
+        connectPolylines(selected_line_p[1]->p);
 
         updateToolbar(p);
-    }
-}
-
-void ofApp::updateToolbar(ofPoint p) {
-
-    if (was_selected_point) {
-        float d0 = (*selected_line_p[0] - p).length();
-        float d1 = (*selected_line_p[1] - p).length();
-        if (d0 < d1) {
-            cursor_toolbar.updatePosition(selected_line_p[0]->x + toolbar_off.x,
-                                          selected_line_p[0]->y - toolbar_off.y);
-        } else {
-            cursor_toolbar.updatePosition(selected_line_p[1]->x + toolbar_off.x,
-                                          selected_line_p[1]->y - toolbar_off.y);
-        }
     }
 }
 

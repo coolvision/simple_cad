@@ -17,14 +17,16 @@ enum UIState {
     UI_MOUSE_SELECTION,
     UI_MOVING_POINT,
     UI_MOVING_LINE,
+    UI_MOVING_POLYGON,
     UI_ADD_VERTEX,
     UI_MOVE_CANVAS
 };
 
 class SelectionList {
 public:
-    vector<Polyline *> lines;
     vector<Vertex *> vertices;
+    void add(Vertex *v);
+    void clear();
 };
 
 class ofApp : public ofBaseApp {

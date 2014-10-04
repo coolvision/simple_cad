@@ -1,5 +1,5 @@
 //
-//  ManageLines.cpp
+//  ConnectLines.cpp
 //  simple_card
 //
 //  Created by sk on 10/2/14.
@@ -7,33 +7,6 @@
 //
 
 #include "ofApp.h"
-
-void ofApp::clearSelection() {
-
-    selection.lines.clear();
-    selection.vertices.clear();
-
-    for (int i = 0; i < lines.size(); i++) {
-        for (Vertex *v = lines[i]->front; v != NULL; v = v->next) {
-            v->selected = false;
-            if (v->next == lines[i]->front) break; // closed polylines
-        }
-        lines[i]->selected = false;
-    }
-}
-
-void ofApp::resetHover() {
-
-    selected_point = false;
-    selected_line = false;
-    for (int i = 0; i < lines.size(); i++) {
-        for (Vertex *v = lines[i]->front; v != NULL; v = v->next) {
-            v->hover = false;
-            if (v->next == lines[i]->front) break; // closed polylines
-        }
-        lines[i]->hover = false;
-    }
-}
 
 // connect to an existing polyline, or add a new one
 Polyline *ofApp::connectLine(ofPoint *p1, ofPoint *p2) {
@@ -65,12 +38,10 @@ Polyline *ofApp::connectLine(ofPoint *p1, ofPoint *p2) {
         }
     }
 
-    if (new_line) {
-        *curr_line.back = *p2;
-        lines.push_back(new Polyline());
-        lines.back()->cloneFrom(&curr_line);
-        return lines.back();
-    }
+    *curr_line.back = *p2;
+    lines.push_back(new Polyline());
+    lines.back()->cloneFrom(&curr_line);
+    return lines.back();
 }
 
 // check if endpoints overlap, and if they do, connect the polylines

@@ -8,6 +8,62 @@
 
 #include "ofApp.h"
 
+void ofApp::keyPressed(int key){
+
+    if (key == OF_KEY_BACKSPACE || key == OF_KEY_DEL) {
+
+        for (int i = 0; i < selection.vertices.size(); i++) {
+
+            Vertex *v = selection.vertices[i];
+
+            if (v == NULL) continue;
+
+            // delete
+            if (v->next != NULL) {
+                v->next->prev = v->prev;
+            }
+            if (v->prev != NULL) {
+                v->prev->next = v->next;
+            }
+            if (v == v->p->front && v == v->p->back) {
+                v->p->front = NULL;
+                v->p->back = NULL;
+            } else if (v == v->p->front) {
+                v->p->front = v->next;
+            } else if (v == v->p->back) {
+                v->p->back = v->prev;
+            }
+
+            delete v;
+            v = NULL;
+        }
+        selection.clear();
+
+        for (int i = 0; i < lines.size(); i++) {
+            if (lines[i]->getLength() <= 2) {
+                lines[i]->closed = false;
+                if (lines[i]->front != NULL) {
+                    lines[i]->front->prev = NULL;
+                }
+                if (lines[i]->back != NULL) {
+                    lines[i]->back->next = NULL;
+                }
+            }
+            lines[i]->updatePath();
+        }
+
+        selected_point = false;
+        selected_point_p = NULL;
+
+        selected_line = false;
+        selected_line_p[0] = NULL;
+        selected_line_p[1] = NULL;
+
+        selected_polygon = false;
+        selected_polygon_p = NULL;
+    }
+}
+
 void ofApp::unselectMode() {
 
     for (int i = 0; i < canvas_toolbar.buttons.size(); i++) {
@@ -66,10 +122,6 @@ void ofApp::ZoomOutButtonClick(ButtonClickEventData &d) {
 
 
 void ofApp::update(){
-
-}
-
-void ofApp::keyPressed(int key){
 
 }
 

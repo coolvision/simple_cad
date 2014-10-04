@@ -22,6 +22,7 @@ public:
         selected = false;
         next = NULL;
         prev = NULL;
+        p = NULL;
     }
 
     bool selected;
@@ -43,7 +44,7 @@ inline Vertex &Vertex::operator =(const ofVec3f &p) {
 class Polyline {
 public:
     Polyline() {
-        hover = false;
+        selected = false;
         hover = false;
         front = NULL;
         back = NULL;
@@ -76,6 +77,4 @@ public:
     void updatePath();
     ofPath path;
     ofPolyline ofp;
-private:
-    int length;
 };
