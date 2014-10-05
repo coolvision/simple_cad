@@ -110,42 +110,6 @@ void ofApp::mouseMoved(int x, int y ) {
     }
 }
 
-void ofApp::mouseDragged(int x, int y, int button) {
-
-    ofPoint p(x, y);
-
-    if (ui_state == UI_MOUSE_SELECTION) {
-        ofPoint r = p - start_click;
-        selection_r.set(start_click, r.x, r.y);
-    }
-
-    if (ui_state == UI_DRAWING_LINE) {
-        *curr_line.back = p;
-        cursor_toolbar.updatePosition(p.x + toolbar_off.x,
-                                      p.y - toolbar_off.y);
-    }
-
-    if (ui_state == UI_MOVING_POINT && selected_point_p) {
-        *selected_point_p = p;
-        selected_point_p->p->updatePath();
-        cursor_toolbar.updatePosition(p.x + toolbar_off.x,
-                                      p.y - toolbar_off.y);
-    }
-
-    if (ui_state == UI_MOVING_LINE && selected_line_p[0] && selected_line_p[1]) {
-
-        *selected_line_p[0] = *curr_line.front + (p - start_click);
-        *selected_line_p[1] = *curr_line.back + (p - start_click);
-        selected_line_p[0]->p->updatePath();
-
-        updateToolbar(p);
-    }
-
-
-
-
-}
-
 void ofApp::mousePressed(int x, int y, int button) {
 
     ofPoint p = snap(ofPoint(x, y));
@@ -190,9 +154,9 @@ void ofApp::mousePressed(int x, int y, int button) {
             selection.add(selected_line_p[1]);
 
             ui_state = UI_MOVING_LINE;
-//            curr_line.release();
-//            curr_line.addBack(*selected_line_p[0]);
-//            curr_line.addBack(*selected_line_p[1]);
+            curr_line.release();
+            curr_line.addBack(*selected_line_p[0]);
+            curr_line.addBack(*selected_line_p[1]);
         }
 
         if (selected_polygon && selected_polygon_p)  {
@@ -250,6 +214,45 @@ void ofApp::mousePressed(int x, int y, int button) {
         selection_r.set(p, 0.0f, 0.0f);
     }
 
+}
+
+
+void ofApp::mouseDragged(int x, int y, int button) {
+
+    ofPoint p(x, y);
+
+    if (ui_state == UI_MOUSE_SELECTION) {
+        ofPoint r = p - start_click;
+        selection_r.set(start_click, r.x, r.y);
+    }
+
+    if (ui_state == UI_DRAWING_LINE) {
+        *curr_line.back = p;
+        cursor_toolbar.updatePosition(p.x + toolbar_off.x,
+                                      p.y - toolbar_off.y);
+    }
+
+    if (ui_state == UI_MOVING_POINT && selected_point_p) {
+        *selected_point_p = p;
+        selected_point_p->p->updatePath();
+        cursor_toolbar.updatePosition(p.x + toolbar_off.x,
+                                      p.y - toolbar_off.y);
+    }
+
+    if (ui_state == UI_MOVING_LINE && selected_line_p[0] && selected_line_p[1]) {
+
+        *selected_line_p[0] = *curr_line.front + (p - start_click);
+        *selected_line_p[1] = *curr_line.back + (p - start_click);
+        selected_line_p[0]->p->updatePath();
+
+        updateToolbar(p);
+    }
+    
+//    if (ui_state == UI_MOVING_POLYGON) {
+//        for (int i = 0; i < selection.vertices.size(); i++) {
+//            *selection.vertices[i] = selection.start_p[i] + (p - start_click);
+//        }
+//    }
 }
 
 void ofApp::mouseReleased(int x, int y, int button) {
