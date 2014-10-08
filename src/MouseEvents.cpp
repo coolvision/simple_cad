@@ -122,11 +122,6 @@ void ofApp::mousePressed(int x, int y, int button) {
         return;
     }
 
-    // clear the selection
-    if (!selected_point && !selected_line && !selected_polygon) {
-        clearSelection();
-    }
-
     // find hover objects:
     // points, lines, etc...
     if (ui_state == UI_SELECT) {
@@ -248,16 +243,24 @@ void ofApp::mouseDragged(int x, int y, int button) {
         updateToolbar(p);
     }
     
-//    if (ui_state == UI_MOVING_POLYGON) {
-//        for (int i = 0; i < selection.vertices.size(); i++) {
-//            *selection.vertices[i] = selection.start_p[i] + (p - start_click);
-//        }
-//    }
+    if (ui_state == UI_MOVING_POLYGON) {
+        for (int i = 0; i < selection.vertices.size(); i++) {
+            if (i == 0) {
+                selection.vertices[i]->p->updatePath();
+            }
+            *selection.vertices[i] = selection.start_p[i] + (p - start_click);
+        }
+    }
 }
 
 void ofApp::mouseReleased(int x, int y, int button) {
 
     ofPoint p = snap(ofPoint(x, y));
+
+    // clear the selection
+    if (!selected_point && !selected_line && !selected_polygon) {
+        clearSelection();
+    }
 
     if (ui_state == UI_MOUSE_SELECTION) {
         ui_state = UI_SELECT;
@@ -311,6 +314,16 @@ void ofApp::mouseReleased(int x, int y, int button) {
         connectPolylines(selected_line_p[1]->p);
 
         updateToolbar(p);
+    }
+
+    if (ui_state == UI_MOVING_POLYGON) {
+        ui_state = UI_SELECT;
+        for (int i = 0; i < selection.vertices.size(); i++) {
+            if (i == 0) {
+                selection.vertices[i]->p->updatePath();
+            }
+            *selection.vertices[i] = selection.start_p[i] + (p - start_click);
+        }
     }
 }
 
