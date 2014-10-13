@@ -102,20 +102,21 @@ public:
     ofRectangle selection_r;
 
     bool was_selected_point;
-
+    bool move_already_selected;
+    
     Vertex add_v;
 
-    // points selection
-    bool selected_point;
-    Vertex *selected_point_p;
+    // points
+    bool hover_point;
+    Vertex *hover_point_p;
 
-    // line segments selection
-    bool selected_line;
-    Vertex *selected_line_p[2];
+    // line segments
+    bool hover_line;
+    Vertex *hover_line_p[2];
 
-    // polygon selection, on click inside
-    bool selected_polygon;
-    Polyline *selected_polygon_p;
+    // polygons
+    bool hover_polygon;
+    Polyline *hover_polygon_p;
 
 
     Polyline *connectLine(ofPoint *p1, ofPoint *p2);

@@ -39,15 +39,15 @@ void ofApp::clearSelection() {
 
 void ofApp::resetHover() {
 
-    selected_point = false;
-    selected_point_p = NULL;
+    hover_point = false;
+    hover_point_p = NULL;
 
-    selected_line = false;
-    selected_line_p[0] = NULL;
-    selected_line_p[1] = NULL;
+    hover_line = false;
+    hover_line_p[0] = NULL;
+    hover_line_p[1] = NULL;
 
-    selected_polygon = false;
-    selected_polygon_p = NULL;
+    hover_polygon = false;
+    hover_polygon_p = NULL;
 
 
     for (int i = 0; i < lines.size(); i++) {
@@ -61,15 +61,15 @@ void ofApp::resetHover() {
 
 void ofApp::updateToolbar(ofPoint p) {
 
-    if (was_selected_point && selected_line_p[0] && selected_line_p[1]) {
-        float d0 = (*selected_line_p[0] - p).length();
-        float d1 = (*selected_line_p[1] - p).length();
+    if (was_selected_point && hover_line_p[0] && hover_line_p[1]) {
+        float d0 = (*hover_line_p[0] - p).length();
+        float d1 = (*hover_line_p[1] - p).length();
         if (d0 < d1) {
-            cursor_toolbar.updatePosition(selected_line_p[0]->x + toolbar_off.x,
-                                          selected_line_p[0]->y - toolbar_off.y);
+            cursor_toolbar.updatePosition(hover_line_p[0]->x + toolbar_off.x,
+                                          hover_line_p[0]->y - toolbar_off.y);
         } else {
-            cursor_toolbar.updatePosition(selected_line_p[1]->x + toolbar_off.x,
-                                          selected_line_p[1]->y - toolbar_off.y);
+            cursor_toolbar.updatePosition(hover_line_p[1]->x + toolbar_off.x,
+                                          hover_line_p[1]->y - toolbar_off.y);
         }
     }
 }

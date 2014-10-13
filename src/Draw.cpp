@@ -24,7 +24,7 @@ void ofApp::draw(){
         drawLine(&curr_line);
     }
 
-    if (ui_state == UI_ADD_VERTEX && selected_line) {
+    if (ui_state == UI_ADD_VERTEX && hover_line) {
         ofSetColor(ofColor::orangeRed);
         ofCircle(add_v, 4.0f);
     }
