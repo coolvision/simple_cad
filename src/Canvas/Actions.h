@@ -6,9 +6,27 @@
 //
 //
 
-#ifndef __simple_card__Actions__
-#define __simple_card__Actions__
+#pragma once
 
-#include <stdio.h>
+#include "Canvas.h"
 
-#endif /* defined(__simple_card__Actions__) */
+class Action {
+public:
+    virtual void doAction(Canvas *c);
+    virtual void undoAction(Canvas *c);
+};
+
+class AddLineAction: public Action {
+public:
+    void doAction(Canvas *c);
+    void undoAction(Canvas *c);
+
+};
+
+class MoveSelectionAction: public Action {
+public:
+    void doAction(Canvas *c);
+    void undoAction(Canvas *c);
+
+
+};

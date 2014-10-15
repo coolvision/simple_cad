@@ -76,7 +76,9 @@ public:
 //==============================================================================
     UIState ui_state;
     float line_length_info;
-
+    bool zoom_in;
+    bool zoom_out;
+    
     // grid of points and lines
 //==============================================================================
     void setGrid();

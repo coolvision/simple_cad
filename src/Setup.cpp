@@ -15,7 +15,7 @@ void ofApp::setup(){
 
     font.setup("DejaVuSansMono.ttf");
 
-    zoom = 1.0f;
+    c.zoom = 1.0f;
 
     ofSetFrameRate(30);
 
@@ -88,17 +88,9 @@ void ofApp::setup(){
 //==============================================================================
     // default start state
     ui_state = UI_SELECT;
-    hover_point_p = NULL;
-    hover_line = false;
-    hover_line_p[0] = NULL;
-    hover_line_p[1] = NULL;
-    hover_polygon = false;
-    hover_polygon_p = NULL;
-    selected_point = false;
-    selected_point_p = NULL;
-    selected_line = false;
-    selected_line_p[0] = NULL;
-    selected_line_p[1] = NULL;
+
+    c.clearSelection();
+    c.resetHover();
 
     zoom_in = false;
     zoom_out = false;
@@ -111,16 +103,17 @@ void ofApp::setGrid() {
     float w = ofGetWindowWidth();
     float h = ofGetWindowHeight();
 
-    points_step = 8.0f * zoom;
+    points_step = 8.0f * c.zoom;
+    c.px_step = points_step;
     lines_step = points_step * 5;
 
-    int off_x = -1 + (int)canvas_offset.x % lines_step;;
-    int off_y = (int)canvas_offset.y % lines_step;;;
+    int off_x = -1 + (int)c.canvas_offset.x % lines_step;;
+    int off_y = (int)c.canvas_offset.y % lines_step;;;
 
     Vertex::points_step = points_step;
-    Vertex::offset = canvas_offset;
-    for (int i = 0; i < lines.size(); i++) {
-        lines[i]->updatePath();
+    Vertex::offset = c.canvas_offset;
+    for (int i = 0; i < c.lines.size(); i++) {
+        c.lines[i]->updatePath();
     }
     
     // mm grid

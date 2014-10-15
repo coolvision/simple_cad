@@ -8,19 +8,17 @@
 
 #include "Canvas.h"
 
+ofPoint Canvas::snap(ofPoint p) {
 
-
-ofPoint ofApp::snap(ofPoint p) {
-
-    if (points_step > 0) {
-        p.x = round(p.x / points_step) * points_step;
-        p.y = round(p.y / points_step) * points_step;
+    if (px_step > 0) {
+        p.x = round(p.x / px_step) * px_step;
+        p.y = round(p.y / px_step) * px_step;
     }
 
     return p;
 }
 
-ofPoint ofApp::snapMm(ofPoint p) {
+ofPoint Canvas::snapMm(ofPoint p) {
 
     p.x = round(p.x);
     p.y = round(p.y);
@@ -28,44 +26,41 @@ ofPoint ofApp::snapMm(ofPoint p) {
     return p;
 }
 
-ofPoint ofApp::getPx(ofPoint p) {
+ofPoint Canvas::getPx(ofPoint p) {
 
     // how many px per mm
     // points_step = 8.0f * zoom;
-    p *= points_step;
+    p *= px_step;
     p += canvas_offset;
 
     return p;
 }
 
-ofPoint ofApp::getPx(Vertex *v) {
+ofPoint Canvas::getPx(Vertex *v) {
     return getPx(*v);
 }
 
-ofPoint ofApp::getMm(ofPoint p) {
+ofPoint Canvas::getMm(ofPoint p) {
 
     p -= canvas_offset;
-    p /= points_step;
+    p /= px_step;
     
     return p;
 }
 
-void ofApp::zoomIn() {
+void Canvas::zoomIn() {
 
     zoom += 0.2f;
     if (zoom > 5.0f) {
         zoom = 5.0f;
     }
-    setGrid();
 }
 
-void ofApp::zoomOut() {
+void Canvas::zoomOut() {
 
     zoom -= 0.2f;
     if (zoom < 0.2f) {
         zoom = 0.2f;
     }
-    setGrid();
 }
-
 

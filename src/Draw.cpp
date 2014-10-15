@@ -17,16 +17,16 @@ void ofApp::draw(){
 
     // objects
 //==============================================================================
-    for (int i = 0; i < lines.size(); i++) {
-        drawLine(lines[i]);
+    for (int i = 0; i < c.lines.size(); i++) {
+        c.drawLine(c.lines[i]);
     }
     if (ui_state == UI_DRAWING_LINE) {
-        drawLine(&curr_line);
+        c.drawLine(&c.curr_line);
     }
 
-    if (ui_state == UI_ADD_VERTEX && hover_line) {
+    if (ui_state == UI_ADD_VERTEX && c.hover_line) {
         ofSetColor(ofColor::orangeRed);
-        ofCircle(getPx(&add_v), 4.0f);
+        ofCircle(c.getPx(&c.add_v), 4.0f);
     }
 
     if (ui_state == UI_MOUSE_SELECTION) {
@@ -36,12 +36,12 @@ void ofApp::draw(){
         ofDisableAntiAliasing();
         ofDisableSmoothing();
 
-        ofRectangle r = selection_r;
+        ofRectangle r = c.selection_r;
         r.standardize();
         ofPoint p1(r.x, r.y);
         ofPoint p2(r.x + r.width, r.y + r.height);
-        p1 = getPx(p1);
-        p2 = getPx(p2);
+        p1 = c.getPx(p1);
+        p2 = c.getPx(p2);
         ofRectangle selection_px;
         selection_px.set(p1, p2);
         ofRect(selection_px);
@@ -54,13 +54,13 @@ void ofApp::draw(){
     // info
 //==============================================================================
 
-    ofPoint p = snap(ofPoint(ofGetMouseX(), ofGetMouseY()));
+    ofPoint p = c.snap(ofPoint(ofGetMouseX(), ofGetMouseY()));
 
     ofSetColor(0.0f);
     int off_x = 130;
     font.draw("FPS: " + ofToString((int)ofGetFrameRate()), 16,
               ofGetWindowWidth() - 150, 20);
-    font.draw("zoom: " + ofToString(zoom * 100) + "%", 16,
+    font.draw("zoom: " + ofToString(c.zoom * 100) + "%", 16,
               ofGetWindowWidth() - 150, 40);
     font.draw("x: " + ofToString(p.x) + " y: " + ofToString(p.y),
               16,
@@ -93,8 +93,8 @@ void ofApp::drawGrid() {
 
     ofSetColor(ofColor::darkRed);
     ofSetLineWidth(2.0f);
-    ofLine(canvas_offset.x, 0, canvas_offset.x, h);
-    ofLine(0, canvas_offset.y, w, canvas_offset.y);
+    ofLine(c.canvas_offset.x, 0, c.canvas_offset.x, h);
+    ofLine(0, c.canvas_offset.y, w, c.canvas_offset.y);
 
     ofPopStyle();
 }

@@ -24,62 +24,7 @@ void ofApp::keyPressed(int key){
 
     if (key == OF_KEY_BACKSPACE || key == OF_KEY_DEL) {
 
-        for (int i = 0; i < selection.vertices.size(); i++) {
-
-            Vertex *v = selection.vertices[i];
-
-            if (v == NULL) continue;
-
-            // delete
-            if (v->next != NULL) {
-                v->next->prev = v->prev;
-            }
-            if (v->prev != NULL) {
-                v->prev->next = v->next;
-            }
-            if (v == v->p->front && v == v->p->back) {
-                v->p->front = NULL;
-                v->p->back = NULL;
-            } else if (v == v->p->front) {
-                v->p->front = v->next;
-            } else if (v == v->p->back) {
-                v->p->back = v->prev;
-            }
-
-            delete v;
-            v = NULL;
-        }
-        selection.clear();
-
-        for (int i = 0; i < lines.size(); i++) {
-            if (lines[i]->getLength() <= 2) {
-                lines[i]->closed = false;
-                if (lines[i]->front != NULL) {
-                    lines[i]->front->prev = NULL;
-                }
-                if (lines[i]->back != NULL) {
-                    lines[i]->back->next = NULL;
-                }
-            }
-            lines[i]->updatePath();
-        }
-
-        hover_point = false;
-        hover_point_p = NULL;
-
-        hover_line = false;
-        hover_line_p[0] = NULL;
-        hover_line_p[1] = NULL;
-
-        hover_polygon = false;
-        hover_polygon_p = NULL;
-
-        selected_point = false;
-        selected_point_p = NULL;
-        
-        selected_line = false;
-        selected_line_p[0] = NULL;
-        selected_line_p[1] = NULL;
+        c.deleteSelection();
     }
 }
 
@@ -120,32 +65,33 @@ void ofApp::VertexButtonClick(ButtonClickEventData &d) {
     unselectMode();
 
     vertex_button->selected = true;
-    //add_vertex->selected = true;
     ui_state = UI_ADD_VERTEX;
-
-    hover_line = false;
 }
 
 void ofApp::ZoomInButtonClick(ButtonClickEventData &d) {
-    zoomIn();
+    c.zoomIn();
+    setGrid();
 }
 
 void ofApp::ZoomOutButtonClick(ButtonClickEventData &d) {
-    zoomOut();
+    c.zoomOut();
+    setGrid();
 }
 
 void ofApp::update() {
 
     if (zoom_in && (ofGetKeyPressed(OF_KEY_CONTROL) ||
                     ofGetKeyPressed(OF_KEY_COMMAND))) {
-        zoomIn();
+        c.zoomIn();
         zoom_in = false;
+        setGrid();
     }
 
     if (zoom_out && (ofGetKeyPressed(OF_KEY_CONTROL) ||
                      ofGetKeyPressed(OF_KEY_COMMAND))) {
-        zoomOut();
+        c.zoomOut();
         zoom_out = false;
+        setGrid();
     }
 }
 

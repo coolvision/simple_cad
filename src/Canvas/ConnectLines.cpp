@@ -16,7 +16,7 @@ bool close(ofPoint p1, ofPoint p2) {
 }
 
 // connect to an existing polyline, or add a new one
-Polyline *ofApp::connectLine(ofPoint *p1, ofPoint *p2) {
+Polyline *Canvas::connectLine(ofPoint *p1, ofPoint *p2) {
 
     bool new_line = true;
 
@@ -52,9 +52,7 @@ Polyline *ofApp::connectLine(ofPoint *p1, ofPoint *p2) {
 }
 
 // check if endpoints overlap, and if they do, connect the polylines
-Polyline *ofApp::connectPolylines(Polyline *p) {
-
-    cout << "connectPolylines" << endl;
+Polyline *Canvas::connectPolylines(Polyline *p) {
 
     if (p->front == NULL || p->closed) {
         return p;

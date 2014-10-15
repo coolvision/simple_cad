@@ -6,6 +6,8 @@
 //
 //
 
+#pragma once
+
 #include "ofMain.h"
 
 #include "Polyline.h"
@@ -32,16 +34,16 @@ public:
 // zoom and offset
 //==============================================================================
     float zoom;
-    bool zoom_in;
-    bool zoom_out;
     void zoomIn();
     void zoomOut();
     ofPoint canvas_offset;
     ofPoint canvas_offset_start;
+    int px_step; // px per 1mm
 
 // content selection and manipulation
 //==============================================================================
     void clearSelection();
+    void deleteSelection();
     SelectionList selection;
 
     ofRectangle selection_r;

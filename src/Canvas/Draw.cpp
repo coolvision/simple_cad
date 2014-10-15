@@ -8,7 +8,7 @@
 
 #include <Canvas.h>
 
-void ofApp::drawLine(Polyline *l) {
+void Canvas::drawLine(Polyline *l) {
 
     if (l->front == NULL || l->back == NULL) {
         return;
