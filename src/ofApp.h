@@ -5,7 +5,8 @@
 #include "ofxFontStash.h"
 #include "ofxSvg.h"
 
-#include "Geometry.h"
+#include "Polyline.h"
+#include "Canvas.h"
 
 #include "Button.h"
 
@@ -19,16 +20,10 @@ enum UIState {
     UI_MOVING_LINE,
     UI_MOVING_POLYGON,
     UI_ADD_VERTEX,
-    UI_MOVE_CANVAS
+    UI_MOVE_CANVAS,
+    UI_MOVING_CANVAS
 };
 
-class SelectionList {
-public:
-    vector<Vertex *> vertices;
-    vector<ofPoint> start_p;
-    void add(Vertex *v);
-    void clear();
-};
 
 class ofApp : public ofBaseApp {
 
@@ -47,7 +42,11 @@ public:
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
 
-    // UI
+// canvas
+//==============================================================================
+    Canvas c;
+
+// UI
 //==============================================================================
     ofxFontStash font;
 
@@ -65,9 +64,6 @@ public:
     Button *vertex_button;
     Button *move_button;
 
-    Button *add_line;
-    Button *add_vertex;
-
     int button_h;
     int button_w;
     int margin_top;
@@ -75,58 +71,19 @@ public:
     int margin_bottom;
 
     Toolbar canvas_toolbar;
-    Toolbar cursor_toolbar;
-    ofPoint toolbar_off;
-
-    // content selecting
-//==============================================================================
-    void clearSelection();
-    SelectionList selection;
-
-    // content storage & vis
-//==============================================================================
-    vector<Polyline *> lines;
-    void drawLine(Polyline *l);
 
     // UI state machine
 //==============================================================================
     UIState ui_state;
-    Polyline curr_line;
-    float zoom;
-    ofPoint canvas_offset; // for dragging the canvas
-    ofPoint snap(ofPoint p);
-    void updateToolbar(ofPoint p);
-    void resetHover();
-    
-    ofPoint start_click;
-    ofRectangle selection_r;
-
-    bool was_selected_point;
-    bool move_already_selected;
-    
-    Vertex add_v;
-
-    // points
-    bool hover_point;
-    Vertex *hover_point_p;
-
-    // line segments
-    bool hover_line;
-    Vertex *hover_line_p[2];
-
-    // polygons
-    bool hover_polygon;
-    Polyline *hover_polygon_p;
-
-
-    Polyline *connectLine(ofPoint *p1, ofPoint *p2);
-    Polyline *connectPolylines(Polyline *p);
+    float line_length_info;
 
     // grid of points and lines
 //==============================================================================
+    void setGrid();
     void drawGrid();
     ofVbo grid_lines_vbo;
     ofVbo grid_points_vbo;
+    ofVbo grid_points_sub_vbo;
     int lines_step;
     int points_step;
     int lines_n_x;

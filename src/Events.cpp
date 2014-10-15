@@ -10,6 +10,18 @@
 
 void ofApp::keyPressed(int key){
 
+    cout << "keyPressed " << key << endl;
+
+    // is it this way on most keyboards???
+    if (key == '=') {
+        cout << "zoom_in = true " << endl;
+        zoom_in = true;
+    }
+    if (key == '-') {
+        cout << "zoom_out = true " << endl;
+        zoom_out = true;
+    }
+
     if (key == OF_KEY_BACKSPACE || key == OF_KEY_DEL) {
 
         for (int i = 0; i < selection.vertices.size(); i++) {
@@ -61,6 +73,13 @@ void ofApp::keyPressed(int key){
 
         hover_polygon = false;
         hover_polygon_p = NULL;
+
+        selected_point = false;
+        selected_point_p = NULL;
+        
+        selected_line = false;
+        selected_line_p[0] = NULL;
+        selected_line_p[1] = NULL;
     }
 }
 
@@ -69,26 +88,30 @@ void ofApp::unselectMode() {
     for (int i = 0; i < canvas_toolbar.buttons.size(); i++) {
         canvas_toolbar.buttons[i]->selected = false;
     }
-    for (int i = 0; i < cursor_toolbar.buttons.size(); i++) {
-        cursor_toolbar.buttons[i]->selected = false;
-    }
 }
 
 void ofApp::SelectButtonClick(ButtonClickEventData &d) {
 
     unselectMode();
-
     d.button_p->selected = true;
-
     ui_state = UI_SELECT;
 }
+
+
+void ofApp::MoveButtonClick(ButtonClickEventData &d) {
+
+    unselectMode();
+    d.button_p->selected = true;
+    ui_state = UI_MOVE_CANVAS;
+}
+
 
 void ofApp::LineButtonClick(ButtonClickEventData &d) {
 
     unselectMode();
 
     line_button->selected = true;
-    add_line->selected = true;
+    //add_line->selected = true;
     ui_state = UI_DRAW_LINE;
 }
 
@@ -97,32 +120,33 @@ void ofApp::VertexButtonClick(ButtonClickEventData &d) {
     unselectMode();
 
     vertex_button->selected = true;
-    add_vertex->selected = true;
+    //add_vertex->selected = true;
     ui_state = UI_ADD_VERTEX;
 
     hover_line = false;
 }
 
-void ofApp::MoveButtonClick(ButtonClickEventData &d) {
-
-    unselectMode();
-
-    d.button_p->selected = true;
-
-    ui_state = UI_MOVE_CANVAS;
-}
-
 void ofApp::ZoomInButtonClick(ButtonClickEventData &d) {
-
+    zoomIn();
 }
 
 void ofApp::ZoomOutButtonClick(ButtonClickEventData &d) {
-
+    zoomOut();
 }
 
+void ofApp::update() {
 
-void ofApp::update(){
+    if (zoom_in && (ofGetKeyPressed(OF_KEY_CONTROL) ||
+                    ofGetKeyPressed(OF_KEY_COMMAND))) {
+        zoomIn();
+        zoom_in = false;
+    }
 
+    if (zoom_out && (ofGetKeyPressed(OF_KEY_CONTROL) ||
+                     ofGetKeyPressed(OF_KEY_COMMAND))) {
+        zoomOut();
+        zoom_out = false;
+    }
 }
 
 void ofApp::keyReleased(int key){

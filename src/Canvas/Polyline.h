@@ -17,6 +17,10 @@ class Polyline;
 
 class Vertex: public ofPoint {
 public:
+
+    static int points_step;
+    static ofPoint offset;
+
     Vertex() {
         hover = false;
         selected = false;
@@ -24,6 +28,7 @@ public:
         prev = NULL;
         p = NULL;
     }
+    ofPoint getPx();
 
     bool selected;
     bool hover;

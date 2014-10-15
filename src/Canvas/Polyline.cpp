@@ -6,7 +6,22 @@
 //
 //
 
-#include "Geometry.h"
+#include "Polyline.h"
+
+int Vertex::points_step = 0;
+ofPoint Vertex::offset;
+
+ofPoint Vertex::getPx() {
+
+    // how many px per mm
+    // points_step = 8.0f * zoom;
+
+    ofPoint p = *this;
+    p *= points_step;
+    p += offset;
+    
+    return p;
+}
 
 void Polyline::release() {
 
@@ -126,19 +141,18 @@ void Polyline::updatePath() {
     for (Vertex *v = front; v != NULL; v = v->next) {
         if (v == front) {
             path.newSubPath();
-            path.moveTo(*v);
+            path.moveTo(v->getPx());
         }
-        path.lineTo(*v);
+        path.lineTo(v->getPx());
         if (v->next == front) break; // closed polylines
     }
 
     ofp.clear();
     for (Vertex *v = front; v != NULL; v = v->next) {
-        ofp.addVertex(*v);
+        ofp.addVertex(v->getPx());
         if (v->next == front) break; // closed polylines
     }
     ofp.setClosed(closed);
-
 }
 
 int Polyline::getLength() {

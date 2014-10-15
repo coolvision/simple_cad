@@ -8,6 +8,13 @@
 
 #include "ofApp.h"
 
+bool close(ofPoint p1, ofPoint p2) {
+    if ((p1 - p2).length() < 2.0f) {
+        return true;
+    }
+    return false;
+}
+
 // connect to an existing polyline, or add a new one
 Polyline *ofApp::connectLine(ofPoint *p1, ofPoint *p2) {
 
@@ -16,23 +23,23 @@ Polyline *ofApp::connectLine(ofPoint *p1, ofPoint *p2) {
     for (int i = 0; i < lines.size(); i++) {
         Polyline *l = lines[i];
         if (l->front == NULL || l->closed) continue;
-        if ((*p1 == *l->front && *p2 == *l->back) ||
-            (*p1 == *l->back && *p2 == *l->front)) {
+        if ((close(*p1, *l->front) && close(*p2, *l->back)) ||
+            (close(*p1, *l->back) && close(*p2, *l->front))) {
             // does it, by chance close the polyline?
             l->back->next = l->front;
             l->front->prev = l->back;
             l->closed = true;
             return lines[i];
-        } else if (*p1 == *l->front) {
+        } else if (close(*p1, *l->front)) {
             l->addFront(*p2);
             return l;
-        } else if (*p2 == *l->front) {
+        } else if (close(*p2, *l->front)) {
             l->addFront(*p1);
             return l;
-        } else if (*p1 == *l->back) {
+        } else if (close(*p1, *l->back)) {
             l->addBack(*p2);
             return l;
-        } else if (*p2 == *l->back) {
+        } else if (close(*p2, *l->back)) {
             l->addBack(*p1);
             return l;
         }
@@ -47,11 +54,13 @@ Polyline *ofApp::connectLine(ofPoint *p1, ofPoint *p2) {
 // check if endpoints overlap, and if they do, connect the polylines
 Polyline *ofApp::connectPolylines(Polyline *p) {
 
+    cout << "connectPolylines" << endl;
+
     if (p->front == NULL || p->closed) {
         return p;
     }
 
-    if (*p->front == *p->back && p->getLength() > 2) {
+    if (close(*p->front, *p->back) && p->getLength() > 2) {
 
         Vertex *tmp = p->back;
         p->back = p->back->prev;
@@ -75,27 +84,27 @@ Polyline *ofApp::connectPolylines(Polyline *p) {
         front[1] = *l->front;
         back[1] = *l->back;
 
-        if (front[0] == front[1]) {
+        if (close(front[0], front[1])) {
             l->reverse();
             for (Vertex *v = l->back->prev; v != NULL; v = v->prev) {
                 p->addFront(ofPoint(*v));
             }
             l->release();
             return p;
-        } else if (front[0] == back[1]) {
+        } else if (close(front[0], back[1])) {
             for (Vertex *v = l->back->prev; v != NULL; v = v->prev) {
                 p->addFront(ofPoint(*v));
             }
             l->release();
             return p;
-        } else if (back[0] == back[1]) {
+        } else if (close(back[0], back[1])) {
             l->reverse();
             for (Vertex *v = l->front->next; v != NULL; v = v->next) {
                 p->addBack(ofPoint(*v));
             }
             l->release();
             return p;
-        } else if (back[0] == front[1]) {
+        } else if (close(back[0], front[1])) {
             for (Vertex *v = l->front->next; v != NULL; v = v->next) {
                 p->addBack(ofPoint(*v));
             }

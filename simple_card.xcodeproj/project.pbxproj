@@ -19,14 +19,18 @@
 		495E773E470FF7C742646E77 /* ofxSimpleGuiContent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CD862AFB8EFF69D2B30A7293 /* ofxSimpleGuiContent.cpp */; };
 		49890708C36FA822FC58A60B /* ofxSimpleGuiFPSCounter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3C4855735366AEC807A7CF36 /* ofxSimpleGuiFPSCounter.cpp */; };
 		522FFFB6EB3DA57CCB07EF9A /* stb_truetype.c in Sources */ = {isa = PBXBuildFile; fileRef = DC55FEC740DD28FBDD2D4406 /* stb_truetype.c */; };
-		535BFE8519DC491B003C77DF /* Geometry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 535BFE8419DC491B003C77DF /* Geometry.cpp */; };
 		53782D3B19EDFD9E00ECECE5 /* Draw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 53782D3A19EDFD9E00ECECE5 /* Draw.cpp */; };
 		53782D3D19EDFD9E00ECECE5 /* Setup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 53782D3C19EDFD9E00ECECE5 /* Setup.cpp */; };
 		53782D3F19EDFD9E00ECECE5 /* Events.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 53782D3E19EDFD9E00ECECE5 /* Events.cpp */; };
-		538878EA19D710420034248A /* Button.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 538878E719D710420034248A /* Button.cpp */; };
-		538878F119DABC500034248A /* MouseEvents.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 538878F019DABC500034248A /* MouseEvents.cpp */; };
-		53F7244A19DDF816008BC5FD /* ConnectLines.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 53F7244919DDF816008BC5FD /* ConnectLines.cpp */; };
-		53F7244C19DEDCDB008BC5FD /* Update.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 53F7244B19DEDCDB008BC5FD /* Update.cpp */; };
+		5382003119EEB13E007AA611 /* MouseUpdate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5382003019EEB13E007AA611 /* MouseUpdate.cpp */; };
+		5382003D19EEB23A007AA611 /* Actions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5382003319EEB23A007AA611 /* Actions.cpp */; };
+		5382003E19EEB23A007AA611 /* Canvas.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5382003519EEB23A007AA611 /* Canvas.cpp */; };
+		5382003F19EEB23A007AA611 /* ConnectLines.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5382003719EEB23A007AA611 /* ConnectLines.cpp */; };
+		5382004019EEB23A007AA611 /* Polyline.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5382003819EEB23A007AA611 /* Polyline.cpp */; };
+		5382004119EEB23A007AA611 /* Button.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5382003B19EEB23A007AA611 /* Button.cpp */; };
+		5382004319EEB787007AA611 /* Selection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5382004219EEB787007AA611 /* Selection.cpp */; };
+		5382004519EEB7FA007AA611 /* Draw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5382004419EEB7FA007AA611 /* Draw.cpp */; };
+		538878F119DABC500034248A /* MouseActions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 538878F019DABC500034248A /* MouseActions.cpp */; };
 		5A4349E9754D6FA14C0F2A3A /* tinyxmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FC5DA1C87211D4F6377DA719 /* tinyxmlparser.cpp */; };
 		5A479B04DF062DE7431FD3BF /* ofUnicode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF3CACAAE84A581E4AFA9FA7 /* ofUnicode.cpp */; };
 		603044E656EA8D499FCF7DEA /* ofxVectorGraphics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 318ABED90EADFB757FFDCCAF /* ofxVectorGraphics.cpp */; };
@@ -129,16 +133,22 @@
 		4A2C7833E609686E9ECD8A8C /* ofxMSAInteractiveObject.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxMSAInteractiveObject.h; path = ../../../addons/ofxMSAInteractiveObject/src/ofxMSAInteractiveObject.h; sourceTree = SOURCE_ROOT; };
 		4D7C691C68BF261275355F84 /* ofxSimpleGuiPage.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxSimpleGuiPage.h; path = ../../../addons/ofxSimpleGuiToo/src/ofxSimpleGuiPage.h; sourceTree = SOURCE_ROOT; };
 		50DF87D612C5AAE17AAFA6C0 /* ofxXmlSettings.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxXmlSettings.cpp; path = ../../../addons/ofxXmlSettings/src/ofxXmlSettings.cpp; sourceTree = SOURCE_ROOT; };
-		535BFE8419DC491B003C77DF /* Geometry.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Geometry.cpp; sourceTree = "<group>"; };
-		53782D3919EDFD9E00ECECE5 /* Geometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = Geometry.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		53782D3A19EDFD9E00ECECE5 /* Draw.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Draw.cpp; sourceTree = "<group>"; };
 		53782D3C19EDFD9E00ECECE5 /* Setup.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = Setup.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		53782D3E19EDFD9E00ECECE5 /* Events.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = Events.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
-		538878E719D710420034248A /* Button.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = Button.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
-		538878E919D710420034248A /* Button.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = Button.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
-		538878F019DABC500034248A /* MouseEvents.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = MouseEvents.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
-		53F7244919DDF816008BC5FD /* ConnectLines.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ConnectLines.cpp; sourceTree = "<group>"; };
-		53F7244B19DEDCDB008BC5FD /* Update.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Update.cpp; sourceTree = "<group>"; };
+		5382003019EEB13E007AA611 /* MouseUpdate.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MouseUpdate.cpp; sourceTree = "<group>"; };
+		5382003319EEB23A007AA611 /* Actions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Actions.cpp; sourceTree = "<group>"; };
+		5382003419EEB23A007AA611 /* Actions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Actions.h; sourceTree = "<group>"; };
+		5382003519EEB23A007AA611 /* Canvas.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Canvas.cpp; sourceTree = "<group>"; };
+		5382003619EEB23A007AA611 /* Canvas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Canvas.h; sourceTree = "<group>"; };
+		5382003719EEB23A007AA611 /* ConnectLines.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ConnectLines.cpp; sourceTree = "<group>"; };
+		5382003819EEB23A007AA611 /* Polyline.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Polyline.cpp; sourceTree = "<group>"; };
+		5382003919EEB23A007AA611 /* Polyline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Polyline.h; sourceTree = "<group>"; };
+		5382003B19EEB23A007AA611 /* Button.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Button.cpp; sourceTree = "<group>"; };
+		5382003C19EEB23A007AA611 /* Button.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Button.h; sourceTree = "<group>"; };
+		5382004219EEB787007AA611 /* Selection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Selection.cpp; sourceTree = "<group>"; };
+		5382004419EEB7FA007AA611 /* Draw.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Draw.cpp; sourceTree = "<group>"; };
+		538878F019DABC500034248A /* MouseActions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = MouseActions.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		582921BA98D224ED41833868 /* svgtiny_gradient.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = svgtiny_gradient.cpp; path = ../../../addons/ofxSvg/libs/svgTiny/src/svgtiny_gradient.cpp; sourceTree = SOURCE_ROOT; };
 		5EAF0A3CB08E81512BB99F68 /* ofxSimpleGuiSlider2d.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxSimpleGuiSlider2d.cpp; path = ../../../addons/ofxSimpleGuiToo/src/Controls/ofxSimpleGuiSlider2d.cpp; sourceTree = SOURCE_ROOT; };
 		5F118C5DAAA61D8DB376BB3F /* svgtiny_internal.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = svgtiny_internal.h; path = ../../../addons/ofxSvg/libs/svgTiny/src/svgtiny_internal.h; sourceTree = SOURCE_ROOT; };
@@ -346,6 +356,31 @@
 				BDA8CA36896AACFB09C55252 /* stb_truetype.h */,
 			);
 			name = src;
+			sourceTree = "<group>";
+		};
+		5382003219EEB23A007AA611 /* Canvas */ = {
+			isa = PBXGroup;
+			children = (
+				5382003319EEB23A007AA611 /* Actions.cpp */,
+				5382003419EEB23A007AA611 /* Actions.h */,
+				5382003519EEB23A007AA611 /* Canvas.cpp */,
+				5382003619EEB23A007AA611 /* Canvas.h */,
+				5382003719EEB23A007AA611 /* ConnectLines.cpp */,
+				5382003819EEB23A007AA611 /* Polyline.cpp */,
+				5382003919EEB23A007AA611 /* Polyline.h */,
+				5382004219EEB787007AA611 /* Selection.cpp */,
+				5382004419EEB7FA007AA611 /* Draw.cpp */,
+			);
+			path = Canvas;
+			sourceTree = "<group>";
+		};
+		5382003A19EEB23A007AA611 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				5382003B19EEB23A007AA611 /* Button.cpp */,
+				5382003C19EEB23A007AA611 /* Button.h */,
+			);
+			path = UI;
 			sourceTree = "<group>";
 		};
 		5CE3B297CDC4075D3D2398C5 /* src */ = {
@@ -587,18 +622,15 @@
 		E4B69E1C0A3A1BDC003C02F2 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				538878E719D710420034248A /* Button.cpp */,
-				538878E919D710420034248A /* Button.h */,
-				53782D3919EDFD9E00ECECE5 /* Geometry.h */,
+				5382003219EEB23A007AA611 /* Canvas */,
+				5382003A19EEB23A007AA611 /* UI */,
 				53782D3A19EDFD9E00ECECE5 /* Draw.cpp */,
+				53782D3E19EDFD9E00ECECE5 /* Events.cpp */,
 				E4B69E1D0A3A1BDC003C02F2 /* main.cpp */,
+				538878F019DABC500034248A /* MouseActions.cpp */,
+				5382003019EEB13E007AA611 /* MouseUpdate.cpp */,
 				E4B69E1F0A3A1BDC003C02F2 /* ofApp.h */,
 				53782D3C19EDFD9E00ECECE5 /* Setup.cpp */,
-				53782D3E19EDFD9E00ECECE5 /* Events.cpp */,
-				538878F019DABC500034248A /* MouseEvents.cpp */,
-				535BFE8419DC491B003C77DF /* Geometry.cpp */,
-				53F7244919DDF816008BC5FD /* ConnectLines.cpp */,
-				53F7244B19DEDCDB008BC5FD /* Update.cpp */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
@@ -741,27 +773,30 @@
 			files = (
 				E4B69E200A3A1BDC003C02F2 /* main.cpp in Sources */,
 				B88A57B4B0BA6191EF3571E9 /* ofxSvg.cpp in Sources */,
+				5382004319EEB787007AA611 /* Selection.cpp in Sources */,
+				5382003119EEB13E007AA611 /* MouseUpdate.cpp in Sources */,
+				5382003D19EEB23A007AA611 /* Actions.cpp in Sources */,
 				6A565A9714A6A12EB9098F52 /* src_colors.cpp in Sources */,
+				5382004119EEB23A007AA611 /* Button.cpp in Sources */,
 				1D6B78EF041B097CE4F423C4 /* svgtiny.cpp in Sources */,
 				4294163B15857489B2176769 /* svgtiny_gradient.cpp in Sources */,
 				1B5F996886A777589D5DD794 /* svgtiny_list.cpp in Sources */,
 				603044E656EA8D499FCF7DEA /* ofxVectorGraphics.cpp in Sources */,
-				538878EA19D710420034248A /* Button.cpp in Sources */,
 				F01092BB147FA462845C38C7 /* CreEPS.cpp in Sources */,
 				63B57AC5BF4EF088491E0317 /* ofxXmlSettings.cpp in Sources */,
 				933A2227713C720CEFF80FD9 /* tinyxml.cpp in Sources */,
 				9D44DC88EF9E7991B4A09951 /* tinyxmlerror.cpp in Sources */,
 				5A4349E9754D6FA14C0F2A3A /* tinyxmlparser.cpp in Sources */,
-				53F7244A19DDF816008BC5FD /* ConnectLines.cpp in Sources */,
 				7B388D550037229D99E7F52A /* ofxFontStash.cpp in Sources */,
 				801397981E78A4CBDE809376 /* fontstash.c in Sources */,
 				522FFFB6EB3DA57CCB07EF9A /* stb_truetype.c in Sources */,
+				5382003F19EEB23A007AA611 /* ConnectLines.cpp in Sources */,
+				5382003E19EEB23A007AA611 /* Canvas.cpp in Sources */,
 				D1395DD979998DCFFA40ACAC /* ofxMSAInteractiveObject.cpp in Sources */,
-				535BFE8519DC491B003C77DF /* Geometry.cpp in Sources */,
 				A0B7F6A3EC34B4F84321385D /* ofxSimpleGuiButton.cpp in Sources */,
+				5382004019EEB23A007AA611 /* Polyline.cpp in Sources */,
 				E39BF54C7233C89A5BB42174 /* ofxSimpleGuiColorPicker.cpp in Sources */,
 				53782D3D19EDFD9E00ECECE5 /* Setup.cpp in Sources */,
-				53F7244C19DEDCDB008BC5FD /* Update.cpp in Sources */,
 				2DD56BBC82953D6AE0A018BF /* ofxSimpleGuiComboBox.cpp in Sources */,
 				495E773E470FF7C742646E77 /* ofxSimpleGuiContent.cpp in Sources */,
 				53782D3F19EDFD9E00ECECE5 /* Events.cpp in Sources */,
@@ -771,7 +806,7 @@
 				76F1472575BCCA088FE3454B /* ofxSimpleGuiSlider2d.cpp in Sources */,
 				CF142A7D9914B99E6E287052 /* ofxSimpleGuiTitle.cpp in Sources */,
 				3317B76EE9202B4C6482D15C /* ofxSimpleGuiToggle.cpp in Sources */,
-				538878F119DABC500034248A /* MouseEvents.cpp in Sources */,
+				538878F119DABC500034248A /* MouseActions.cpp in Sources */,
 				53782D3B19EDFD9E00ECECE5 /* Draw.cpp in Sources */,
 				06980FF65ED01AFE2BCAAD5E /* ofxSimpleGuiConfig.cpp in Sources */,
 				8CE60C8F4001811D5B27D0F8 /* ofxSimpleGuiControl.cpp in Sources */,
@@ -781,6 +816,7 @@
 				B0F2688D773B5C8FB13237F8 /* ofTextConverter.cpp in Sources */,
 				5A479B04DF062DE7431FD3BF /* ofUnicode.cpp in Sources */,
 				AD7CCE180C5BEF646A1B62E1 /* ofUTF8.cpp in Sources */,
+				5382004519EEB7FA007AA611 /* Draw.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
