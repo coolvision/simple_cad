@@ -8,6 +8,23 @@
 
 #include "Canvas.h"
 
+Canvas::Canvas() {
+
+    curr_action_i = 0;
+}
+
+void Canvas::resetActions() {
+
+    int n = 0;
+    for (int i = 0; i < actions.size(); i++) {
+        if (actions[i]->undo) n++;
+    }
+    for (int i = 0; i < n; i++) {
+        actions.pop_back();
+    }
+    curr_action_i = actions.size();
+}
+
 ofPoint Canvas::snap(ofPoint p) {
 
     if (px_step > 0) {

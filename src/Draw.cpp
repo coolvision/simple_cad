@@ -15,6 +15,16 @@ void ofApp::draw(){
 
     drawGrid();
 
+    for (int i = 0; i < c.actions.size(); i++) {
+        if (i == c.curr_action_i) {
+            ofSetColor(ofColor::darkRed);
+        } else {
+            ofSetColor(ofColor::black);
+        }
+        font.draw(c.actions[i]->label, 16, ofGetWindowWidth() - 150,
+                  120 + 20 * i);
+    }
+
     // objects
 //==============================================================================
     for (int i = 0; i < c.lines.size(); i++) {

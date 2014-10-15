@@ -11,6 +11,7 @@
 #include "ofMain.h"
 
 #include "Polyline.h"
+#include "Actions.h"
 
 class SelectionList {
 public:
@@ -22,6 +23,12 @@ public:
 
 class Canvas {
 public:
+
+    Canvas();
+
+    vector<Action *> actions;
+    int curr_action_i;
+    void resetActions();
 
 // content storage & vis
 //==============================================================================

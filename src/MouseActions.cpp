@@ -181,6 +181,10 @@ void ofApp::mouseReleased(int x, int y, int button) {
     // stop the drawing / dragging / selection
     if (ui_state == UI_DRAWING_LINE) {
 
+        c.resetActions();
+        c.actions.push_back(new AddLineAction());
+        c.actions.back()->doAction(&c);
+
         Polyline *pl = c.connectLine(&c.start_click, &p_mm);
         c.connectPolylines(pl);
 
@@ -189,8 +193,18 @@ void ofApp::mouseReleased(int x, int y, int button) {
         select_button->selected = true;
     }
 
+
+    if (ui_state == UI_MOVING_POLYGON || ui_state == UI_MOVING_LINE ||
+        ui_state == UI_MOVING_POINT) {
+
+        c.resetActions();
+        c.actions.push_back(new MoveSelectionAction());
+        c.actions.back()->doAction(&c);
+    }
+
+    // should really process all moving in one way in one place
     if (ui_state == UI_MOVING_POINT && c.selected_point_p) {
-        c.selected_point_p->p->updatePath();
+        c.selected_point_p->    p->updatePath();
         *c.selected_point_p = p_mm;
         c.selection.add(c.selected_point_p);
         c.connectPolylines(c.selected_point_p->p);

@@ -8,25 +8,27 @@
 
 #pragma once
 
-#include "Canvas.h"
+#include "ofMain.h"
+
+class Canvas;
 
 class Action {
 public:
     virtual void doAction(Canvas *c);
     virtual void undoAction(Canvas *c);
+
+    string label;
+    bool undo;
 };
 
 class AddLineAction: public Action {
 public:
-    void doAction(Canvas *c);
-    void undoAction(Canvas *c);
-
+    virtual void doAction(Canvas *c);
+    virtual void undoAction(Canvas *c);
 };
 
 class MoveSelectionAction: public Action {
 public:
-    void doAction(Canvas *c);
-    void undoAction(Canvas *c);
-
-
+    virtual void doAction(Canvas *c);
+    virtual void undoAction(Canvas *c);
 };

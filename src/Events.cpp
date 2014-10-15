@@ -23,8 +23,40 @@ void ofApp::keyPressed(int key){
     }
 
     if (key == OF_KEY_BACKSPACE || key == OF_KEY_DEL) {
-
         c.deleteSelection();
+    }
+
+    bool cmd = ofGetKeyPressed(OF_KEY_COMMAND);
+    bool ctrl = ofGetKeyPressed(OF_KEY_CONTROL);
+    bool shift = ofGetKeyPressed(OF_KEY_SHIFT);
+    if (key == 'z' && (cmd || ctrl) && !shift) {
+
+        if (c.curr_action_i > c.actions.size() - 1) {
+            c.curr_action_i = c.actions.size() - 1;
+        }
+        if (c.curr_action_i < 0) {
+            c.curr_action_i = 0;
+        }
+        c.actions[c.curr_action_i]->undoAction(&c);
+        c.curr_action_i--;
+        if (c.curr_action_i < 0) {
+            c.curr_action_i = 0;
+        }
+    }
+    if ((key == 'y' && (cmd || ctrl)) ||
+        (key == 'z' && (cmd || ctrl) && shift)) {
+
+        if (c.curr_action_i > c.actions.size() - 1) {
+            c.curr_action_i = c.actions.size() - 1;
+        }
+        if (c.curr_action_i < 0) {
+            c.curr_action_i = 0;
+        }
+        c.actions[c.curr_action_i]->doAction(&c);
+        c.curr_action_i++;
+        if (c.curr_action_i > c.actions.size() - 1) {
+            c.curr_action_i = c.actions.size() - 1;
+        }
     }
 }
 
