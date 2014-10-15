@@ -13,14 +13,6 @@
 #include "Polyline.h"
 #include "Actions.h"
 
-class SelectionList {
-public:
-    vector<Vertex *> vertices;
-    vector<ofPoint> start_p;
-    void add(Vertex *v);
-    void clear();
-};
-
 class Canvas {
 public:
 
