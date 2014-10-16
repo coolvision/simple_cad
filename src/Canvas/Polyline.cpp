@@ -92,6 +92,11 @@ void Polyline::cloneFrom(Polyline *p) {
         addBack(ofPoint(*v));
         if (v->next == p->front) break; // closed polylines
     }
+    if (closed) {
+        back->next = front;
+        front->prev = back;
+    }
+    
     updateIndexes();
 }
 

@@ -181,87 +181,31 @@ void ConnectPolylinesAction::undoAction(Canvas *c) {
 }
 
 //==============================================================================
-ClosePolylineAction::ClosePolylineAction() {
-    label = "ClosePolylineAction";
+ModifyPolylineAction::ModifyPolylineAction() {
+    label = "ModifyPolylineAction";
     undo = true;
 }
 
-void ClosePolylineAction::doAction(Canvas *c) {
+void ModifyPolylineAction::doAction(Canvas *c) {
 
-    label = "close";
+    label = "modify " + ofToString(p_after.i);
 
     if (undo) {
-        c->lines[p_open.i]->release();
-        c->lines[p_open.i]->cloneFrom(&p_closed);
+        c->lines[p_after.i]->release();
+        c->lines[p_after.i]->cloneFrom(&p_after);
     }
 
     undo = false;
 }
 
-void ClosePolylineAction::undoAction(Canvas *c) {
+void ModifyPolylineAction::undoAction(Canvas *c) {
 
-    label = "undo close";
-
-    if (!undo) {
-        c->lines[p_open.i]->release();
-        c->lines[p_open.i]->cloneFrom(&p_open);
-    }
-
-    undo = true;
-}
-
-//==============================================================================
-AddVertexAction::AddVertexAction() {
-    label = "AddVertexAction";
-    undo = true;
-}
-
-void AddVertexAction::doAction(Canvas *c) {
-
-    label = "add vertex";
-
-    if (undo) {
-
-    }
-
-    undo = false;
-}
-
-void AddVertexAction::undoAction(Canvas *c) {
-
-    label = "undo add vertex";
+    label = "undo modify " + ofToString(p_after.i);
 
     if (!undo) {
-        
-    }
-    
-    undo = true;
-}
-
-//==============================================================================
-DeleteVertexAction::DeleteVertexAction() {
-    label = "DeleteVertexAction";
-    undo = true;
-}
-
-void DeleteVertexAction::doAction(Canvas *c) {
-
-    label = "delete vertex";
-
-    if (undo) {
-
+        c->lines[p_after.i]->release();
+        c->lines[p_after.i]->cloneFrom(&p_before);
     }
 
-    undo = false;
-}
-
-void DeleteVertexAction::undoAction(Canvas *c) {
-
-    label = "undo delete vertex";
-
-    if (!undo) {
-
-    }
-    
     undo = true;
 }

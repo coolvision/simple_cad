@@ -28,8 +28,8 @@ void Canvas::connectPolylines(Polyline *p) {
 
     if (close(*p->front, *p->back) && p->getLength() > 2) {
 
-        ClosePolylineAction *close = new ClosePolylineAction();
-        close->p_open.cloneFrom(p);
+        ModifyPolylineAction *close = new ModifyPolylineAction();
+        close->p_before.cloneFrom(p);
 
         Vertex *tmp = p->back;
         p->back = p->back->prev;
@@ -38,7 +38,7 @@ void Canvas::connectPolylines(Polyline *p) {
         p->front->prev = p->back;
         p->closed = true;
 
-        close->p_closed.cloneFrom(p);
+        close->p_after.cloneFrom(p);
         addAction(close);
 
         return;

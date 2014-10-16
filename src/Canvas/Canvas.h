@@ -53,21 +53,21 @@ public:
     // points
     bool hover_point;
     Vertex *hover_point_p;
-    bool selected_point;
-    Vertex *selected_point_p;
+//    bool selected_point;
+//    Vertex *selected_point_p;
 
     // line segments
     bool hover_line;
     Vertex *hover_line_p[2];
-    bool selected_line;
-    Vertex *selected_line_p[2];
+//    bool selected_line;
+//    Vertex *selected_line_p[2];
 
     // polygons
     bool hover_polygon;
     Polyline *hover_polygon_p;
 
-    bool was_selected_point;
-    bool move_already_selected;
+//    bool was_selected_point;
+//    bool move_already_selected;
 
     ofPoint snap(ofPoint p);
     ofPoint snapMm(ofPoint p);

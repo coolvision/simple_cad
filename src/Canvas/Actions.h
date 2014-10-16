@@ -16,6 +16,7 @@ class Canvas;
 class Action {
 public:
     Action();
+    virtual ~Action() {};
     virtual void doAction(Canvas *c);
     virtual void undoAction(Canvas *c);
     string label;
@@ -25,6 +26,7 @@ public:
 class AddLineAction: public Action {
 public:
     AddLineAction();
+    virtual ~AddLineAction() {};
     virtual void doAction(Canvas *c);
     virtual void undoAction(Canvas *c);
 
@@ -36,6 +38,7 @@ public:
 class MoveSelectionAction: public Action {
 public:
     MoveSelectionAction();
+    virtual ~MoveSelectionAction() {};
     virtual void doAction(Canvas *c);
     virtual void undoAction(Canvas *c);
 
@@ -48,6 +51,7 @@ public:
 class ChangeSelectionAction: public Action {
 public:
     ChangeSelectionAction();
+    virtual ~ChangeSelectionAction() {};
     virtual void doAction(Canvas *c);
     virtual void undoAction(Canvas *c);
 
@@ -60,6 +64,7 @@ public:
 class ConnectPolylinesAction: public Action {
 public:
     ConnectPolylinesAction();
+    virtual ~ConnectPolylinesAction() {};
     virtual void doAction(Canvas *c);
     virtual void undoAction(Canvas *c);
 
@@ -72,32 +77,14 @@ public:
     Polyline p_linked;
 };
 
-class ClosePolylineAction: public Action {
+class ModifyPolylineAction: public Action {
 public:
-    ClosePolylineAction();
+    ModifyPolylineAction();
+    virtual ~ModifyPolylineAction() {};
     virtual void doAction(Canvas *c);
     virtual void undoAction(Canvas *c);
 
-    Polyline p_open;
-    Polyline p_closed;
+    Polyline p_before;
+    Polyline p_after;
 };
 
-class AddVertexAction: public Action {
-public:
-    AddVertexAction();
-    virtual void doAction(Canvas *c);
-    virtual void undoAction(Canvas *c);
-
-// input: a point
-// after: 1 polyline modified (index, object)
-};
-
-class DeleteVertexAction: public Action {
-public:
-    DeleteVertexAction();
-    virtual void doAction(Canvas *c);
-    virtual void undoAction(Canvas *c);
-
-// input: a polyline (index, object)
-// after: a polyline (index, object)
-};

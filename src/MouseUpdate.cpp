@@ -99,14 +99,14 @@ void ofApp::mouseDragged(int x, int y, int button) {
         }
     }
 
-    if (ui_state == UI_MOVING_POINT && c.selected_point_p) {
-        ofPoint p = c.snapMm(c.getMm(ofPoint(x, y)));
-        if (c.selected_point_p->next == NULL && c.selected_point_p->prev != NULL) {
-            line_length_info = (p - *c.selected_point_p->prev).length();
-        }
-        if (c.selected_point_p->prev == NULL && c.selected_point_p->next != NULL) {
-            line_length_info = (p - *c.selected_point_p->next).length();
-        }
-    }
+//    if (ui_state == UI_MOVING_POINT && c.selected_point_p) {
+//        ofPoint p = c.snapMm(c.getMm(ofPoint(x, y)));
+//        if (c.selected_point_p->next == NULL && c.selected_point_p->prev != NULL) {
+//            line_length_info = (p - *c.selected_point_p->prev).length();
+//        }
+//        if (c.selected_point_p->prev == NULL && c.selected_point_p->next != NULL) {
+//            line_length_info = (p - *c.selected_point_p->next).length();
+//        }
+//    }
 }
 

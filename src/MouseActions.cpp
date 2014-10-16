@@ -105,27 +105,32 @@ void ofApp::mousePressed(int x, int y, int button) {
         c.curr_line.front->hover = true;
     }
 
-//    if (ui_state == UI_ADD_VERTEX) {
-//        // insert a new point between the points of the hover line
-//        if (c.hover_line && c.hover_line_p[0] && c.hover_line_p[1]) {
-//
-//            Vertex *v0 = c.hover_line_p[0];
-//            Vertex *v1 = c.hover_line_p[1];
-//
-//            Vertex *v = new Vertex();
-//            *v = c.add_v;
-//
-//            v->p = v0->p;
-//            v->prev = v0;
-//            v->next = v1;
-//            v0->next = v;
-//            v1->prev = v;
-//
-//            unselectMode();
-//            select_button->selected = true;
-//
+    if (ui_state == UI_ADD_VERTEX) {
+        // insert a new point between the points of the hover line
+        if (c.hover_line && c.hover_line_p[0] && c.hover_line_p[1]) {
+
+            Vertex *v0 = c.hover_line_p[0];
+            Vertex *v1 = c.hover_line_p[1];
+
+            Vertex *v = new Vertex();
+            *v = c.add_v;
+
+            ModifyPolylineAction *add = new ModifyPolylineAction();
+            add->p_before.cloneFrom(v0->p);
+
+            v->p = v0->p;
+            v->prev = v0;
+            v->next = v1;
+            v0->next = v;
+            v1->prev = v;
+
+            add->p_after.cloneFrom(v0->p);
+            c.addAction(add);
+
+            unselectMode();
+            select_button->selected = true;
+
 //            c.hover_line = false;
-//
 //            if (c.selected_point_p) {
 //                c.selected_point_p->hover = false;
 //            }
@@ -135,8 +140,10 @@ void ofApp::mousePressed(int x, int y, int button) {
 //            c.start_p = *v;
 //            v->hover = true;
 //            v->selected = true;
-//        }
-//    }
+
+            ui_state = UI_SELECT;
+        }
+    }
 
     c.selection_r.set(p_mm, 0.0f, 0.0f);
     if (ui_state == UI_SELECT) {
@@ -191,7 +198,6 @@ void ofApp::mouseReleased(int x, int y, int button) {
         select_button->selected = true;
     }
 
-
     if (ui_state == UI_MOVING_POINT ||
         ui_state == UI_MOVING_POLYGON || ui_state == UI_MOVING_LINE) {
 
@@ -204,10 +210,10 @@ void ofApp::mouseReleased(int x, int y, int button) {
         move_action->v = (p_mm - c.start_click);
         c.addAction(move_action);
 
-        if (ui_state == UI_MOVING_LINE && c.selected_line_p[0] && c.selected_line_p[1]) {
-            c.connectPolylines(c.selected_line_p[0]->p);
-            c.connectPolylines(c.selected_line_p[1]->p);
-        }
+//        if (ui_state == UI_MOVING_LINE && c.selected_line_p[0] && c.selected_line_p[1]) {
+//            c.connectPolylines(c.selected_line_p[0]->p);
+//            c.connectPolylines(c.selected_line_p[1]->p);
+//        }
 
         ui_state = UI_SELECT;
     }

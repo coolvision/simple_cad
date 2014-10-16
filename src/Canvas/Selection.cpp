@@ -25,62 +25,88 @@ void SelectionList::clear() {
 
 void Canvas::deleteSelection() {
 
-//    for (int i = 0; i < selection.vertices.size(); i++) {
-//
-//        Vertex *v = getVertex(selection.vertices[i]);
-//
-//        if (v == NULL) continue;
-//
-//        // delete
-//        if (v->next != NULL) {
-//            v->next->prev = v->prev;
-//        }
-//        if (v->prev != NULL) {
-//            v->prev->next = v->next;
-//        }
-//        if (v == v->p->front && v == v->p->back) {
-//            v->p->front = NULL;
-//            v->p->back = NULL;
-//        } else if (v == v->p->front) {
-//            v->p->front = v->next;
-//        } else if (v == v->p->back) {
-//            v->p->back = v->prev;
-//        }
-//
-//        delete v;
-//        v = NULL;
-//    }
-//    selection.clear();
-//
-//    for (int i = 0; i < lines.size(); i++) {
-//        if (lines[i]->getLength() <= 2) {
-//            lines[i]->closed = false;
-//            if (lines[i]->front != NULL) {
-//                lines[i]->front->prev = NULL;
-//            }
-//            if (lines[i]->back != NULL) {
-//                lines[i]->back->next = NULL;
-//            }
-//        }
-//        lines[i]->updatePath();
-//    }
-//
-//    hover_point = false;
-//    hover_point_p = NULL;
-//
-//    hover_line = false;
-//    hover_line_p[0] = NULL;
-//    hover_line_p[1] = NULL;
-//
-//    hover_polygon = false;
-//    hover_polygon_p = NULL;
-//
-//    selected_point = false;
-//    selected_point_p = NULL;
-//
-//    selected_line = false;
-//    selected_line_p[0] = NULL;
-//    selected_line_p[1] = NULL;
+    SelectionList s = selection;
+
+    ChangeSelectionAction *select = new ChangeSelectionAction();
+    select->prev_selection = selection;
+    // new selection is empty
+    addAction(select);
+
+
+    // see which polylines are modified
+    vector<bool> lines_modified;
+    lines_modified.resize(lines.size());
+
+    for (int i = 0; i < lines_modified.size(); i++) {
+        lines_modified[i] = false;
+    }
+    for (int i = 0; i < s.vertices.size(); i++) {
+        lines_modified[s.vertices[i].line_i] = true;
+    }
+
+    // modify this polylines
+    for (int i = 0; i < lines.size(); i++) {
+        if (!lines_modified[i]) {
+            continue;
+        }
+
+        ModifyPolylineAction *clear = new ModifyPolylineAction();
+        clear->p_before.cloneFrom(lines[i]);
+
+        for (int j = 0; j < s.vertices.size(); j++) {
+
+            if (s.vertices[j].line_i != i) {
+                continue;
+            }
+
+            Vertex *v = getVertex(s.vertices[j]);
+
+            if (v == NULL) continue;
+
+            // delete
+            if (v->next != NULL) {
+                v->next->prev = v->prev;
+            }
+            if (v->prev != NULL) {
+                v->prev->next = v->next;
+            }
+            if (v == v->p->front && v == v->p->back) {
+                v->p->front = NULL;
+                v->p->back = NULL;
+            } else if (v == v->p->front) {
+                v->p->front = v->next;
+            } else if (v == v->p->back) {
+                v->p->back = v->prev;
+            }
+            
+            delete v;
+            v = NULL;
+        }
+
+        if (lines[i]->getLength() <= 2) {
+            lines[i]->closed = false;
+            if (lines[i]->front != NULL) {
+                lines[i]->front->prev = NULL;
+            }
+            if (lines[i]->back != NULL) {
+                lines[i]->back->next = NULL;
+            }
+        }
+        lines[i]->updatePath();
+
+        clear->p_after.cloneFrom(lines[i]);
+        addAction(clear);
+    }
+
+    hover_point = false;
+    hover_point_p = NULL;
+
+    hover_line = false;
+    hover_line_p[0] = NULL;
+    hover_line_p[1] = NULL;
+
+    hover_polygon = false;
+    hover_polygon_p = NULL;
 }
 
 void Canvas::clearSelection() {
@@ -95,12 +121,12 @@ void Canvas::clearSelection() {
         lines[i]->selected = false;
     }
 
-    selected_point = false;
-    selected_point_p = NULL;
-
-    selected_line = false;
-    selected_line_p[0] = NULL;
-    selected_line_p[1] = NULL;
+//    selected_point = false;
+//    selected_point_p = NULL;
+//
+//    selected_line = false;
+//    selected_line_p[0] = NULL;
+//    selected_line_p[1] = NULL;
 }
 
 void Canvas::resetHover() {
@@ -148,7 +174,6 @@ void Canvas::setHoverPoint(ofPoint p) {
     if (min_d_v != NULL) {
         hover_point_p = min_d_v;
         hover_point = true;
-        was_selected_point = true;
         min_d_v->hover = true;
     }
 }
