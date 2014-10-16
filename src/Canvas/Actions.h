@@ -35,6 +35,7 @@ public:
 
 class MoveSelectionAction: public Action {
 public:
+    MoveSelectionAction();
     virtual void doAction(Canvas *c);
     virtual void undoAction(Canvas *c);
 
@@ -44,8 +45,21 @@ public:
     ofPoint v;
 };
 
+class ChangeSelectionAction: public Action {
+public:
+    ChangeSelectionAction();
+    virtual void doAction(Canvas *c);
+    virtual void undoAction(Canvas *c);
+
+// input: list of selected vertices (line indexes, vertex indexes)
+// after: list of selected vertices (line indexes, vertex indexes)
+    SelectionList prev_selection;
+    SelectionList new_selection;
+};
+
 class ConnectPolylinesAction: public Action {
 public:
+    ConnectPolylinesAction();
     virtual void doAction(Canvas *c);
     virtual void undoAction(Canvas *c);
 
@@ -54,17 +68,9 @@ public:
 
 };
 
-class ChangeSelectionAction: public Action {
-public:
-    virtual void doAction(Canvas *c);
-    virtual void undoAction(Canvas *c);
-
-// input: list of selected vertices (line indexes, vertex indexes)
-// after: list of selected vertices (line indexes, vertex indexes)
-};
-
 class AddVertexAction: public Action {
 public:
+    AddVertexAction();
     virtual void doAction(Canvas *c);
     virtual void undoAction(Canvas *c);
 
@@ -74,6 +80,7 @@ public:
 
 class DeleteVertexAction: public Action {
 public:
+    DeleteVertexAction();
     virtual void doAction(Canvas *c);
     virtual void undoAction(Canvas *c);
 

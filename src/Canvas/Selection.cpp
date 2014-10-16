@@ -28,62 +28,62 @@ void SelectionList::clear() {
 
 void Canvas::deleteSelection() {
 
-    for (int i = 0; i < selection.vertices.size(); i++) {
-
-        Vertex *v = getVertex(selection.vertices[i]);
-
-        if (v == NULL) continue;
-
-        // delete
-        if (v->next != NULL) {
-            v->next->prev = v->prev;
-        }
-        if (v->prev != NULL) {
-            v->prev->next = v->next;
-        }
-        if (v == v->p->front && v == v->p->back) {
-            v->p->front = NULL;
-            v->p->back = NULL;
-        } else if (v == v->p->front) {
-            v->p->front = v->next;
-        } else if (v == v->p->back) {
-            v->p->back = v->prev;
-        }
-
-        delete v;
-        v = NULL;
-    }
-    selection.clear();
-
-    for (int i = 0; i < lines.size(); i++) {
-        if (lines[i]->getLength() <= 2) {
-            lines[i]->closed = false;
-            if (lines[i]->front != NULL) {
-                lines[i]->front->prev = NULL;
-            }
-            if (lines[i]->back != NULL) {
-                lines[i]->back->next = NULL;
-            }
-        }
-        lines[i]->updatePath();
-    }
-
-    hover_point = false;
-    hover_point_p = NULL;
-
-    hover_line = false;
-    hover_line_p[0] = NULL;
-    hover_line_p[1] = NULL;
-
-    hover_polygon = false;
-    hover_polygon_p = NULL;
-
-    selected_point = false;
-    selected_point_p = NULL;
-
-    selected_line = false;
-    selected_line_p[0] = NULL;
-    selected_line_p[1] = NULL;
+//    for (int i = 0; i < selection.vertices.size(); i++) {
+//
+//        Vertex *v = getVertex(selection.vertices[i]);
+//
+//        if (v == NULL) continue;
+//
+//        // delete
+//        if (v->next != NULL) {
+//            v->next->prev = v->prev;
+//        }
+//        if (v->prev != NULL) {
+//            v->prev->next = v->next;
+//        }
+//        if (v == v->p->front && v == v->p->back) {
+//            v->p->front = NULL;
+//            v->p->back = NULL;
+//        } else if (v == v->p->front) {
+//            v->p->front = v->next;
+//        } else if (v == v->p->back) {
+//            v->p->back = v->prev;
+//        }
+//
+//        delete v;
+//        v = NULL;
+//    }
+//    selection.clear();
+//
+//    for (int i = 0; i < lines.size(); i++) {
+//        if (lines[i]->getLength() <= 2) {
+//            lines[i]->closed = false;
+//            if (lines[i]->front != NULL) {
+//                lines[i]->front->prev = NULL;
+//            }
+//            if (lines[i]->back != NULL) {
+//                lines[i]->back->next = NULL;
+//            }
+//        }
+//        lines[i]->updatePath();
+//    }
+//
+//    hover_point = false;
+//    hover_point_p = NULL;
+//
+//    hover_line = false;
+//    hover_line_p[0] = NULL;
+//    hover_line_p[1] = NULL;
+//
+//    hover_polygon = false;
+//    hover_polygon_p = NULL;
+//
+//    selected_point = false;
+//    selected_point_p = NULL;
+//
+//    selected_line = false;
+//    selected_line_p[0] = NULL;
+//    selected_line_p[1] = NULL;
 }
 
 void Canvas::clearSelection() {

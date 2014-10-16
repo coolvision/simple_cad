@@ -16,11 +16,8 @@ void ofApp::draw(){
     drawGrid();
 
     int j = 0;
-    for (int i = c.actions.size()-30; i < c.actions.size(); i++) {
+    for (int i = c.actions.size()-30; i < (int)c.actions.size(); i++) {
         if (i < 0) {
-            continue;
-        }
-        if (i >= c.actions.size()) {
             continue;
         }
         if (i == c.curr_action_i) {
@@ -33,6 +30,7 @@ void ofApp::draw(){
         j++;
     }
 
+    ofSetColor(ofColor::black);
     for (int i = 0; i < c.selection.vertices.size(); i++) {
         VertexId v = c.selection.vertices[i];
         ofPoint p = c.selection.start_p[i];

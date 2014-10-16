@@ -21,7 +21,8 @@ public:
     vector<Action *> actions;
     int curr_action_i;
     void resetActions();
-
+    void addAction(Action *a);
+    
 // content storage & vis
 //==============================================================================
     vector<Polyline *> lines;

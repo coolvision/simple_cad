@@ -21,6 +21,13 @@ Vertex *Canvas::getVertex(VertexId v_id) {
     return NULL;
 }
 
+void Canvas::addAction(Action *a) {
+
+    resetActions();
+    actions.push_back(a);
+    actions.back()->doAction(this);
+}
+
 void Canvas::resetActions() {
 
     int n = 0;
