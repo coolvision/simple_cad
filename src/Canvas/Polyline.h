@@ -15,6 +15,19 @@ ofPoint lineProjection(ofPoint v, ofPoint w, ofPoint p);
 
 class Polyline;
 
+struct VertexId {
+    int line_i;
+    int v_i;
+};
+
+class SelectionList {
+public:
+    vector<VertexId> vertices;
+    vector<ofPoint> start_p;
+    void add(VertexId v_id, ofPoint p);
+    void clear();
+};
+
 class Vertex: public ofPoint {
 public:
 
@@ -29,6 +42,7 @@ public:
         p = NULL;
     }
     ofPoint getPx();
+    VertexId getId();
 
     bool selected;
     bool hover;
@@ -37,6 +51,8 @@ public:
     Polyline *p;
 
     Vertex &operator =(const ofVec3f &p);
+
+    int i; // index in the polyline
 };
 
 inline Vertex &Vertex::operator =(const ofVec3f &p) {
@@ -69,6 +85,8 @@ public:
     void addFront(Polyline *p);
     void addBack(Polyline *p);
     int getLength();
+    Vertex *getVertex(int i);
+    int getId();
 
     bool closed;
 
@@ -82,4 +100,13 @@ public:
     void updatePath();
     ofPath path;
     ofPolyline ofp;
+
+    // index in the polylines array
+    int i;
+
+private:
+    // array of ordered vertices,
+    // for random access
+    vector<Vertex *> vertices;
+    void updateIndexes();
 };

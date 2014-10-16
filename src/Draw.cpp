@@ -15,15 +15,33 @@ void ofApp::draw(){
 
     drawGrid();
 
-    for (int i = 0; i < c.actions.size(); i++) {
+    int j = 0;
+    for (int i = c.actions.size()-30; i < c.actions.size(); i++) {
+        if (i < 0) {
+            continue;
+        }
+        if (i >= c.actions.size()) {
+            continue;
+        }
         if (i == c.curr_action_i) {
             ofSetColor(ofColor::darkRed);
         } else {
             ofSetColor(ofColor::black);
         }
         font.draw(c.actions[i]->label, 16, ofGetWindowWidth() - 150,
-                  120 + 20 * i);
+                  120 + 20 * j);
+        j++;
     }
+
+    for (int i = 0; i < c.selection.vertices.size(); i++) {
+        VertexId v = c.selection.vertices[i];
+        ofPoint p = c.selection.start_p[i];
+        font.draw("line:" + ofToString(v.line_i) + " v:" + ofToString(v.v_i) +
+                  " x:" + ofToString(p.x) + " y:" + ofToString(p.y),
+                  16, ofGetWindowWidth() - 400,
+                  20 + 20 * i);
+    }
+
 
     // objects
 //==============================================================================

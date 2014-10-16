@@ -92,8 +92,9 @@ void ofApp::mouseDragged(int x, int y, int button) {
 
     if (ui_state == UI_MOVING_POLYGON || ui_state == UI_MOVING_LINE) {
         for (int i = 0; i < c.selection.vertices.size(); i++) {
-            c.selection.vertices[i]->p->updatePath();
-            *c.selection.vertices[i] = c.selection.start_p[i] + (p_mm - c.start_click);
+            Vertex *v = c.getVertex(c.selection.vertices[i]);
+            v->p->updatePath();
+            *v = c.selection.start_p[i] + (p_mm - c.start_click);
         }
     }
 

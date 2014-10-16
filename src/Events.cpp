@@ -10,15 +10,15 @@
 
 void ofApp::keyPressed(int key){
 
-    cout << "keyPressed " << key << endl;
+    //cout << "keyPressed " << key << endl;
 
     // is it this way on most keyboards???
     if (key == '=') {
-        cout << "zoom_in = true " << endl;
+        //cout << "zoom_in = true " << endl;
         zoom_in = true;
     }
     if (key == '-') {
-        cout << "zoom_out = true " << endl;
+        //cout << "zoom_out = true " << endl;
         zoom_out = true;
     }
 
@@ -37,11 +37,14 @@ void ofApp::keyPressed(int key){
         if (c.curr_action_i < 0) {
             c.curr_action_i = 0;
         }
+
         c.actions[c.curr_action_i]->undoAction(&c);
         c.curr_action_i--;
         if (c.curr_action_i < 0) {
             c.curr_action_i = 0;
         }
+
+        cout << "c.curr_action_i " << c.curr_action_i << endl;
     }
     if ((key == 'y' && (cmd || ctrl)) ||
         (key == 'z' && (cmd || ctrl) && shift)) {
@@ -52,11 +55,21 @@ void ofApp::keyPressed(int key){
         if (c.curr_action_i < 0) {
             c.curr_action_i = 0;
         }
-        c.actions[c.curr_action_i]->doAction(&c);
-        c.curr_action_i++;
+        if (c.actions[c.curr_action_i]->undo) {
+            c.actions[c.curr_action_i]->doAction(&c);
+            c.curr_action_i++;
+        } else {
+            c.curr_action_i++;
+            if (c.curr_action_i > c.actions.size() - 1) {
+                c.curr_action_i = c.actions.size() - 1;
+            }
+            c.actions[c.curr_action_i]->doAction(&c);
+        }
         if (c.curr_action_i > c.actions.size() - 1) {
             c.curr_action_i = c.actions.size() - 1;
         }
+
+        cout << "c.curr_action_i " << c.curr_action_i << endl;
     }
 }
 

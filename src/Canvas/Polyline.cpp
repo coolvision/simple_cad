@@ -23,6 +23,42 @@ ofPoint Vertex::getPx() {
     return p;
 }
 
+VertexId Vertex::getId() {
+
+    VertexId v_id;
+    v_id.line_i = p->getId();
+    v_id.v_i = i;
+
+    return v_id;
+}
+
+int Polyline::getId() {
+    return i;
+}
+
+// can be made more efficient by maintaining an array of the vertices
+Vertex *Polyline::getVertex(int i) {
+
+    if (i < vertices.size()) {
+        return vertices[i];
+    }
+    return NULL;
+}
+
+void Polyline::updateIndexes() {
+
+    int n = getLength();
+    vertices.resize(n);
+
+    int l = 0;
+    for (Vertex *v = front; v != NULL; v = v->next) {
+        vertices[l] = v;
+        v->i = l;
+        l++;
+        if (v->next == front) break; // closed polylines
+    }
+}
+
 void Polyline::release() {
 
     if (front != NULL) {
@@ -38,6 +74,7 @@ void Polyline::release() {
     back = NULL;
 
     updatePath();
+    updateIndexes();
 }
 
 void Polyline::cloneFrom(Polyline *p) {
@@ -50,6 +87,7 @@ void Polyline::cloneFrom(Polyline *p) {
         addBack(ofPoint(*v));
         if (v->next == p->front) break; // closed polylines
     }
+    updateIndexes();
 }
 
 void Polyline::init(ofPoint p) {
@@ -57,6 +95,7 @@ void Polyline::init(ofPoint p) {
     back = front;
     *front = p;
     front->p = this;
+    updateIndexes();
 }
 
 void Polyline::addBack(ofPoint p) {
@@ -74,6 +113,7 @@ void Polyline::addBack(ofPoint p) {
         back = v;
     }
     updatePath();
+    updateIndexes();
 }
 
 void Polyline::addFront(ofPoint p) {
@@ -91,6 +131,7 @@ void Polyline::addFront(ofPoint p) {
         front = v;
     }
     updatePath();
+    updateIndexes();
 }
 
 void Polyline::reverse() {
@@ -111,6 +152,7 @@ void Polyline::reverse() {
     tmp = front;
     front = back;
     back = tmp;
+    updateIndexes();
 }
 
 void Polyline::addFront(Polyline *p) {

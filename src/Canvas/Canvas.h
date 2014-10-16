@@ -25,6 +25,8 @@ public:
 // content storage & vis
 //==============================================================================
     vector<Polyline *> lines;
+    Vertex *getVertex(VertexId v_id);
+
     void drawLine(Polyline *l);
 
     Polyline curr_line;

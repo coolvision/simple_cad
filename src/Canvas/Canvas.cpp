@@ -13,6 +13,14 @@ Canvas::Canvas() {
     curr_action_i = 0;
 }
 
+Vertex *Canvas::getVertex(VertexId v_id) {
+
+    if (v_id.line_i < lines.size()) {
+        return lines[v_id.line_i]->getVertex(v_id.v_i);
+    }
+    return NULL;
+}
+
 void Canvas::resetActions() {
 
     int n = 0;
@@ -20,6 +28,7 @@ void Canvas::resetActions() {
         if (actions[i]->undo) n++;
     }
     for (int i = 0; i < n; i++) {
+        delete actions.back();
         actions.pop_back();
     }
     curr_action_i = actions.size();

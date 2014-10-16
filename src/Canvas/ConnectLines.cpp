@@ -45,10 +45,20 @@ Polyline *Canvas::connectLine(ofPoint *p1, ofPoint *p2) {
         }
     }
 
-    *curr_line.back = *p2;
-    lines.push_back(new Polyline());
-    lines.back()->cloneFrom(&curr_line);
-    return lines.back();
+    resetActions();
+    AddLineAction* add_line = new AddLineAction();
+    add_line->p[0] = *p1;
+    add_line->p[1] = *p2;
+    actions.push_back(add_line);
+    actions.back()->doAction(this);
+
+//    *curr_line.back = *p2;
+//    lines.push_back(new Polyline());
+//    lines.back()->cloneFrom(&curr_line);
+
+//    return lines.back();
+
+    return NULL;
 }
 
 // check if endpoints overlap, and if they do, connect the polylines
