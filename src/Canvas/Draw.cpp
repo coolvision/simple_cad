@@ -10,6 +10,10 @@
 
 void Canvas::drawLine(Polyline *l) {
 
+    if (l == NULL) {
+        return;
+    }
+
     if (l->front == NULL || l->back == NULL) {
         return;
     }

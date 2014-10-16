@@ -68,6 +68,9 @@ void Polyline::release() {
             tmp = v->next;
             delete v;
             v = tmp;
+            if (tmp == front) {  // closed polylines
+                break;
+            }
         }
     }
     front = NULL;
@@ -79,9 +82,11 @@ void Polyline::release() {
 
 void Polyline::cloneFrom(Polyline *p) {
 
-    release();
+    *this = *p;
+    front = NULL;
+    back = NULL;
 
-    closed = p->closed;
+    release();
 
     for (Vertex *v = p->front; v != NULL; v = v->next) {
         addBack(ofPoint(*v));

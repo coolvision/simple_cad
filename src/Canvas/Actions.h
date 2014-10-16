@@ -65,10 +65,21 @@ public:
 
 // input: 2 polylines: indexes, objects
 // after: 1 polyline modified (index, object), one deleted (index)
-    
+    Polyline p1;
+    Polyline p2;
+    bool reverse;
+    bool add_back;
+    Polyline p_linked;
+};
 
+class ClosePolylineAction: public Action {
+public:
+    ClosePolylineAction();
+    virtual void doAction(Canvas *c);
+    virtual void undoAction(Canvas *c);
 
-
+    Polyline p_open;
+    Polyline p_closed;
 };
 
 class AddVertexAction: public Action {

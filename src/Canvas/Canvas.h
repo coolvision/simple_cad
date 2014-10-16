@@ -82,6 +82,5 @@ public:
     ofPoint start_click;
     ofPoint start_p;
 
-    Polyline *connectLine(ofPoint *p1, ofPoint *p2);
-    Polyline *connectPolylines(Polyline *p);
+    void connectPolylines(Polyline *p);
 };

@@ -57,6 +57,12 @@ void ofApp::mousePressed(int x, int y, int button) {
         }
         if (c.hover_line && c.hover_line_p[0] && c.hover_line_p[1]) {
 
+            ChangeSelectionAction *select = new ChangeSelectionAction();
+            select->prev_selection = c.selection;
+            select->new_selection.add(c.hover_line_p[0]->getId());
+            select->new_selection.add(c.hover_line_p[1]->getId());
+            c.addAction(select);
+
 //            c.hover_line_p[0]->selected = true;
 //            c.hover_line_p[1]->selected = true;
 //            c.selection.add(c.hover_line_p[0]->getId(), *c.hover_line_p[0]);
@@ -177,10 +183,9 @@ void ofApp::mouseReleased(int x, int y, int button) {
         add_line->p[1] = p_mm;
         c.addAction(add_line);
 
-//        if (pl != NULL) {
-//            c.connectPolylines(pl);
-//        }
-//
+        c.connectPolylines(c.lines.back());
+        c.connectPolylines(c.lines.back());
+
         ui_state = UI_SELECT;
         unselectMode();
         select_button->selected = true;
@@ -199,10 +204,10 @@ void ofApp::mouseReleased(int x, int y, int button) {
         move_action->v = (p_mm - c.start_click);
         c.addAction(move_action);
 
-//        if (ui_state == UI_MOVING_LINE && c.selected_line_p[0] && c.selected_line_p[1]) {
-//            c.connectPolylines(c.selected_line_p[0]->p);
-//            c.connectPolylines(c.selected_line_p[1]->p);
-//        }
+        if (ui_state == UI_MOVING_LINE && c.selected_line_p[0] && c.selected_line_p[1]) {
+            c.connectPolylines(c.selected_line_p[0]->p);
+            c.connectPolylines(c.selected_line_p[1]->p);
+        }
 
         ui_state = UI_SELECT;
     }

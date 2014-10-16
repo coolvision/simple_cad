@@ -116,6 +116,9 @@ void Canvas::resetHover() {
     hover_polygon_p = NULL;
 
     for (int i = 0; i < lines.size(); i++) {
+        if (lines[i] == NULL) {
+            continue;
+        }
         for (Vertex *v = lines[i]->front; v != NULL; v = v->next) {
             v->hover = false;
             if (v->next == lines[i]->front) break; // closed polylines
@@ -130,6 +133,9 @@ void Canvas::setHoverPoint(ofPoint p) {
     float min_d = FLT_MAX;
     Vertex *min_d_v = NULL;
     for (int i = 0; i < lines.size(); i++) {
+        if (lines[i] == NULL) {
+            continue;
+        }
         for (Vertex *v = lines[i]->front; v != NULL; v = v->next) {
             float d0 = (p - *v).length();
             if (d0 < 2.0f && d0 < min_d) {
@@ -152,6 +158,9 @@ void Canvas::setHover(ofPoint p) {
     setHoverPoint(p);
 
     for (int i = 0; i < lines.size(); i++) {
+        if (lines[i] == NULL) {
+            continue;
+        }
         // check selection of line segments
         for (Vertex *v = lines[i]->front; v != NULL && v->next != NULL; v = v->next) {
             float d = segmentDistance(*v, *v->next, p);
@@ -176,6 +185,9 @@ void Canvas::setHover(ofPoint p) {
 
     if (!hover_point && !hover_line) {
         for (int i = 0; i < lines.size(); i++) {
+            if (lines[i] == NULL) {
+                continue;
+            }
             if (!lines[i]->closed) continue;
             lines[i]->updatePath();
             if (lines[i]->ofp.inside(getPx(p))) {
