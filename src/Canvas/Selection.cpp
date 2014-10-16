@@ -8,22 +8,19 @@
 
 #include <Canvas.h>
 
-void SelectionList::add(VertexId v_id, ofPoint p) {
+void SelectionList::add(VertexId v_id) {
 
     for (int i = 0; i < vertices.size(); i++) {
         if (v_id.line_i == vertices[i].line_i &&
             v_id.v_i == vertices[i].v_i) {
-            start_p[i] = p;
             return;
         }
     }
     vertices.push_back(v_id);
-    start_p.push_back(p);
 }
 
 void SelectionList::clear() {
     vertices.clear();
-    start_p.clear();
 }
 
 void Canvas::deleteSelection() {

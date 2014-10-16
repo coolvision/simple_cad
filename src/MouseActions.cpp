@@ -40,10 +40,10 @@ void ofApp::mousePressed(int x, int y, int button) {
 //        if (!shift && !c.move_already_selected) {
 //            c.clearSelection();
 //        }
-//
-//        // if there is a hover object, start dragging it
-//        if (c.hover_point && c.hover_point_p) {
-//
+
+        // if there is a hover object, start dragging it
+        if (c.hover_point && c.hover_point_p) {
+
 //            c.hover_point_p->selected = true;
 //            *c.hover_point_p = p_mm;
 //
@@ -52,11 +52,11 @@ void ofApp::mousePressed(int x, int y, int button) {
 //            c.selected_point = true;
 //            c.selected_point_p = c.hover_point_p;
 //            c.start_p = *c.hover_point_p;
-//
-//            ui_state = UI_MOVING_POINT;
-//        }
-//        if (c.hover_line && c.hover_line_p[0] && c.hover_line_p[1]) {
-//
+
+            ui_state = UI_MOVING_POINT;
+        }
+        if (c.hover_line && c.hover_line_p[0] && c.hover_line_p[1]) {
+
 //            c.hover_line_p[0]->selected = true;
 //            c.hover_line_p[1]->selected = true;
 //            c.selection.add(c.hover_line_p[0]->getId(), *c.hover_line_p[0]);
@@ -65,18 +65,28 @@ void ofApp::mousePressed(int x, int y, int button) {
 //            c.selected_line = true;
 //            c.selected_line_p[0] = c.hover_line_p[0];
 //            c.selected_line_p[1] = c.hover_line_p[1];
-//
-//            ui_state = UI_MOVING_LINE;
-//        }
-//        if (c.hover_polygon && c.hover_polygon_p)  {
+
+            ui_state = UI_MOVING_LINE;
+        }
+        if (c.hover_polygon && c.hover_polygon_p)  {
+
 //            for (Vertex *v = c.hover_polygon_p->front; v != NULL; v = v->next) {
 //                v->selected = true;
 //                c.selection.add(v->getId(), *v);
 //                if (v->next == c.hover_polygon_p->front) break;
 //            }
-//
-//            ui_state = UI_MOVING_POLYGON;
-//        }
+
+            ui_state = UI_MOVING_POLYGON;
+        }
+
+        if (ui_state == UI_MOVING_POINT ||
+            ui_state == UI_MOVING_POLYGON || ui_state == UI_MOVING_LINE) {
+            for (int i = 0; i < c.selection.vertices.size(); i++) {
+                Vertex *vertex = c.getVertex(c.selection.vertices[i]);
+                vertex->start_p = *vertex;
+            }
+        }
+
     }
 
     // start drawing a line
@@ -141,7 +151,7 @@ void ofApp::mouseReleased(int x, int y, int button) {
         ui_state = UI_SELECT;
         ofRectangle r = c.selection_r;
         r.standardize();
-        if (r.width > 10.0f && r.height > 10.0f) {
+        if (r.width * points_step > 10.0f && r.height * points_step > 10.0f) {
 
             ChangeSelectionAction *select = new ChangeSelectionAction();
             select->prev_selection = c.selection;
@@ -149,7 +159,7 @@ void ofApp::mouseReleased(int x, int y, int button) {
             for (int i = 0; i < c.lines.size(); i++) {
                 for (Vertex *v = c.lines[i]->front; v != NULL; v = v->next) {
                     if (r.inside(*v)) {
-                        select->new_selection.add(v->getId(), *v);
+                        select->new_selection.add(v->getId());
                     }
                     if (v->next == c.lines[i]->front) break; // closed polylines
                 }
@@ -180,6 +190,10 @@ void ofApp::mouseReleased(int x, int y, int button) {
     if (ui_state == UI_MOVING_POINT ||
         ui_state == UI_MOVING_POLYGON || ui_state == UI_MOVING_LINE) {
 
+        for (int i = 0; i < c.selection.vertices.size(); i++) {
+            Vertex *v = c.getVertex(c.selection.vertices[i]);
+            *v = v->start_p;
+        }
         MoveSelectionAction *move_action = new MoveSelectionAction();
         move_action->selection = c.selection;
         move_action->v = (p_mm - c.start_click);

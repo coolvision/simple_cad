@@ -23,8 +23,7 @@ struct VertexId {
 class SelectionList {
 public:
     vector<VertexId> vertices;
-    vector<ofPoint> start_p;
-    void add(VertexId v_id, ofPoint p);
+    void add(VertexId v_id);
     void clear();
 };
 
@@ -46,6 +45,8 @@ public:
 
     bool selected;
     bool hover;
+    ofPoint start_p; // for dragging
+
     Vertex *next;
     Vertex *prev;
     Polyline *p;

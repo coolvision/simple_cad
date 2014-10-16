@@ -62,13 +62,13 @@ MoveSelectionAction::MoveSelectionAction() {
 
 void MoveSelectionAction::doAction(Canvas *c) {
 
-    label = "move";
+    label = "move " + ofToString(v.x) + " " + ofToString(v.y);
 
     if (undo) {
         for (int i = 0; i < selection.vertices.size(); i++) {
             Vertex *vertex = c->getVertex(selection.vertices[i]);
             vertex->p->updatePath();
-            *vertex = selection.start_p[i] + v;
+            *vertex = *vertex + v;
         }
     }
     undo = false;
@@ -76,13 +76,13 @@ void MoveSelectionAction::doAction(Canvas *c) {
 
 void MoveSelectionAction::undoAction(Canvas *c) {
 
-    label = "undo move";
+    label = "undo move " + ofToString(v.x) + " " + ofToString(v.y);
 
     if (!undo) {
         for (int i = 0; i < selection.vertices.size(); i++) {
             Vertex *vertex = c->getVertex(selection.vertices[i]);
             vertex->p->updatePath();
-            *vertex = selection.start_p[i];
+            *vertex = *vertex - v;
         }
     }
     undo = true;
@@ -99,7 +99,15 @@ void ChangeSelectionAction::doAction(Canvas *c) {
     label = "select";
 
     if (undo) {
-
+        for (int i = 0; i < prev_selection.vertices.size(); i++) {
+            Vertex *vertex = c->getVertex(prev_selection.vertices[i]);
+            vertex->selected = false;
+        }
+        for (int i = 0; i < new_selection.vertices.size(); i++) {
+            Vertex *vertex = c->getVertex(new_selection.vertices[i]);
+            vertex->selected = true;
+        }
+        c->selection = new_selection;
     }
 
     undo = false;
@@ -110,11 +118,100 @@ void ChangeSelectionAction::undoAction(Canvas *c) {
     label = "undo select";
 
     if (!undo) {
-
+        for (int i = 0; i < new_selection.vertices.size(); i++) {
+            Vertex *vertex = c->getVertex(new_selection.vertices[i]);
+            vertex->selected = false;
+        }
+        for (int i = 0; i < prev_selection.vertices.size(); i++) {
+            Vertex *vertex = c->getVertex(prev_selection.vertices[i]);
+            vertex->selected = true;
+        }
+        c->selection = prev_selection;
     }
     
     undo = true;
 }
 
+//==============================================================================
+ConnectPolylinesAction::ConnectPolylinesAction() {
+    label = "ConnectPolylinesAction";
+    undo = true;
+}
 
+void ConnectPolylinesAction::doAction(Canvas *c) {
 
+    label = "connect";
+
+    if (undo) {
+
+    }
+
+    undo = false;
+}
+
+void ConnectPolylinesAction::undoAction(Canvas *c) {
+
+    label = "undo connect";
+
+    if (!undo) {
+
+    }
+
+    undo = true;
+}
+
+//==============================================================================
+AddVertexAction::AddVertexAction() {
+    label = "AddVertexAction";
+    undo = true;
+}
+
+void AddVertexAction::doAction(Canvas *c) {
+
+    label = "add vertex";
+
+    if (undo) {
+
+    }
+
+    undo = false;
+}
+
+void AddVertexAction::undoAction(Canvas *c) {
+
+    label = "undo add vertex";
+
+    if (!undo) {
+        
+    }
+    
+    undo = true;
+}
+
+//==============================================================================
+DeleteVertexAction::DeleteVertexAction() {
+    label = "DeleteVertexAction";
+    undo = true;
+}
+
+void DeleteVertexAction::doAction(Canvas *c) {
+
+    label = "delete vertex";
+
+    if (undo) {
+
+    }
+
+    undo = false;
+}
+
+void DeleteVertexAction::undoAction(Canvas *c) {
+
+    label = "undo delete vertex";
+
+    if (!undo) {
+
+    }
+    
+    undo = true;
+}

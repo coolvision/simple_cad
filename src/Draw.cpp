@@ -33,9 +33,7 @@ void ofApp::draw(){
     ofSetColor(ofColor::black);
     for (int i = 0; i < c.selection.vertices.size(); i++) {
         VertexId v = c.selection.vertices[i];
-        ofPoint p = c.selection.start_p[i];
-        font.draw("line:" + ofToString(v.line_i) + " v:" + ofToString(v.v_i) +
-                  " x:" + ofToString(p.x) + " y:" + ofToString(p.y),
+        font.draw("line:" + ofToString(v.line_i) + " v:" + ofToString(v.v_i),
                   16, ofGetWindowWidth() - 400,
                   20 + 20 * i);
     }

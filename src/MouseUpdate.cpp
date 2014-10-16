@@ -79,22 +79,23 @@ void ofApp::mouseDragged(int x, int y, int button) {
     c.resetHover();
     c.setHoverPoint(p_mm);
 
-    if (ui_state == UI_MOVING_POINT && c.selected_point_p) {
-        c.selected_point_p->p->updatePath();
-        *c.selected_point_p = c.start_p + (p_mm - c.start_click);
-        c.selected_point_p->hover = true;
-    }
-    if (ui_state == UI_MOVING_LINE &&
-        c.selected_line_p[0] && c.selected_line_p[1]) {
-        c.selected_line_p[0]->hover = true;
-        c.selected_line_p[1]->hover = true;
-    }
+//    if (ui_state == UI_MOVING_POINT && c.selected_point_p) {
+//        c.selected_point_p->p->updatePath();
+//        *c.selected_point_p = c.start_p + (p_mm - c.start_click);
+//        c.selected_point_p->hover = true;
+//    }
+//    if (ui_state == UI_MOVING_LINE &&
+//        c.selected_line_p[0] && c.selected_line_p[1]) {
+//        c.selected_line_p[0]->hover = true;
+//        c.selected_line_p[1]->hover = true;
+//    }
 
-    if (ui_state == UI_MOVING_POLYGON || ui_state == UI_MOVING_LINE) {
+    if (ui_state == UI_MOVING_POINT ||
+        ui_state == UI_MOVING_POLYGON || ui_state == UI_MOVING_LINE) {
         for (int i = 0; i < c.selection.vertices.size(); i++) {
             Vertex *v = c.getVertex(c.selection.vertices[i]);
             v->p->updatePath();
-            *v = c.selection.start_p[i] + (p_mm - c.start_click);
+            *v = v->start_p + (p_mm - c.start_click);
         }
     }
 
