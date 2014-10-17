@@ -24,80 +24,87 @@ void ofApp::mousePressed(int x, int y, int button) {
         return;
     }
 
-    if (ui_state == UI_MOVE_CANVAS || ui_state == UI_MOVING_CANVAS) {
+    if (c.ui_state == UI_MOVE_CANVAS || c.ui_state == UI_MOVING_CANVAS) {
         ofPoint p = ofPoint(x, y);
         c.start_click = p;
         c.canvas_offset_start = c.canvas_offset;
-        ui_state = UI_MOVING_CANVAS;
+        c.ui_state = UI_MOVING_CANVAS;
         return;
     }
 
     // find hover objects:
     // points, lines, etc...
-    if (ui_state == UI_SELECT) {
+    if (c.ui_state == UI_SELECT) {
 
-//        bool shift = ofGetKeyPressed(OF_KEY_SHIFT);
-//        if (!shift && !c.move_already_selected) {
-//            c.clearSelection();
-//        }
+        bool shift = ofGetKeyPressed(OF_KEY_SHIFT);
+
+
+        // add to the selection
+        if (shift) {
+            c.new_selection = c.selection;
+        } else {
+            c.new_selection.clear();
+        }
+
+        bool selected = false;
 
         // if there is a hover object, start dragging it
         if (c.hover_point && c.hover_point_p) {
 
-//            c.hover_point_p->selected = true;
-//            *c.hover_point_p = p_mm;
-//
-//            c.selection.add(c.hover_point_p->getId(), *c.hover_point_p);
-//
-//            c.selected_point = true;
-//            c.selected_point_p = c.hover_point_p;
-//            c.start_p = *c.hover_point_p;
+            if (c.hover_point_p->selected) {
+                selected = true;
+            }
 
-            ui_state = UI_MOVING_POINT;
+            // change selection
+            c.new_selection.add(c.hover_point_p->getId());
+            c.ui_state = UI_MOVING_SELECTION;
+
+        } else if (c.hover_line && c.hover_line_p[0] && c.hover_line_p[1]) {
+
+            if (c.hover_line_p[0]->selected && c.hover_line_p[1]->selected) {
+                selected = true;
+            }
+
+            c.new_selection.add(c.hover_line_p[0]->getId());
+            c.new_selection.add(c.hover_line_p[1]->getId());
+            c.ui_state = UI_MOVING_SELECTION;
+
+        } else if (c.hover_polygon && c.hover_polygon_p)  {
+
+            selected = true;
+            for (Vertex *v = c.hover_polygon_p->front; v != NULL; v = v->next) {
+                if (!v->selected) {
+                    selected = false;
+                }
+                c.new_selection.add(v->getId());
+                if (v->next == c.hover_polygon_p->front) break;
+            }
+            c.ui_state = UI_MOVING_SELECTION;
         }
-        if (c.hover_line && c.hover_line_p[0] && c.hover_line_p[1]) {
 
+        if (c.ui_state == UI_MOVING_SELECTION) {
+            if (!selected) {
+                ChangeSelectionAction *select = new ChangeSelectionAction();
+                select->prev_selection = c.selection;
+                select->new_selection = c.new_selection;
+                c.addAction(select);
+            }
+        } else {
+            // clear selection
             ChangeSelectionAction *select = new ChangeSelectionAction();
             select->prev_selection = c.selection;
-            select->new_selection.add(c.hover_line_p[0]->getId());
-            select->new_selection.add(c.hover_line_p[1]->getId());
             c.addAction(select);
-
-//            c.hover_line_p[0]->selected = true;
-//            c.hover_line_p[1]->selected = true;
-//            c.selection.add(c.hover_line_p[0]->getId(), *c.hover_line_p[0]);
-//            c.selection.add(c.hover_line_p[1]->getId(), *c.hover_line_p[1]);
-//
-//            c.selected_line = true;
-//            c.selected_line_p[0] = c.hover_line_p[0];
-//            c.selected_line_p[1] = c.hover_line_p[1];
-
-            ui_state = UI_MOVING_LINE;
-        }
-        if (c.hover_polygon && c.hover_polygon_p)  {
-
-//            for (Vertex *v = c.hover_polygon_p->front; v != NULL; v = v->next) {
-//                v->selected = true;
-//                c.selection.add(v->getId(), *v);
-//                if (v->next == c.hover_polygon_p->front) break;
-//            }
-
-            ui_state = UI_MOVING_POLYGON;
         }
 
-        if (ui_state == UI_MOVING_POINT ||
-            ui_state == UI_MOVING_POLYGON || ui_state == UI_MOVING_LINE) {
-            for (int i = 0; i < c.selection.vertices.size(); i++) {
-                Vertex *vertex = c.getVertex(c.selection.vertices[i]);
-                vertex->start_p = *vertex;
-            }
+        for (int i = 0; i < c.selection.vertices.size(); i++) {
+            Vertex *vertex = c.getVertex(c.selection.vertices[i]);
+            vertex->start_p = *vertex;
         }
-
     }
 
     // start drawing a line
-    if (ui_state == UI_DRAW_LINE) {
-        ui_state = UI_DRAWING_LINE;
+    if (c.ui_state == UI_DRAW_LINE) {
+        c.ui_state = UI_DRAWING_LINE;
         c.curr_line.release();
         c.curr_line.addBack(c.start_click);
         c.curr_line.addBack(p_mm);
@@ -105,7 +112,7 @@ void ofApp::mousePressed(int x, int y, int button) {
         c.curr_line.front->hover = true;
     }
 
-    if (ui_state == UI_ADD_VERTEX) {
+    if (c.ui_state == UI_ADD_VERTEX) {
         // insert a new point between the points of the hover line
         if (c.hover_line && c.hover_line_p[0] && c.hover_line_p[1]) {
 
@@ -123,6 +130,9 @@ void ofApp::mousePressed(int x, int y, int button) {
             v->next = v1;
             v0->next = v;
             v1->prev = v;
+            v->p->updateIndexes();
+            v->start_p = *v;
+            VertexId new_id = v->getId();
 
             add->p_after.cloneFrom(v0->p);
             c.addAction(add);
@@ -130,24 +140,23 @@ void ofApp::mousePressed(int x, int y, int button) {
             unselectMode();
             select_button->selected = true;
 
-//            c.hover_line = false;
-//            if (c.selected_point_p) {
-//                c.selected_point_p->hover = false;
-//            }
-//            ui_state = UI_MOVING_POINT;
-//            c.selected_point = true;
-//            c.selected_point_p = v;
-//            c.start_p = *v;
-//            v->hover = true;
-//            v->selected = true;
+            ChangeSelectionAction *select = new ChangeSelectionAction();
+            select->prev_selection = c.selection;
 
-            ui_state = UI_SELECT;
+            select->new_selection.add(new_id);
+            c.addAction(select);
+
+            c.resetHover();
+            c.hover_point_p = c.getVertex(new_id);
+            c.hover_point = true;
+
+            c.ui_state = UI_MOVING_SELECTION;
         }
     }
 
     c.selection_r.set(p_mm, 0.0f, 0.0f);
-    if (ui_state == UI_SELECT) {
-        ui_state = UI_MOUSE_SELECTION;
+    if (c.ui_state == UI_SELECT) {
+        c.ui_state = UI_MOUSE_SELECTION;
     }
 }
 
@@ -160,8 +169,8 @@ void ofApp::mouseReleased(int x, int y, int button) {
         p_mm = *c.hover_point_p;
     }
 
-    if (ui_state == UI_MOUSE_SELECTION) {
-        ui_state = UI_SELECT;
+    if (c.ui_state == UI_MOUSE_SELECTION) {
+        c.ui_state = UI_SELECT;
         ofRectangle r = c.selection_r;
         r.standardize();
         if (r.width * points_step > 10.0f && r.height * points_step > 10.0f) {
@@ -181,9 +190,8 @@ void ofApp::mouseReleased(int x, int y, int button) {
         }
     }
 
-
     // stop the drawing / dragging / selection
-    if (ui_state == UI_DRAWING_LINE) {
+    if (c.ui_state == UI_DRAWING_LINE) {
 
         AddLineAction* add_line = new AddLineAction();
         add_line->p[0] = c.start_click;
@@ -193,28 +201,54 @@ void ofApp::mouseReleased(int x, int y, int button) {
         c.connectPolylines(c.lines.back());
         c.connectPolylines(c.lines.back());
 
-        ui_state = UI_SELECT;
+        c.ui_state = UI_SELECT;
         unselectMode();
         select_button->selected = true;
     }
 
-    if (ui_state == UI_MOVING_POINT ||
-        ui_state == UI_MOVING_POLYGON || ui_state == UI_MOVING_LINE) {
+    if (c.ui_state == UI_MOVING_SELECTION) {
 
         for (int i = 0; i < c.selection.vertices.size(); i++) {
             Vertex *v = c.getVertex(c.selection.vertices[i]);
             *v = v->start_p;
         }
-        MoveSelectionAction *move_action = new MoveSelectionAction();
-        move_action->selection = c.selection;
-        move_action->v = (p_mm - c.start_click);
-        c.addAction(move_action);
 
-//        if (ui_state == UI_MOVING_LINE && c.selected_line_p[0] && c.selected_line_p[1]) {
-//            c.connectPolylines(c.selected_line_p[0]->p);
-//            c.connectPolylines(c.selected_line_p[1]->p);
-//        }
+        ofPoint move_v = (p_mm - c.start_click);
+        if (abs(move_v.x) < 1.0f && abs(move_v.y) < 1.0f) {
+            ChangeSelectionAction *select = new ChangeSelectionAction();
+            select->prev_selection = c.selection;
+            select->new_selection = c.new_selection;
+            c.addAction(select);
+        } else {
+            MoveSelectionAction *move_action = new MoveSelectionAction();
+            move_action->selection = c.selection;
+            move_action->v = move_v;
+            c.addAction(move_action);
 
-        ui_state = UI_SELECT;
+            if (c.selection.vertices.size() == 1) {
+                Vertex *v = c.getVertex(c.selection.vertices[0]);
+
+                ChangeSelectionAction *select = new ChangeSelectionAction();
+                select->prev_selection = c.selection;
+                c.addAction(select);
+
+                c.connectPolylines(v->p);
+            }
+
+            // connect polylines after the line's dragging
+            if (c.selection.vertices.size() == 2) {
+                Vertex *v1 = c.getVertex(c.selection.vertices[0]);
+                Vertex *v2 = c.getVertex(c.selection.vertices[1]);
+                if (v1->p == v2->p) {
+                    c.connectPolylines(v1->p);
+                    c.connectPolylines(v1->p);
+                }
+            }
+        }
+
+        c.ui_state = UI_SELECT;
     }
+
+    c.resetHover();
+    c.setHover(p_mm);
 }

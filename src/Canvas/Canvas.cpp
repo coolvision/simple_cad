@@ -8,9 +8,13 @@
 
 #include "Canvas.h"
 
+#include <iostream>
+#include <fstream>
+
 Canvas::Canvas() {
 
     curr_action_i = 0;
+    selection_state = SELECTION_NONE;
 }
 
 Vertex *Canvas::getVertex(VertexId v_id) {
@@ -97,3 +101,69 @@ void Canvas::zoomOut() {
     }
 }
 
+void Canvas::save(string path) {
+
+    ofstream file(path.c_str());
+    if (file.is_open()) {
+        int lines_n = 0;
+        for (int i = 0; i < lines.size(); i++) {
+            int n = lines[i]->getLength();
+            if (n > 0) lines_n++;
+        }
+        file << lines_n << endl;
+        for (int i = 0; i < lines.size(); i++) {
+            int n = lines[i]->getLength();
+            if (n <= 0) continue;
+            file << n << " ";
+            file << lines[i]->closed << " ";
+            for (Vertex *v = lines[i]->front; v != NULL; v = v->next) {
+                file << v->x << " " << v->y << " ";
+                if (v->next == lines[i]->front) break; // closed polylines
+            }
+            file << endl;
+        }
+        file.close();
+    }
+
+}
+
+void Canvas::load(string path) {
+
+    cout << "load" << endl;
+
+    for (int i = 0; i < lines.size(); i++) {
+        lines[i]->release();
+        delete lines[i];
+    }
+    lines.clear();
+
+    int lines_n;
+    int n;
+
+    ifstream file(path.c_str());
+    if (file.is_open()) {
+
+        file >> lines_n;
+
+        cout << "load " << lines_n <<  " lines" << endl;
+
+        for (int i = 0; i < lines_n; i++) {
+            lines.push_back(new Polyline());
+            lines.back()->i = lines.size() - 1;
+            file >> n;
+            file >> lines.back()->closed;
+            for (int i = 0; i < n; i++) {
+                ofPoint p;
+                file >> p.x;
+                file >> p.y;
+                lines.back()->addBack(p);
+            }
+            if (lines.back()->closed) {
+                lines.back()->toPolygon();
+            }
+
+        }
+        file.close();
+    }
+
+}

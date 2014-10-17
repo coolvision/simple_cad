@@ -27,6 +27,13 @@ public:
     void clear();
 };
 
+enum SelectionState {
+    SELECTION_NONE = 0,
+    SELECTION_POINT,
+    SELECTION_LINE,
+    SELECTION_MULTIPLE
+};
+
 class Vertex: public ofPoint {
 public:
 
@@ -82,12 +89,14 @@ public:
     void init(ofPoint p);
     void addFront(ofPoint p);
     void addBack(ofPoint p);
+    void addBack(Vertex *vertex);
     void reverse();
     void addFront(Polyline *p);
     void addBack(Polyline *p);
     int getLength();
     Vertex *getVertex(int i);
     int getId();
+    void toPolygon();
 
     bool closed;
 
@@ -105,9 +114,10 @@ public:
     // index in the polylines array
     int i;
 
+    void updateIndexes();
+
 private:
     // array of ordered vertices,
     // for random access
     vector<Vertex *> vertices;
-    void updateIndexes();
 };

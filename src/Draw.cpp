@@ -15,8 +15,11 @@ void ofApp::draw(){
 
     drawGrid();
 
+    int off_x = 170;
+
     int j = 0;
-    for (int i = c.actions.size()-30; i < (int)c.actions.size(); i++) {
+    int n = c.actions.size();
+    for (int i = MIN(c.curr_action_i, n-30); i < n; i++) {
         if (i < 0) {
             continue;
         }
@@ -25,7 +28,7 @@ void ofApp::draw(){
         } else {
             ofSetColor(ofColor::black);
         }
-        font.draw(c.actions[i]->label, 16, ofGetWindowWidth() - 150,
+        font.draw(c.actions[i]->label, 16, ofGetWindowWidth() - off_x,
                   120 + 20 * j);
         j++;
     }
@@ -38,22 +41,37 @@ void ofApp::draw(){
                   20 + 20 * i);
     }
 
+    ofPoint p = c.snap(ofPoint(ofGetMouseX(), ofGetMouseY()));
+
+    ofSetColor(0.0f);
+    font.draw("FPS: " + ofToString((int)ofGetFrameRate()), 16,
+              ofGetWindowWidth() - off_x, 20);
+    font.draw("zoom: " + ofToString(c.zoom * 100) + "%", 16,
+              ofGetWindowWidth() - off_x, 40);
+    font.draw("x: " + ofToString(p.x) + " y: " + ofToString(p.y),
+              16,
+              ofGetWindowWidth() - off_x, 60);
+
+    if (line_length_info != 0.0f) {
+        font.draw("line: " + ofToString(line_length_info, 1) + " mm",
+                  16, ofGetWindowWidth() - off_x, 80);
+    }
 
     // objects
 //==============================================================================
     for (int i = 0; i < c.lines.size(); i++) {
         c.drawLine(c.lines[i]);
     }
-    if (ui_state == UI_DRAWING_LINE) {
+    if (c.ui_state == UI_DRAWING_LINE) {
         c.drawLine(&c.curr_line);
     }
 
-    if (ui_state == UI_ADD_VERTEX && c.hover_line) {
+    if (c.ui_state == UI_ADD_VERTEX && c.hover_line) {
         ofSetColor(ofColor::orangeRed);
         ofCircle(c.getPx(&c.add_v), 4.0f);
     }
 
-    if (ui_state == UI_MOUSE_SELECTION) {
+    if (c.ui_state == UI_MOUSE_SELECTION) {
         ofSetColor(150);
         ofSetLineWidth(1.0f);
         ofNoFill();
@@ -75,25 +93,7 @@ void ofApp::draw(){
 //==============================================================================
     canvas_toolbar.draw();
 
-    // info
-//==============================================================================
 
-    ofPoint p = c.snap(ofPoint(ofGetMouseX(), ofGetMouseY()));
-
-    ofSetColor(0.0f);
-    int off_x = 130;
-    font.draw("FPS: " + ofToString((int)ofGetFrameRate()), 16,
-              ofGetWindowWidth() - 150, 20);
-    font.draw("zoom: " + ofToString(c.zoom * 100) + "%", 16,
-              ofGetWindowWidth() - 150, 40);
-    font.draw("x: " + ofToString(p.x) + " y: " + ofToString(p.y),
-              16,
-              ofGetWindowWidth() - 150, 60);
-
-    if (line_length_info != 0.0f) {
-        font.draw("line: " + ofToString(line_length_info, 1) + " mm",
-                  16, ofGetWindowWidth() - 150, 80);
-    }
 
     ofPopStyle();
 }

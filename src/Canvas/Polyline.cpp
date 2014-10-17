@@ -89,7 +89,7 @@ void Polyline::cloneFrom(Polyline *p) {
     release();
 
     for (Vertex *v = p->front; v != NULL; v = v->next) {
-        addBack(ofPoint(*v));
+        addBack(v);
         if (v->next == p->front) break; // closed polylines
     }
     if (closed) {
@@ -105,6 +105,26 @@ void Polyline::init(ofPoint p) {
     back = front;
     *front = p;
     front->p = this;
+    updateIndexes();
+}
+
+void Polyline::addBack(Vertex *vertex) {
+
+    if (front == NULL) {
+        init(*vertex);
+    } else {
+        // new element
+        Vertex *v = new Vertex();
+        v->x = vertex->x;
+        v->y = vertex->y;
+        v->start_p = vertex->start_p;
+        v->p = this;
+        // update the list
+        back->next = v;
+        v->prev = back;
+        back = v;
+    }
+    updatePath();
     updateIndexes();
 }
 
@@ -185,6 +205,11 @@ void Polyline::addBack(Polyline *p) {
     for (Vertex *v = p->front; v != NULL; v = v->next) {
         addBack(ofPoint(*v));
     }
+}
+
+void Polyline::toPolygon() {
+    back->next = front;
+    front->prev = back;
 }
 
 void Polyline::updatePath() {

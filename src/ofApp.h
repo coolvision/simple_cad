@@ -10,19 +10,6 @@
 
 #include "Button.h"
 
-// ui state machine
-enum UIState {
-    UI_DRAW_LINE = 0,
-    UI_DRAWING_LINE,
-    UI_SELECT,
-    UI_MOUSE_SELECTION,
-    UI_MOVING_POINT,
-    UI_MOVING_LINE,
-    UI_MOVING_POLYGON,
-    UI_ADD_VERTEX,
-    UI_MOVE_CANVAS,
-    UI_MOVING_CANVAS
-};
 
 
 class ofApp : public ofBaseApp {
@@ -74,7 +61,6 @@ public:
 
     // UI state machine
 //==============================================================================
-    UIState ui_state;
     float line_length_info;
     bool zoom_in;
     bool zoom_out;

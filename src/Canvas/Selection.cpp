@@ -120,13 +120,6 @@ void Canvas::clearSelection() {
         }
         lines[i]->selected = false;
     }
-
-//    selected_point = false;
-//    selected_point_p = NULL;
-//
-//    selected_line = false;
-//    selected_line_p[0] = NULL;
-//    selected_line_p[1] = NULL;
 }
 
 void Canvas::resetHover() {
@@ -163,10 +156,13 @@ void Canvas::setHoverPoint(ofPoint p) {
             continue;
         }
         for (Vertex *v = lines[i]->front; v != NULL; v = v->next) {
-            float d0 = (p - *v).length();
-            if (d0 < 2.0f && d0 < min_d) {
-                min_d = d0;
-                min_d_v = v;
+            if (!(selection.vertices.size() == 1 && v->selected &&
+                  ui_state == UI_MOVING_SELECTION)) {
+                float d0 = (p - *v).length();
+                if (d0 < 2.0f && d0 < min_d) {
+                    min_d = d0;
+                    min_d_v = v;
+                }
             }
             if (v->next == lines[i]->front) break; // closed polylines
         }
@@ -175,6 +171,13 @@ void Canvas::setHoverPoint(ofPoint p) {
         hover_point_p = min_d_v;
         hover_point = true;
         min_d_v->hover = true;
+    }
+
+    if (ui_state == UI_MOVING_SELECTION) {
+        for (int i = 0; i < selection.vertices.size(); i++) {
+            Vertex *v = getVertex(selection.vertices[i]);
+            v->hover = true;
+        }
     }
 }
 

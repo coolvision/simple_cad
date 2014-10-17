@@ -87,8 +87,8 @@ void ofApp::setup(){
 
 //==============================================================================
     // default start state
-    ui_state = UI_SELECT;
-
+    c.ui_state = UI_SELECT;
+    
     c.clearSelection();
     c.resetHover();
 

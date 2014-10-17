@@ -10,15 +10,11 @@
 
 void ofApp::keyPressed(int key){
 
-    //cout << "keyPressed " << key << endl;
-
     // is it this way on most keyboards???
     if (key == '=') {
-        //cout << "zoom_in = true " << endl;
         zoom_in = true;
     }
     if (key == '-') {
-        //cout << "zoom_out = true " << endl;
         zoom_out = true;
     }
 
@@ -29,6 +25,14 @@ void ofApp::keyPressed(int key){
     bool cmd = ofGetKeyPressed(OF_KEY_COMMAND);
     bool ctrl = ofGetKeyPressed(OF_KEY_CONTROL);
     bool shift = ofGetKeyPressed(OF_KEY_SHIFT);
+
+    if (key == 's' && (cmd || ctrl)) {
+        c.save(ofToDataPath("lines.txt"));
+    }
+    if (key == 'l' && (cmd || ctrl)) {
+        c.load(ofToDataPath("lines.txt"));
+    }
+
     if (key == 'z' && (cmd || ctrl) && !shift) {
 
         if (c.curr_action_i > c.actions.size() - 1) {
@@ -84,7 +88,7 @@ void ofApp::SelectButtonClick(ButtonClickEventData &d) {
 
     unselectMode();
     d.button_p->selected = true;
-    ui_state = UI_SELECT;
+    c.ui_state = UI_SELECT;
 }
 
 
@@ -92,7 +96,7 @@ void ofApp::MoveButtonClick(ButtonClickEventData &d) {
 
     unselectMode();
     d.button_p->selected = true;
-    ui_state = UI_MOVE_CANVAS;
+    c.ui_state = UI_MOVE_CANVAS;
 }
 
 
@@ -102,7 +106,7 @@ void ofApp::LineButtonClick(ButtonClickEventData &d) {
 
     line_button->selected = true;
     //add_line->selected = true;
-    ui_state = UI_DRAW_LINE;
+    c.ui_state = UI_DRAW_LINE;
 }
 
 void ofApp::VertexButtonClick(ButtonClickEventData &d) {
@@ -110,7 +114,7 @@ void ofApp::VertexButtonClick(ButtonClickEventData &d) {
     unselectMode();
 
     vertex_button->selected = true;
-    ui_state = UI_ADD_VERTEX;
+    c.ui_state = UI_ADD_VERTEX;
 }
 
 void ofApp::ZoomInButtonClick(ButtonClickEventData &d) {

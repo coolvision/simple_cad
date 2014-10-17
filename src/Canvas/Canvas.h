@@ -13,16 +13,32 @@
 #include "Polyline.h"
 #include "Actions.h"
 
+// ui state machine
+enum UIState {
+    UI_DRAW_LINE = 0,
+    UI_DRAWING_LINE,
+    UI_SELECT,
+    UI_MOUSE_SELECTION,
+    UI_MOVING_SELECTION,
+    UI_ADD_VERTEX,
+    UI_MOVE_CANVAS,
+    UI_MOVING_CANVAS
+};
+
 class Canvas {
 public:
 
     Canvas();
+    void save(string path);
+    void load(string path);
 
     vector<Action *> actions;
     int curr_action_i;
     void resetActions();
     void addAction(Action *a);
-    
+
+    UIState ui_state;
+
 // content storage & vis
 //==============================================================================
     vector<Polyline *> lines;
@@ -47,27 +63,22 @@ public:
     void clearSelection();
     void deleteSelection();
     SelectionList selection;
+    SelectionList new_selection;
+    SelectionState selection_state;
 
     ofRectangle selection_r;
 
     // points
     bool hover_point;
     Vertex *hover_point_p;
-//    bool selected_point;
-//    Vertex *selected_point_p;
 
     // line segments
     bool hover_line;
     Vertex *hover_line_p[2];
-//    bool selected_line;
-//    Vertex *selected_line_p[2];
 
     // polygons
     bool hover_polygon;
     Polyline *hover_polygon_p;
-
-//    bool was_selected_point;
-//    bool move_already_selected;
 
     ofPoint snap(ofPoint p);
     ofPoint snapMm(ofPoint p);
