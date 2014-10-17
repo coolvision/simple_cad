@@ -151,15 +151,17 @@ void ConnectPolylinesAction::doAction(Canvas *c) {
         if (reverse) {
             l->reverse();
         }
-        for (Vertex *v = l->back->prev; v != NULL; v = v->prev) {
-            if (add_back) {
-                p->addBack(ofPoint(*v));
-            } else {
-                p->addFront(ofPoint(*v));
+        if (add_back) {
+            for (Vertex *v = l->front->next; v != NULL; v = v->next) {
+                p->addBack(*v);
+            }
+        } else {
+            for (Vertex *v = l->back->prev; v != NULL; v = v->prev) {
+                p->addFront(*v);
             }
         }
 
-        c->lines[p2.i]->release();
+        l->release();
     }
 
     undo = false;
