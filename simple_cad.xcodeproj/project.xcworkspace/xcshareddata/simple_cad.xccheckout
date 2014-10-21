@@ -10,6 +10,8 @@
 	<string>simple_cad</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
+		<key>2559BBC2C6F846687D7E9F4E42C98FC44D06AE4C</key>
+		<string>https://github.com/bakercp/ofxUnicode.git</string>
 		<key>328B2D9D97956D43F1C477558678A6865720047A</key>
 		<string>https://github.com/memo/ofxMSAInteractiveObject.git</string>
 		<key>9B774B0323186B2BCB6A3C5ECEB04025E7DCF467</key>
@@ -23,6 +25,8 @@
 	<string>simple_cad.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
+		<key>2559BBC2C6F846687D7E9F4E42C98FC44D06AE4C</key>
+		<string>../../../../../addons/ofxUnicode</string>
 		<key>328B2D9D97956D43F1C477558678A6865720047A</key>
 		<string>../../../../../addons/ofxMSAInteractiveObject</string>
 		<key>9B774B0323186B2BCB6A3C5ECEB04025E7DCF467</key>
@@ -63,6 +67,14 @@
 			<string>ADACB6BAEA67271B9A2BF47167EA909FD6B0CF40</string>
 			<key>IDESourceControlWCCName</key>
 			<string>ofxSimpleGuiToo</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>2559BBC2C6F846687D7E9F4E42C98FC44D06AE4C</string>
+			<key>IDESourceControlWCCName</key>
+			<string>ofxUnicode</string>
 		</dict>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>

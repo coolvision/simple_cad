@@ -3,7 +3,6 @@
 #include "ofMain.h"
 
 #include "ofxFontStash.h"
-#include "ofxSvg.h"
 
 #include "Polyline.h"
 #include "Canvas.h"
