@@ -44,6 +44,8 @@ public:
     void MoveButtonClick(ButtonClickEventData &d);
     void ZoomInButtonClick(ButtonClickEventData &d);
     void ZoomOutButtonClick(ButtonClickEventData &d);
+    void addFixedJointClick(ButtonClickEventData &d);
+    void addRJointClick(ButtonClickEventData &d);
 
     Button *select_button;
     Button *line_button;

@@ -26,13 +26,13 @@
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>2559BBC2C6F846687D7E9F4E42C98FC44D06AE4C</key>
-		<string>../../../../../addons/ofxUnicode</string>
+		<string>../../../addons/ofxUnicode</string>
 		<key>328B2D9D97956D43F1C477558678A6865720047A</key>
-		<string>../../../../../addons/ofxMSAInteractiveObject</string>
+		<string>../../../addons/ofxMSAInteractiveObject</string>
 		<key>9B774B0323186B2BCB6A3C5ECEB04025E7DCF467</key>
-		<string>../../../../../addons/ofxFontStash</string>
+		<string>../../../addons/ofxFontStash</string>
 		<key>ADACB6BAEA67271B9A2BF47167EA909FD6B0CF40</key>
-		<string>../../../../../addons/ofxSimpleGuiToo</string>
+		<string>../../../addons/ofxSimpleGuiToo</string>
 		<key>CCAD433116D1C8D5FDE6FADA9F576076DEB909AA</key>
 		<string>../..</string>
 	</dict>

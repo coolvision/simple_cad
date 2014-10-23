@@ -63,6 +63,8 @@ void Button::draw() {
     }
     icon.draw((int) (x + 3), (int) y + 3);
 
+    //icon_path.draw((int) (x + 3), (int) y + 3);
+
     ofPopStyle();
 }
 
@@ -75,7 +77,7 @@ Button::Button(string label, int x, int y, int w, int h) {
     selected = false;
     hover = false;
     dragging = false;
-    draggable = false;
+    draggable = true;
 
     radio = false;
     toggle = false;

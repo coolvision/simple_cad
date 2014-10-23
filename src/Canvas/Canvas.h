@@ -12,6 +12,7 @@
 
 #include "Polyline.h"
 #include "Actions.h"
+#include "Joint.h"
 
 // ui state machine
 enum UIState {
@@ -22,7 +23,9 @@ enum UIState {
     UI_MOVING_SELECTION,
     UI_ADD_VERTEX,
     UI_MOVE_CANVAS,
-    UI_MOVING_CANVAS
+    UI_MOVING_CANVAS,
+    UI_ADD_JOINT_FIXED,
+    UI_ADD_JOINT_R
 };
 
 class Canvas {
@@ -38,6 +41,13 @@ public:
     void addAction(Action *a);
 
     UIState ui_state;
+
+// joints
+//==============================================================================
+    vector<Joint *>joints;
+
+    ofImage joint_icon_fixed;
+    ofImage joint_icon_r;
 
 // content storage & vis
 //==============================================================================

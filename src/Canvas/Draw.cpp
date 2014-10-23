@@ -23,7 +23,7 @@ void Canvas::drawLine(Polyline *l) {
     ofEnableSmoothing();
     ofEnableAntiAliasing();
 
-    float point_size = 4.0f * zoom;
+    float point_size = 3.0f * zoom;
     if (point_size < 1.0f) {
         point_size = 1.0f;
     }

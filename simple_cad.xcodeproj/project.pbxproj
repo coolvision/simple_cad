@@ -32,6 +32,7 @@
 		53F89D0819F3280A00C0B047 /* ofTextConverter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 53F89CFF19F3280A00C0B047 /* ofTextConverter.cpp */; };
 		53F89D0919F3280A00C0B047 /* ofUnicode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 53F89D0119F3280A00C0B047 /* ofUnicode.cpp */; };
 		53F89D0A19F3280A00C0B047 /* ofUTF8.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 53F89D0319F3280A00C0B047 /* ofUTF8.cpp */; };
+		53F89D2519F97D7500C0B047 /* Joint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 53F89D2319F97D7500C0B047 /* Joint.cpp */; };
 		5A4349E9754D6FA14C0F2A3A /* tinyxmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FC5DA1C87211D4F6377DA719 /* tinyxmlparser.cpp */; };
 		603044E656EA8D499FCF7DEA /* ofxVectorGraphics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 318ABED90EADFB757FFDCCAF /* ofxVectorGraphics.cpp */; };
 		63B57AC5BF4EF088491E0317 /* ofxXmlSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 50DF87D612C5AAE17AAFA6C0 /* ofxXmlSettings.cpp */; };
@@ -152,6 +153,8 @@
 		53F89D0219F3280A00C0B047 /* ofUnicode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofUnicode.h; sourceTree = "<group>"; };
 		53F89D0319F3280A00C0B047 /* ofUTF8.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofUTF8.cpp; sourceTree = "<group>"; };
 		53F89D0419F3280A00C0B047 /* ofUTF8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofUTF8.h; sourceTree = "<group>"; };
+		53F89D2319F97D7500C0B047 /* Joint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Joint.cpp; sourceTree = "<group>"; };
+		53F89D2419F97D7500C0B047 /* Joint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Joint.h; sourceTree = "<group>"; };
 		5EAF0A3CB08E81512BB99F68 /* ofxSimpleGuiSlider2d.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxSimpleGuiSlider2d.cpp; path = ../../../addons/ofxSimpleGuiToo/src/Controls/ofxSimpleGuiSlider2d.cpp; sourceTree = SOURCE_ROOT; };
 		713D63A8F17BDD3AC3782A70 /* ofxSimpleGuiSliderFloat.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxSimpleGuiSliderFloat.h; path = ../../../addons/ofxSimpleGuiToo/src/Controls/ofxSimpleGuiSliderFloat.h; sourceTree = SOURCE_ROOT; };
 		7A7CBAC306F060BBC794C4F0 /* ofxSimpleGuiTitle.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxSimpleGuiTitle.cpp; path = ../../../addons/ofxSimpleGuiToo/src/Controls/ofxSimpleGuiTitle.cpp; sourceTree = SOURCE_ROOT; };
@@ -346,6 +349,8 @@
 				53F89CC019F19CCD00C0B047 /* Polyline.cpp */,
 				53F89CC119F19CCD00C0B047 /* Polyline.h */,
 				53F89CC219F19CCD00C0B047 /* Selection.cpp */,
+				53F89D2319F97D7500C0B047 /* Joint.cpp */,
+				53F89D2419F97D7500C0B047 /* Joint.h */,
 			);
 			path = Canvas;
 			sourceTree = "<group>";
@@ -765,6 +770,7 @@
 				D1395DD979998DCFFA40ACAC /* ofxMSAInteractiveObject.cpp in Sources */,
 				A0B7F6A3EC34B4F84321385D /* ofxSimpleGuiButton.cpp in Sources */,
 				E39BF54C7233C89A5BB42174 /* ofxSimpleGuiColorPicker.cpp in Sources */,
+				53F89D2519F97D7500C0B047 /* Joint.cpp in Sources */,
 				2DD56BBC82953D6AE0A018BF /* ofxSimpleGuiComboBox.cpp in Sources */,
 				53F89CCC19F19CCD00C0B047 /* Canvas.cpp in Sources */,
 				53F89CD319F19CCD00C0B047 /* MouseUpdate.cpp in Sources */,

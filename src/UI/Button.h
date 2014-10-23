@@ -22,6 +22,8 @@ public:
 class Button: public ofxMSAInteractiveObject {
 public:
 
+    ofPath icon_path;
+
     Button(string label, int x, int y, int w, int h);
 
     static ofxFontStash font;

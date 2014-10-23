@@ -24,6 +24,24 @@ void ofApp::mousePressed(int x, int y, int button) {
         return;
     }
 
+    ofPoint icon_offset(13, 13);
+    if (c.ui_state == UI_ADD_JOINT_R) {
+        c.joints.push_back(new Joint());
+        c.joints.back()->type = JOINT_REVOLUTE;
+        ofPoint p = c.getPx(p_mm) - icon_offset;
+        c.joints.back()->x = p.x;
+        c.joints.back()->y = p.y;
+        c.ui_state = UI_SELECT;
+    }
+    if (c.ui_state == UI_ADD_JOINT_FIXED) {
+        c.joints.push_back(new Joint());
+        c.joints.back()->type = JOINT_FIXED;
+        ofPoint p = c.getPx(p_mm) - icon_offset;
+        c.joints.back()->x = p.x;
+        c.joints.back()->y = p.y;
+        c.ui_state = UI_SELECT;
+    }
+
     if (c.ui_state == UI_MOVE_CANVAS || c.ui_state == UI_MOVING_CANVAS) {
         ofPoint p = ofPoint(x, y);
         c.start_click = p;

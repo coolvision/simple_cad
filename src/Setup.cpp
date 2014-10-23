@@ -78,12 +78,36 @@ void ofApp::setup(){
     ofAddListener(button->click_event, this, &ofApp::ZoomInButtonClick);
     canvas_toolbar.buttons.push_back(button);
     i++;
-    
+
     button = new Button("zoom out",
                         margin_left, start_y + inc_y * i, button_w, button_h);
     button->icon.loadImage(ofToDataPath("icons/minus/icon.png"));
     ofAddListener(button->click_event, this, &ofApp::ZoomOutButtonClick);
     canvas_toolbar.buttons.push_back(button);
+    i++;
+
+    button = new Button("revolute", margin_left,
+                             start_y + inc_y * i, button_w, button_h);
+    button->icon.loadImage(ofToDataPath("icons/revolute.png"));
+    ofAddListener(button->click_event, this, &ofApp::addRJointClick);
+    canvas_toolbar.buttons.push_back(button);
+    i++;
+
+    button = new Button("fixed",
+                                margin_left, start_y + inc_y * i, button_w, button_h);
+    button->icon.loadImage(ofToDataPath("icons/fix2.png"));
+    ofAddListener(button->click_event, this, &ofApp::addFixedJointClick);
+    canvas_toolbar.buttons.push_back(button);
+    i++;
+
+    button = new Button("gear",
+                        margin_left, start_y + inc_y * i, button_w, button_h);
+    button->icon.loadImage(ofToDataPath("icons/gear.png"));
+    //ofAddListener(button->click_event, this, &ofApp::ZoomOutButtonClick);
+    canvas_toolbar.buttons.push_back(button);
+
+    c.joint_icon_fixed.loadImage(ofToDataPath("icons/fix_canvas.png"));
+    c.joint_icon_r.loadImage(ofToDataPath("icons/revolute_canvas.png"));
 
 //==============================================================================
     // default start state

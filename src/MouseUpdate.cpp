@@ -19,7 +19,7 @@ void ofApp::mouseMoved(int x, int y ) {
     if (canvas_toolbar.inside(p)) {
         return;
     }
-
+    
     if (c.ui_state == UI_ADD_VERTEX) {
 
         c.resetHover();

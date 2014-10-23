@@ -93,7 +93,27 @@ void ofApp::draw(){
 //==============================================================================
     canvas_toolbar.draw();
 
+    ofPoint icon_offset(13, 13);
+    if (c.ui_state == UI_ADD_JOINT_R) {
+        ofSetColor(ofColor::red);
+        c.joint_icon_r.draw(p - icon_offset);
+    }
+    if (c.ui_state == UI_ADD_JOINT_FIXED) {
+        ofSetColor(ofColor::red);
+        c.joint_icon_fixed.draw(p - icon_offset);
+    }
 
+    for (int i = 0; i < c.joints.size(); i++) {
+        c.joints[i]->draw();
+//        c.joints[i]->p = c.getMm(ofPoint(c.joints[i]->x, c.joints[i]->y));
+//        ofPoint p1 = c.getPx(c.joints[i]->p);
+//        ofSetColor(ofColor::red);
+//        if (c.joints[i]->type == JOINT_FIXED) {
+//            c.joint_icon_fixed.draw(p1 - icon_offset);
+//        } else {
+//            c.joint_icon_r.draw(p1 - icon_offset);
+//        }
+    }
 
     ofPopStyle();
 }
