@@ -77,7 +77,7 @@ Button::Button(string label, int x, int y, int w, int h) {
     selected = false;
     hover = false;
     dragging = false;
-    draggable = true;
+    draggable = false;
 
     radio = false;
     toggle = false;

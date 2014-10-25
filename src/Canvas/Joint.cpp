@@ -7,6 +7,7 @@
 //
 
 #include "Joint.h"
+#include "Canvas.h"
 
 void Joint::draw() {
 
@@ -15,17 +16,17 @@ void Joint::draw() {
     } else {
         hover = false;
     }
-    ofFill();
-    ofColor color(255);
-    ofSetColor(color);
-    if (hover || selected) {
-        ofSetColor(color - ofColor(20));
-    }
-    if (dragging) {
-        ofSetColor(50);
-    }
-
-    ofRect(x, y, width, height);
+//    ofFill();
+//    ofColor color(255);
+//    ofSetColor(color);
+//    if (hover || selected) {
+//        ofSetColor(color - ofColor(20));
+//    }
+//    if (dragging) {
+//        ofSetColor(50);
+//    }
+//
+//    ofRect(x, y, width, height);
 
 }
 
@@ -95,8 +96,48 @@ void Joint::onReleaseOutside(int x, int y, int button) {
 
 void Joint::onReleaseAny(int x, int y, int button) {
 
+    ofPoint icon_offset(13, 13);
+
+    p = c->snapMm(c->getMm(ofPoint(this->x, this->y) + icon_offset));
+
+    ofPoint p1 = c->getPx(p) - icon_offset;
+
+    this->x = p1.x;
+    this->y = p1.y;
 }
 
 bool Joint::hitTest(int tx, int ty) {
     return ((tx > x) && (tx < x + width) && (ty > y) && (ty < y + height));
 }
+
+void Joint::mouseDragged(int x, int y, int button) {
+
+    onDragUpdate(x, y, button);
+
+//    if(hitTest(x, y)) {
+//        cout << "hitTest(x, y) " << endl;
+//        // if mouse is over the object
+//        if(!_isMouseOver) {						// if wasn't over previous frame
+//            //				onPress(x, y);							// call onPress - maybe not
+//            _isMouseOver = true;						// update flag
+//            onRollOver(x, y);						// call onRollOver
+//        }
+//        onDragOver(x, y, button);				// and trigger onDragOver
+//    } else {
+//        cout << "!hitTest(x, y) " << endl;
+//        if(_isMouseOver) {					// if mouse is not over the object, but the flag is true (From previous frame)
+//            onRollOut();							// call onRollOut
+//            _isMouseOver = false;						// update flag
+//        }
+//        cout << "isMousePressed " << isMousePressed(button) << " " << button << endl;
+//        if(isMousePressed(button)) {
+//            cout << "if(isMousePressed(button)) { " << endl;
+//            onDragOutside(x, y, button);
+//        }
+//        _isMousePressed[button] = false;
+//    }
+
+}
+
+
+

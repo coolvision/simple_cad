@@ -10,6 +10,10 @@
 
 void ofApp::mousePressed(int x, int y, int button) {
 
+    if (c.dragging_joint) {
+        c.ui_state = UI_SELECT;
+    }
+
     ofPoint p_mm = c.snapMm(c.getMm(ofPoint(x, y)));
     // snap to the hovering point
     if (c.hover_point && c.hover_point_p) {
@@ -31,6 +35,7 @@ void ofApp::mousePressed(int x, int y, int button) {
         ofPoint p = c.getPx(p_mm) - icon_offset;
         c.joints.back()->x = p.x;
         c.joints.back()->y = p.y;
+        c.joints.back()->c = &c;
         c.ui_state = UI_SELECT;
     }
     if (c.ui_state == UI_ADD_JOINT_FIXED) {
@@ -39,6 +44,7 @@ void ofApp::mousePressed(int x, int y, int button) {
         ofPoint p = c.getPx(p_mm) - icon_offset;
         c.joints.back()->x = p.x;
         c.joints.back()->y = p.y;
+        c.joints.back()->c = &c;
         c.ui_state = UI_SELECT;
     }
 
@@ -179,6 +185,10 @@ void ofApp::mousePressed(int x, int y, int button) {
 }
 
 void ofApp::mouseReleased(int x, int y, int button) {
+
+    if (c.dragging_joint) {
+        c.ui_state = UI_SELECT;
+    }
 
     ofPoint p_mm = c.snapMm(c.getMm(ofPoint(x, y)));
 

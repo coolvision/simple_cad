@@ -94,25 +94,39 @@ void ofApp::draw(){
     canvas_toolbar.draw();
 
     ofPoint icon_offset(13, 13);
+    ofPoint p1(ofGetMouseX(), ofGetMouseY());
     if (c.ui_state == UI_ADD_JOINT_R) {
         ofSetColor(ofColor::red);
-        c.joint_icon_r.draw(p - icon_offset);
+        c.joint_icon_r.draw(p1 - icon_offset);
     }
     if (c.ui_state == UI_ADD_JOINT_FIXED) {
         ofSetColor(ofColor::red);
-        c.joint_icon_fixed.draw(p - icon_offset);
+        c.joint_icon_fixed.draw(p1 - icon_offset);
     }
 
+    c.dragging_joint = false;
     for (int i = 0; i < c.joints.size(); i++) {
         c.joints[i]->draw();
-//        c.joints[i]->p = c.getMm(ofPoint(c.joints[i]->x, c.joints[i]->y));
-//        ofPoint p1 = c.getPx(c.joints[i]->p);
-//        ofSetColor(ofColor::red);
-//        if (c.joints[i]->type == JOINT_FIXED) {
-//            c.joint_icon_fixed.draw(p1 - icon_offset);
-//        } else {
-//            c.joint_icon_r.draw(p1 - icon_offset);
-//        }
+        if (c.joints[i]->dragging) {
+            cout << "c.dragging_joint = true; " << endl;
+            c.dragging_joint = true;
+        }
+
+        c.joints[i]->p =
+            c.getMm(ofPoint(c.joints[i]->x, c.joints[i]->y) + icon_offset);
+        ofPoint p1 = c.getPx(c.joints[i]->p);
+
+        if (c.joints[i]->dragging || c.joints[i]->hover) {
+            ofSetColor(ofColor::darkRed);
+        } else {
+            ofSetColor(ofColor::red);
+        }
+
+        if (c.joints[i]->type == JOINT_FIXED) {
+            c.joint_icon_fixed.draw(p1 - icon_offset);
+        } else {
+            c.joint_icon_r.draw(p1 - icon_offset);
+        }
     }
 
     ofPopStyle();

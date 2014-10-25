@@ -49,6 +49,8 @@ public:
     ofImage joint_icon_fixed;
     ofImage joint_icon_r;
 
+    bool dragging_joint;
+
 // content storage & vis
 //==============================================================================
     vector<Polyline *> lines;
