@@ -95,9 +95,9 @@ void ofApp::mouseDragged(int x, int y, int button) {
     c.setHoverPoint(p_mm);
 
     if (c.ui_state == UI_MOVING_SELECTION) {
-        for (int i = 0; i < c.selection.vertices.size(); i++) {
-            Vertex *v = c.getVertex(c.selection.vertices[i]);
-            v->p->updatePath();
+        for (int i = 0; i < c.selection.items.size(); i++) {
+            Vertex *v = c.getVertex(c.selection.items[i]);
+            v->polyline->updatePath();
             *v = v->start_p + (p_mm - c.start_click);
         }
     }

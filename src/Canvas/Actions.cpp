@@ -34,7 +34,7 @@ void AddLineAction::doAction(Canvas *c) {
 
     if (undo) {
         c->lines.push_back(new Polyline());
-        c->lines.back()->i = c->lines.size() - 1;
+        c->lines.back()->id = c->lines.size() - 1;
         c->lines.back()->addBack(p[0]);
         c->lines.back()->addBack(p[1]);
     }
@@ -65,10 +65,10 @@ void MoveSelectionAction::doAction(Canvas *c) {
     label = "move " + ofToString(v.x) + " " + ofToString(v.y);
 
     if (undo) {
-        for (int i = 0; i < selection.vertices.size(); i++) {
-            Vertex *vertex = c->getVertex(selection.vertices[i]);
+        for (int i = 0; i < selection.items.size(); i++) {
+            Vertex *vertex = c->getVertex(selection.items[i]);
             *vertex = *vertex + v;
-            vertex->p->updatePath();
+            vertex->polyline->updatePath();
         }
     }
     undo = false;
@@ -79,10 +79,10 @@ void MoveSelectionAction::undoAction(Canvas *c) {
     label = "undo move " + ofToString(v.x) + " " + ofToString(v.y);
 
     if (!undo) {
-        for (int i = 0; i < selection.vertices.size(); i++) {
-            Vertex *vertex = c->getVertex(selection.vertices[i]);
+        for (int i = 0; i < selection.items.size(); i++) {
+            Vertex *vertex = c->getVertex(selection.items[i]);
             *vertex = *vertex - v;
-            vertex->p->updatePath();
+            vertex->polyline->updatePath();
         }
     }
     undo = true;
@@ -99,12 +99,12 @@ void ChangeSelectionAction::doAction(Canvas *c) {
     label = "select";
 
     if (undo) {
-        for (int i = 0; i < prev_selection.vertices.size(); i++) {
-            Vertex *vertex = c->getVertex(prev_selection.vertices[i]);
+        for (int i = 0; i < prev_selection.items.size(); i++) {
+            Vertex *vertex = c->getVertex(prev_selection.items[i]);
             vertex->selected = false;
         }
-        for (int i = 0; i < new_selection.vertices.size(); i++) {
-            Vertex *vertex = c->getVertex(new_selection.vertices[i]);
+        for (int i = 0; i < new_selection.items.size(); i++) {
+            Vertex *vertex = c->getVertex(new_selection.items[i]);
             vertex->selected = true;
         }
         c->selection = new_selection;
@@ -118,12 +118,12 @@ void ChangeSelectionAction::undoAction(Canvas *c) {
     label = "undo select";
 
     if (!undo) {
-        for (int i = 0; i < new_selection.vertices.size(); i++) {
-            Vertex *vertex = c->getVertex(new_selection.vertices[i]);
+        for (int i = 0; i < new_selection.items.size(); i++) {
+            Vertex *vertex = c->getVertex(new_selection.items[i]);
             vertex->selected = false;
         }
-        for (int i = 0; i < prev_selection.vertices.size(); i++) {
-            Vertex *vertex = c->getVertex(prev_selection.vertices[i]);
+        for (int i = 0; i < prev_selection.items.size(); i++) {
+            Vertex *vertex = c->getVertex(prev_selection.items[i]);
             vertex->selected = true;
         }
         c->selection = prev_selection;
@@ -140,13 +140,13 @@ ConnectPolylinesAction::ConnectPolylinesAction() {
 
 void ConnectPolylinesAction::doAction(Canvas *c) {
 
-    label = "connect " + ofToString(p1.i) + " " + ofToString(p2.i);
+    label = "connect " + ofToString(p1.id) + " " + ofToString(p2.id);
 
     if (undo) {
 
         // get the current polylines
-        Polyline *p = c->lines[p1.i];
-        Polyline *l = c->lines[p2.i];
+        Polyline *p = c->lines[p1.id];
+        Polyline *l = c->lines[p2.id];
 
         if (reverse) {
             l->reverse();
@@ -169,14 +169,14 @@ void ConnectPolylinesAction::doAction(Canvas *c) {
 
 void ConnectPolylinesAction::undoAction(Canvas *c) {
 
-    label = "undo connect " + ofToString(p1.i) + " " + ofToString(p2.i);
+    label = "undo connect " + ofToString(p1.id) + " " + ofToString(p2.id);
 
     if (!undo) {
-        c->lines[p1.i]->release();
-        c->lines[p2.i]->release();
+        c->lines[p1.id]->release();
+        c->lines[p2.id]->release();
 
-        c->lines[p1.i]->cloneFrom(&p1);
-        c->lines[p2.i]->cloneFrom(&p2);
+        c->lines[p1.id]->cloneFrom(&p1);
+        c->lines[p2.id]->cloneFrom(&p2);
     }
 
     undo = true;
@@ -190,11 +190,11 @@ ModifyPolylineAction::ModifyPolylineAction() {
 
 void ModifyPolylineAction::doAction(Canvas *c) {
 
-    label = "modify " + ofToString(p_after.i);
+    label = "modify " + ofToString(p_after.id);
 
     if (undo) {
-        c->lines[p_after.i]->release();
-        c->lines[p_after.i]->cloneFrom(&p_after);
+        c->lines[p_after.id]->release();
+        c->lines[p_after.id]->cloneFrom(&p_after);
     }
 
     undo = false;
@@ -202,11 +202,11 @@ void ModifyPolylineAction::doAction(Canvas *c) {
 
 void ModifyPolylineAction::undoAction(Canvas *c) {
 
-    label = "undo modify " + ofToString(p_after.i);
+    label = "undo modify " + ofToString(p_after.id);
 
     if (!undo) {
-        c->lines[p_after.i]->release();
-        c->lines[p_after.i]->cloneFrom(&p_before);
+        c->lines[p_after.id]->release();
+        c->lines[p_after.id]->cloneFrom(&p_before);
     }
 
     undo = true;

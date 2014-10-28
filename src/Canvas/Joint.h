@@ -9,7 +9,6 @@
 #pragma once
 
 #include "ofMain.h"
-#include "ofxMSAInteractiveObject.h"
 
 enum JointType {
     JOINT_FIXED = 0,
@@ -26,37 +25,21 @@ public:
 
 class Canvas;
 
-class Joint: public ofxMSAInteractiveObject {
+class Joint {
 public:
-
-    ofPoint p; // position, in mm
-
-    JointType type;
-
     Joint();
 
-    // gui
-    void onPress(int x, int y, int button);
-    void onDragOver(int x, int y, int button);
-    void onDragOutside(int x, int y, int button);
-    void onRelease(int x, int y, int button);
-    void onReleaseOutside(int x, int y, int button);
-    void onDragUpdate(int x, int y, int button);
-    void mouseDragged(int x, int y, int button);
-    virtual bool hitTest(int tx, int ty);
-    void setDraggable(bool d);
-    void onReleaseAny(int x, int y, int button);
+    ofPoint p; // position, in mm
+    int width;
+    int height;
+
+    JointType type;
 
     bool hover;
     bool selected;
     bool dragging;
-    bool draggable;
-    ofPoint drag_start;
+    ofPoint start_p;
 
     // events
     ofEvent<JointClickEventData> click_event;
-
-    Canvas *c;
-
-    void draw();
 };

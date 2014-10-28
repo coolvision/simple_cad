@@ -34,9 +34,9 @@ void ofApp::draw(){
     }
 
     ofSetColor(ofColor::black);
-    for (int i = 0; i < c.selection.vertices.size(); i++) {
-        VertexId v = c.selection.vertices[i];
-        font.draw("line:" + ofToString(v.line_i) + " v:" + ofToString(v.v_i),
+    for (int i = 0; i < c.selection.items.size(); i++) {
+        ItemId v = c.selection.items[i];
+        font.draw("line:" + ofToString(v.container_id) + " v:" + ofToString(v.item_id),
                   16, ofGetWindowWidth() - 400,
                   20 + 20 * i);
     }
@@ -104,24 +104,15 @@ void ofApp::draw(){
         c.joint_icon_fixed.draw(p1 - icon_offset);
     }
 
-    c.dragging_joint = false;
     for (int i = 0; i < c.joints.size(); i++) {
-        c.joints[i]->draw();
-        if (c.joints[i]->dragging) {
-            cout << "c.dragging_joint = true; " << endl;
-            c.dragging_joint = true;
-        }
 
-        c.joints[i]->p =
-            c.getMm(ofPoint(c.joints[i]->x, c.joints[i]->y) + icon_offset);
-        ofPoint p1 = c.getPx(c.joints[i]->p);
-
-        if (c.joints[i]->dragging || c.joints[i]->hover) {
-            ofSetColor(ofColor::darkRed);
+        if (c.joints[i]->hover) {
+            ofSetColor(ofColor::orangeRed);
         } else {
             ofSetColor(ofColor::red);
         }
 
+        p1 = c.getPx(c.joints[i]->p);
         if (c.joints[i]->type == JOINT_FIXED) {
             c.joint_icon_fixed.draw(p1 - icon_offset);
         } else {

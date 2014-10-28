@@ -17,6 +17,7 @@
 		49890708C36FA822FC58A60B /* ofxSimpleGuiFPSCounter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3C4855735366AEC807A7CF36 /* ofxSimpleGuiFPSCounter.cpp */; };
 		4B84BE00D8222E1072317E49 /* ofxGrabCam.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 126D728B075C482C4C740428 /* ofxGrabCam.cpp */; };
 		522FFFB6EB3DA57CCB07EF9A /* stb_truetype.c in Sources */ = {isa = PBXBuildFile; fileRef = DC55FEC740DD28FBDD2D4406 /* stb_truetype.c */; };
+		5375107C19FFC0D600126061 /* InteractiveObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5375107A19FFC0D600126061 /* InteractiveObject.cpp */; };
 		53F89CCB19F19CCD00C0B047 /* Actions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 53F89CBA19F19CCD00C0B047 /* Actions.cpp */; };
 		53F89CCC19F19CCD00C0B047 /* Canvas.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 53F89CBC19F19CCD00C0B047 /* Canvas.cpp */; };
 		53F89CCD19F19CCD00C0B047 /* ConnectLines.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 53F89CBE19F19CCD00C0B047 /* ConnectLines.cpp */; };
@@ -121,6 +122,8 @@
 		4A2C7833E609686E9ECD8A8C /* ofxMSAInteractiveObject.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxMSAInteractiveObject.h; path = ../../../addons/ofxMSAInteractiveObject/src/ofxMSAInteractiveObject.h; sourceTree = SOURCE_ROOT; };
 		4D7C691C68BF261275355F84 /* ofxSimpleGuiPage.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxSimpleGuiPage.h; path = ../../../addons/ofxSimpleGuiToo/src/ofxSimpleGuiPage.h; sourceTree = SOURCE_ROOT; };
 		50DF87D612C5AAE17AAFA6C0 /* ofxXmlSettings.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxXmlSettings.cpp; path = ../../../addons/ofxXmlSettings/src/ofxXmlSettings.cpp; sourceTree = SOURCE_ROOT; };
+		5375107A19FFC0D600126061 /* InteractiveObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InteractiveObject.cpp; sourceTree = "<group>"; };
+		5375107B19FFC0D600126061 /* InteractiveObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InteractiveObject.h; sourceTree = "<group>"; };
 		53F89CBA19F19CCD00C0B047 /* Actions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Actions.cpp; sourceTree = "<group>"; };
 		53F89CBB19F19CCD00C0B047 /* Actions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Actions.h; sourceTree = "<group>"; };
 		53F89CBC19F19CCD00C0B047 /* Canvas.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Canvas.cpp; sourceTree = "<group>"; };
@@ -351,6 +354,8 @@
 				53F89CC219F19CCD00C0B047 /* Selection.cpp */,
 				53F89D2319F97D7500C0B047 /* Joint.cpp */,
 				53F89D2419F97D7500C0B047 /* Joint.h */,
+				5375107A19FFC0D600126061 /* InteractiveObject.cpp */,
+				5375107B19FFC0D600126061 /* InteractiveObject.h */,
 			);
 			path = Canvas;
 			sourceTree = "<group>";
@@ -788,6 +793,7 @@
 				8CE60C8F4001811D5B27D0F8 /* ofxSimpleGuiControl.cpp in Sources */,
 				1F910DCF02326B0E25059352 /* ofxSimpleGuiPage.cpp in Sources */,
 				C2ED558D391BA9692D3BF705 /* ofxSimpleGuiToo.cpp in Sources */,
+				5375107C19FFC0D600126061 /* InteractiveObject.cpp in Sources */,
 				7F8D13CD42F89D3284829CF0 /* ofxSimpleGuiValueControl.cpp in Sources */,
 				53F89CCF19F19CCD00C0B047 /* Polyline.cpp in Sources */,
 				53F89D0919F3280A00C0B047 /* ofUnicode.cpp in Sources */,

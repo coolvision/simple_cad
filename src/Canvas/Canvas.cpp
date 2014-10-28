@@ -14,13 +14,12 @@
 Canvas::Canvas() {
 
     curr_action_i = 0;
-    selection_state = SELECTION_NONE;
 }
 
-Vertex *Canvas::getVertex(VertexId v_id) {
+Vertex *Canvas::getVertex(ItemId v_id) {
 
-    if (v_id.line_i < lines.size()) {
-        return lines[v_id.line_i]->getVertex(v_id.v_i);
+    if (v_id.container_id < lines.size()) {
+        return lines[v_id.container_id]->getVertex(v_id.item_id);
     }
     return NULL;
 }
@@ -149,7 +148,7 @@ void Canvas::load(string path) {
 
         for (int i = 0; i < lines_n; i++) {
             lines.push_back(new Polyline());
-            lines.back()->i = lines.size() - 1;
+            lines.back()->id = lines.size() - 1;
             file >> n;
             file >> lines.back()->closed;
             for (int i = 0; i < n; i++) {
@@ -161,7 +160,6 @@ void Canvas::load(string path) {
             if (lines.back()->closed) {
                 lines.back()->toPolygon();
             }
-
         }
         file.close();
     }

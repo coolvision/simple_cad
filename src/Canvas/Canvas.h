@@ -54,7 +54,7 @@ public:
 // content storage & vis
 //==============================================================================
     vector<Polyline *> lines;
-    Vertex *getVertex(VertexId v_id);
+    Vertex *getVertex(ItemId v_id);
 
     void drawLine(Polyline *l);
 
@@ -76,7 +76,6 @@ public:
     void deleteSelection();
     SelectionList selection;
     SelectionList new_selection;
-    SelectionState selection_state;
 
     ofRectangle selection_r;
 

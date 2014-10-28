@@ -129,8 +129,6 @@ void ofApp::keyPressed(int key){
         if (c.curr_action_i < 0) {
             c.curr_action_i = 0;
         }
-
-        cout << "c.curr_action_i " << c.curr_action_i << endl;
     }
     if ((key == 'y' && (cmd || ctrl)) ||
         (key == 'z' && (cmd || ctrl) && shift)) {
@@ -154,8 +152,6 @@ void ofApp::keyPressed(int key){
         if (c.curr_action_i > c.actions.size() - 1) {
             c.curr_action_i = c.actions.size() - 1;
         }
-
-        cout << "c.curr_action_i " << c.curr_action_i << endl;
     }
 }
 

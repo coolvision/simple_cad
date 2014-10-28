@@ -8,34 +8,6 @@
 
 #include "Polyline.h"
 
-int Vertex::points_step = 0;
-ofPoint Vertex::offset;
-
-ofPoint Vertex::getPx() {
-
-    // how many px per mm
-    // points_step = 8.0f * zoom;
-
-    ofPoint p = *this;
-    p *= points_step;
-    p += offset;
-    
-    return p;
-}
-
-VertexId Vertex::getId() {
-
-    VertexId v_id;
-    v_id.line_i = p->getId();
-    v_id.v_i = i;
-
-    return v_id;
-}
-
-int Polyline::getId() {
-    return i;
-}
-
 // can be made more efficient by maintaining an array of the vertices
 Vertex *Polyline::getVertex(int i) {
 
@@ -53,7 +25,7 @@ void Polyline::updateIndexes() {
     int l = 0;
     for (Vertex *v = front; v != NULL; v = v->next) {
         vertices[l] = v;
-        v->i = l;
+        v->id = l;
         l++;
         if (v->next == front) break; // closed polylines
     }
@@ -104,7 +76,8 @@ void Polyline::init(ofPoint p) {
     front = new Vertex();
     back = front;
     *front = p;
-    front->p = this;
+    front->polyline = this;
+    front->parent = this;
     updateIndexes();
 }
 
@@ -118,7 +91,8 @@ void Polyline::addBack(Vertex *vertex) {
         v->x = vertex->x;
         v->y = vertex->y;
         v->start_p = vertex->start_p;
-        v->p = this;
+        v->polyline = this;
+        v->parent = this;
         // update the list
         back->next = v;
         v->prev = back;
@@ -136,7 +110,8 @@ void Polyline::addBack(ofPoint p) {
         // new element
         Vertex *v = new Vertex();
         *v = p;
-        v->p = this;
+        v->polyline = this;
+        v->parent = this;
         // update the list
         back->next = v;
         v->prev = back;
@@ -154,7 +129,8 @@ void Polyline::addFront(ofPoint p) {
         // new element
         Vertex *v = new Vertex();
         *v = p;
-        v->p = this;
+        v->polyline = this;
+        v->parent = this;
         // update the list
         front->prev = v;
         v->next = front;
@@ -218,15 +194,15 @@ void Polyline::updatePath() {
     for (Vertex *v = front; v != NULL; v = v->next) {
         if (v == front) {
             path.newSubPath();
-            path.moveTo(v->getPx());
+            path.moveTo(v->getPx(*v));
         }
-        path.lineTo(v->getPx());
+        path.lineTo(v->getPx(*v));
         if (v->next == front) break; // closed polylines
     }
 
     ofp.clear();
     for (Vertex *v = front; v != NULL; v = v->next) {
-        ofp.addVertex(v->getPx());
+        ofp.addVertex(v->getPx(*v));
         if (v->next == front) break; // closed polylines
     }
     ofp.setClosed(closed);

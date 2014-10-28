@@ -32,19 +32,13 @@ void ofApp::mousePressed(int x, int y, int button) {
     if (c.ui_state == UI_ADD_JOINT_R) {
         c.joints.push_back(new Joint());
         c.joints.back()->type = JOINT_REVOLUTE;
-        ofPoint p = c.getPx(p_mm) - icon_offset;
-        c.joints.back()->x = p.x;
-        c.joints.back()->y = p.y;
-        c.joints.back()->c = &c;
+        c.joints.back()->p = p_mm;
         c.ui_state = UI_SELECT;
     }
     if (c.ui_state == UI_ADD_JOINT_FIXED) {
         c.joints.push_back(new Joint());
         c.joints.back()->type = JOINT_FIXED;
-        ofPoint p = c.getPx(p_mm) - icon_offset;
-        c.joints.back()->x = p.x;
-        c.joints.back()->y = p.y;
-        c.joints.back()->c = &c;
+        c.joints.back()->p = p_mm;
         c.ui_state = UI_SELECT;
     }
 
@@ -120,8 +114,8 @@ void ofApp::mousePressed(int x, int y, int button) {
             c.addAction(select);
         }
 
-        for (int i = 0; i < c.selection.vertices.size(); i++) {
-            Vertex *vertex = c.getVertex(c.selection.vertices[i]);
+        for (int i = 0; i < c.selection.items.size(); i++) {
+            Vertex *vertex = c.getVertex(c.selection.items[i]);
             vertex->start_p = *vertex;
         }
     }
@@ -147,18 +141,18 @@ void ofApp::mousePressed(int x, int y, int button) {
             *v = c.add_v;
 
             ModifyPolylineAction *add = new ModifyPolylineAction();
-            add->p_before.cloneFrom(v0->p);
+            add->p_before.cloneFrom(v0->polyline);
 
             v->p = v0->p;
             v->prev = v0;
             v->next = v1;
             v0->next = v;
             v1->prev = v;
-            v->p->updateIndexes();
+            v->polyline->updateIndexes();
             v->start_p = *v;
-            VertexId new_id = v->getId();
+            ItemId new_id = v->getId();
 
-            add->p_after.cloneFrom(v0->p);
+            add->p_after.cloneFrom(v0->polyline);
             c.addAction(add);
 
             unselectMode();
@@ -236,8 +230,8 @@ void ofApp::mouseReleased(int x, int y, int button) {
 
     if (c.ui_state == UI_MOVING_SELECTION) {
 
-        for (int i = 0; i < c.selection.vertices.size(); i++) {
-            Vertex *v = c.getVertex(c.selection.vertices[i]);
+        for (int i = 0; i < c.selection.items.size(); i++) {
+            Vertex *v = c.getVertex(c.selection.items[i]);
             *v = v->start_p;
         }
 
@@ -253,23 +247,23 @@ void ofApp::mouseReleased(int x, int y, int button) {
             move_action->v = move_v;
             c.addAction(move_action);
 
-            if (c.selection.vertices.size() == 1) {
-                Vertex *v = c.getVertex(c.selection.vertices[0]);
+            if (c.selection.items.size() == 1) {
+                Vertex *v = c.getVertex(c.selection.items[0]);
 
                 ChangeSelectionAction *select = new ChangeSelectionAction();
                 select->prev_selection = c.selection;
                 c.addAction(select);
 
-                c.connectPolylines(v->p);
+                c.connectPolylines(v->polyline);
             }
 
             // connect polylines after the line's dragging
-            if (c.selection.vertices.size() == 2) {
-                Vertex *v1 = c.getVertex(c.selection.vertices[0]);
-                Vertex *v2 = c.getVertex(c.selection.vertices[1]);
+            if (c.selection.items.size() == 2) {
+                Vertex *v1 = c.getVertex(c.selection.items[0]);
+                Vertex *v2 = c.getVertex(c.selection.items[1]);
                 if (v1->p == v2->p) {
-                    c.connectPolylines(v1->p);
-                    c.connectPolylines(v1->p);
+                    c.connectPolylines(v1->polyline);
+                    c.connectPolylines(v1->polyline);
                 }
             }
         }

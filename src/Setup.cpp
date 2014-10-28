@@ -134,8 +134,8 @@ void ofApp::setGrid() {
     int off_x = -1 + (int)c.canvas_offset.x % lines_step;;
     int off_y = (int)c.canvas_offset.y % lines_step;;;
 
-    Vertex::points_step = points_step;
-    Vertex::offset = c.canvas_offset;
+    InteractiveObject::points_step = points_step;
+    InteractiveObject::offset = c.canvas_offset;
     for (int i = 0; i < c.lines.size(); i++) {
         c.lines[i]->updatePath();
     }

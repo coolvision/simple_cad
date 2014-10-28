@@ -8,19 +8,19 @@
 
 #include <Canvas.h>
 
-void SelectionList::add(VertexId v_id) {
+void SelectionList::add(ItemId item_id) {
 
-    for (int i = 0; i < vertices.size(); i++) {
-        if (v_id.line_i == vertices[i].line_i &&
-            v_id.v_i == vertices[i].v_i) {
+    for (int i = 0; i < items.size(); i++) {
+        if (item_id.container_id == items[i].container_id &&
+            item_id.item_id == items[i].item_id) {
             return;
         }
     }
-    vertices.push_back(v_id);
+    items.push_back(item_id);
 }
 
 void SelectionList::clear() {
-    vertices.clear();
+    items.clear();
 }
 
 void Canvas::deleteSelection() {
@@ -40,8 +40,8 @@ void Canvas::deleteSelection() {
     for (int i = 0; i < lines_modified.size(); i++) {
         lines_modified[i] = false;
     }
-    for (int i = 0; i < s.vertices.size(); i++) {
-        lines_modified[s.vertices[i].line_i] = true;
+    for (int i = 0; i < s.items.size(); i++) {
+        lines_modified[s.items[i].container_id] = true;
     }
 
     // modify this polylines
@@ -53,13 +53,13 @@ void Canvas::deleteSelection() {
         ModifyPolylineAction *clear = new ModifyPolylineAction();
         clear->p_before.cloneFrom(lines[i]);
 
-        for (int j = 0; j < s.vertices.size(); j++) {
+        for (int j = 0; j < s.items.size(); j++) {
 
-            if (s.vertices[j].line_i != i) {
+            if (s.items[j].container_id != i) {
                 continue;
             }
 
-            Vertex *v = getVertex(s.vertices[j]);
+            Vertex *v = getVertex(s.items[j]);
 
             if (v == NULL) continue;
 
@@ -70,13 +70,13 @@ void Canvas::deleteSelection() {
             if (v->prev != NULL) {
                 v->prev->next = v->next;
             }
-            if (v == v->p->front && v == v->p->back) {
-                v->p->front = NULL;
-                v->p->back = NULL;
-            } else if (v == v->p->front) {
-                v->p->front = v->next;
-            } else if (v == v->p->back) {
-                v->p->back = v->prev;
+            if (v == v->polyline->front && v == v->polyline->back) {
+                v->polyline->front = NULL;
+                v->polyline->back = NULL;
+            } else if (v == v->polyline->front) {
+                v->polyline->front = v->next;
+            } else if (v == v->polyline->back) {
+                v->polyline->back = v->prev;
             }
             
             delete v;
@@ -156,7 +156,7 @@ void Canvas::setHoverPoint(ofPoint p) {
             continue;
         }
         for (Vertex *v = lines[i]->front; v != NULL; v = v->next) {
-            if (!(selection.vertices.size() == 1 && v->selected &&
+            if (!(selection.items.size() == 1 && v->selected &&
                   ui_state == UI_MOVING_SELECTION)) {
                 float d0 = (p - *v).length();
                 if (d0 < 2.0f && d0 < min_d) {
@@ -174,8 +174,8 @@ void Canvas::setHoverPoint(ofPoint p) {
     }
 
     if (ui_state == UI_MOVING_SELECTION) {
-        for (int i = 0; i < selection.vertices.size(); i++) {
-            Vertex *v = getVertex(selection.vertices[i]);
+        for (int i = 0; i < selection.items.size(); i++) {
+            Vertex *v = getVertex(selection.items[i]);
             v->hover = true;
         }
     }
