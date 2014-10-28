@@ -9,6 +9,7 @@
 #pragma once
 
 #include "ofMain.h"
+#include "InteractiveObject.h"
 
 enum JointType {
     JOINT_FIXED = 0,
@@ -23,23 +24,33 @@ public:
     Joint *joint_p;
 };
 
-class Canvas;
-
-class Joint {
+class Joint: public InteractiveObject {
 public:
-    Joint();
+    Joint() {};
+    virtual ~Joint() {};
 
-    ofPoint p; // position, in mm
     int width;
     int height;
 
     JointType type;
 
-    bool hover;
-    bool selected;
-    bool dragging;
-    ofPoint start_p;
-
     // events
     ofEvent<JointClickEventData> click_event;
+};
+
+class JointContainer: public InteractiveContainer {
+public:
+    JointContainer() {
+        joint = new Joint();
+    };
+    virtual ~JointContainer() {
+        delete joint;
+    };
+
+    void draw();
+
+    static ofImage joint_icon_fixed;
+    static ofImage joint_icon_r;
+
+    Joint *joint;
 };

@@ -13,13 +13,6 @@ void ofApp::mouseMoved(int x, int y ) {
     ofPoint p(x, y);
     ofPoint p_mm = c.getMm(p);
 
-    if (c.dragging_joint) {
-        c.resetHover();
-        c.setHover(p_mm);
-        c.ui_state == UI_SELECT;
-        return;
-    }
-
     // ok, this is not such a good way to do this,
     // check if the press is over a button
     if (canvas_toolbar.inside(p)) {
@@ -62,17 +55,8 @@ void ofApp::mouseDragged(int x, int y, int button) {
 
     ofPoint p_mm = c.getMm(ofPoint(x, y));
 
-    if (c.dragging_joint) {
-        c.resetHover();
-        c.setHover(p_mm);
-        c.ui_state == UI_SELECT;
-        return;
-    }
-
-    if (!c.dragging_joint) {
-        ofPoint r = p_mm - c.start_click;
-        c.selection_r.set(c.start_click, r.x, r.y);
-    }
+    ofPoint r = p_mm - c.start_click;
+    c.selection_r.set(c.start_click, r.x, r.y);
 
     if (c.ui_state == UI_MOVING_CANVAS) {
         ofPoint p = ofPoint(x, y);

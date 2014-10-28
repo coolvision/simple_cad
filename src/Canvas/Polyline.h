@@ -51,6 +51,8 @@ public:
         release();
     }
 
+    void draw();
+
     void release();
     void cloneFrom(Polyline *p);
 

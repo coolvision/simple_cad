@@ -9,12 +9,23 @@
 #include "Joint.h"
 #include "Canvas.h"
 
-Joint::Joint() {
+ofImage JointContainer::joint_icon_fixed;
+ofImage JointContainer::joint_icon_r;
 
-    selected = false;
-    hover = false;
-    dragging = false;
+void JointContainer::draw() {
 
-    width = 25;
-    height = 25;
+    ofPoint icon_offset(13, 13);
+    
+    if (joint->hover) {
+        ofSetColor(ofColor::orangeRed);
+    } else {
+        ofSetColor(ofColor::red);
+    }
+
+    ofPoint p = joint->getPx(joint->p);
+    if (joint->type == JOINT_FIXED) {
+        joint_icon_fixed.draw(p - icon_offset);
+    } else {
+        joint_icon_r.draw(p - icon_offset);
+    }
 }

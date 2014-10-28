@@ -44,19 +44,12 @@ public:
 
 // joints
 //==============================================================================
-    vector<Joint *>joints;
-
-    ofImage joint_icon_fixed;
-    ofImage joint_icon_r;
-
-    bool dragging_joint;
+    vector<InteractiveContainer *> joints;
 
 // content storage & vis
 //==============================================================================
     vector<Polyline *> lines;
     Vertex *getVertex(ItemId v_id);
-
-    void drawLine(Polyline *l);
 
     Polyline curr_line;
     Vertex add_v;

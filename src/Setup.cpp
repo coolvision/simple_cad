@@ -106,8 +106,8 @@ void ofApp::setup(){
     //ofAddListener(button->click_event, this, &ofApp::ZoomOutButtonClick);
     canvas_toolbar.buttons.push_back(button);
 
-    c.joint_icon_fixed.loadImage(ofToDataPath("icons/fix_canvas.png"));
-    c.joint_icon_r.loadImage(ofToDataPath("icons/revolute_canvas.png"));
+    JointContainer::joint_icon_fixed.loadImage(ofToDataPath("icons/fix_canvas.png"));
+    JointContainer::joint_icon_r.loadImage(ofToDataPath("icons/revolute_canvas.png"));
 
 //==============================================================================
     // default start state
@@ -135,6 +135,7 @@ void ofApp::setGrid() {
     int off_y = (int)c.canvas_offset.y % lines_step;;;
 
     InteractiveObject::points_step = points_step;
+    InteractiveObject::zoom = c.zoom;
     InteractiveObject::offset = c.canvas_offset;
     for (int i = 0; i < c.lines.size(); i++) {
         c.lines[i]->updatePath();

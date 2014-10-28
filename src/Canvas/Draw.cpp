@@ -8,13 +8,9 @@
 
 #include <Canvas.h>
 
-void Canvas::drawLine(Polyline *l) {
+void Polyline::draw() {
 
-    if (l == NULL) {
-        return;
-    }
-
-    if (l->front == NULL || l->back == NULL) {
+    if (front == NULL || back == NULL) {
         return;
     }
 
@@ -23,22 +19,22 @@ void Canvas::drawLine(Polyline *l) {
     ofEnableSmoothing();
     ofEnableAntiAliasing();
 
-    float point_size = 3.0f * zoom;
+    float point_size = 3.0f * InteractiveObject::zoom;
     if (point_size < 1.0f) {
         point_size = 1.0f;
     }
 
-    if (l->closed) {
-        l->path.setFilled(true);
-        l->path.setFillColor(ofColor(200, 200, 200, 200));
+    if (closed) {
+        path.setFilled(true);
+        path.setFillColor(ofColor(200, 200, 200, 200));
     } else {
-        l->path.setFilled(false);
+        path.setFilled(false);
     }
-    l->path.draw();
+    path.draw();
 
     ofSetLineWidth(1.0f);
     ofSetColor(ofColor::black);
-    for (Vertex *v = l->front; v != NULL && v->next != NULL; v = v->next) {
+    for (Vertex *v = front; v != NULL && v->next != NULL; v = v->next) {
         if (v->hover && v->next->hover) {
             ofSetColor(ofColor::orangeRed);
         } else if (v->selected && v->next->selected) {
@@ -46,32 +42,32 @@ void Canvas::drawLine(Polyline *l) {
         } else {
             ofSetColor(ofColor::black);
         }
-        ofLine(getPx(v), getPx(v->next));
-        if (v->next == l->front) break; // closed polylines
+        ofLine(v->getPx(*v), v->getPx(*v->next));
+        if (v->next == front) break; // closed polylines
     }
 
     ofSetColor(ofColor::black);
-    for (Vertex *v = l->front; v != NULL; v = v->next) {
+    for (Vertex *v = front; v != NULL; v = v->next) {
         if (!v->hover && !v->selected) {
-            ofCircle(getPx(v), point_size);
+            ofCircle(v->getPx(*v), point_size);
         }
-        if (v->next == l->front) break; // closed polylines
+        if (v->next == front) break; // closed polylines
     }
 
     ofSetColor(ofColor::steelBlue);
-    for (Vertex *v = l->front; v != NULL; v = v->next) {
+    for (Vertex *v = front; v != NULL; v = v->next) {
         if (v->selected && !v->hover) {
-            ofCircle(getPx(v), point_size);
+            ofCircle(v->getPx(*v), point_size);
         }
-        if (v->next == l->front) break; // closed polylines
+        if (v->next == front) break; // closed polylines
     }
 
     ofSetColor(ofColor::orangeRed);
-    for (Vertex *v = l->front; v != NULL; v = v->next) {
+    for (Vertex *v = front; v != NULL; v = v->next) {
         if (v->hover) {
-            ofCircle(getPx(v), point_size);
+            ofCircle(v->getPx(*v), point_size);
         }
-        if (v->next == l->front) break; // closed polylines
+        if (v->next == front) break; // closed polylines
     }
 
     ofDisableAntiAliasing();

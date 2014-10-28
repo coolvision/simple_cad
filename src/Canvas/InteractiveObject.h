@@ -6,6 +6,8 @@
 //
 //
 
+#pragma once
+
 #include "ofMain.h"
 
 struct ItemId {
@@ -28,6 +30,8 @@ public:
     }
     virtual ~InteractiveContainer() {};
 
+    virtual void draw() {};
+
     int getId();
     
     bool selected;
@@ -48,6 +52,7 @@ public:
     ItemId getId();
 
     static int points_step;
+    static float zoom;
     static ofPoint offset;
 
     ofPoint p; // position

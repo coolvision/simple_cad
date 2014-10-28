@@ -60,10 +60,14 @@ void ofApp::draw(){
     // objects
 //==============================================================================
     for (int i = 0; i < c.lines.size(); i++) {
-        c.drawLine(c.lines[i]);
+        c.lines[i]->draw();
     }
+    for (int i = 0; i < c.joints.size(); i++) {
+        c.joints[i]->draw();
+    }
+
     if (c.ui_state == UI_DRAWING_LINE) {
-        c.drawLine(&c.curr_line);
+        c.curr_line.draw();
     }
 
     if (c.ui_state == UI_ADD_VERTEX && c.hover_line) {
@@ -97,28 +101,14 @@ void ofApp::draw(){
     ofPoint p1(ofGetMouseX(), ofGetMouseY());
     if (c.ui_state == UI_ADD_JOINT_R) {
         ofSetColor(ofColor::red);
-        c.joint_icon_r.draw(p1 - icon_offset);
+        JointContainer::joint_icon_r.draw(p1 - icon_offset);
     }
     if (c.ui_state == UI_ADD_JOINT_FIXED) {
         ofSetColor(ofColor::red);
-        c.joint_icon_fixed.draw(p1 - icon_offset);
+        JointContainer::joint_icon_fixed.draw(p1 - icon_offset);
     }
 
-    for (int i = 0; i < c.joints.size(); i++) {
 
-        if (c.joints[i]->hover) {
-            ofSetColor(ofColor::orangeRed);
-        } else {
-            ofSetColor(ofColor::red);
-        }
-
-        p1 = c.getPx(c.joints[i]->p);
-        if (c.joints[i]->type == JOINT_FIXED) {
-            c.joint_icon_fixed.draw(p1 - icon_offset);
-        } else {
-            c.joint_icon_r.draw(p1 - icon_offset);
-        }
-    }
 
     ofPopStyle();
 }

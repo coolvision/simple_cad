@@ -10,6 +10,7 @@
 
 int InteractiveObject::points_step = 0;
 ofPoint InteractiveObject::offset;
+float InteractiveObject::zoom;
 
 int InteractiveContainer::getId() {
     return id;
