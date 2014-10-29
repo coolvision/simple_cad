@@ -45,6 +45,88 @@ ItemId InteractiveObject::getId() {
     return i;
 }
 
+void InteractiveContainer::init(InteractiveObject *p) {
+    InteractiveObject *i = p->getCopy();
+    i->parent = this;
+    front = i;
+    back = front;
+}
+
+void InteractiveContainer::addBack(InteractiveObject *p) {
+
+    if (front == NULL) {
+        init(p);
+    } else {
+        // new element
+        InteractiveObject *i = p->getCopy();
+        i->parent = this;
+        // update the list
+        back->next = i;
+        i->prev = back;
+        back = i;
+    }
+    update();
+}
+
+void InteractiveContainer::addFront(InteractiveObject *p) {
+
+    if (front == NULL) {
+        init(p);
+    } else {
+        // new element
+        InteractiveObject *i = p->getCopy();
+        i->parent = this;
+        // update the list
+        front->prev = i;
+        i->next = front;
+        front = i;
+    }
+    update();
+}
+
+void InteractiveContainer::addBack(InteractiveContainer *p) {
+
+    if (front == NULL || p->closed) {
+        return;
+    }
+
+    for (InteractiveObject *v = p->front; v != NULL; v = v->next) {
+        addBack(v);
+    }
+}
+
+void InteractiveContainer::addFront(InteractiveContainer *p) {
+
+    if (front == NULL || p->closed) {
+        return;
+    }
+
+    for (InteractiveObject *v = p->back; v != NULL; v = v->prev) {
+        addFront(v);
+    }
+}
+
+
+void InteractiveContainer::cloneFrom(InteractiveContainer *p) {
+
+    *this = *p;
+    front = NULL;
+    back = NULL;
+
+    release();
+
+    for (InteractiveObject *v = p->front; v != NULL; v = v->next) {
+        addBack(v);
+        if (v->next == p->front) break; // closed polylines
+    }
+    if (closed) {
+        back->next = front;
+        front->prev = back;
+    }
+
+    update();
+}
+
 // can be made more efficient by maintaining an array of the vertices
 InteractiveObject *InteractiveContainer::getItem(int i) {
 

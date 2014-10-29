@@ -33,7 +33,7 @@ public:
 
 // input: 2 points
 // result: new polyline inserted at the back of the vector
-    ofPoint p[2];
+    Vertex p[2];
 };
 
 class AddJointAction: public Action {

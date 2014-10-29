@@ -148,17 +148,19 @@ void Canvas::load(string path) {
 
         for (int i = 0; i < lines_n; i++) {
             lines.push_back(new Polyline());
-            lines.back()->id = lines.size() - 1;
+            Polyline *l = lines.back();
+            l->id = lines.size() - 1;
             file >> n;
-            file >> lines.back()->closed;
+            file >> l->closed;
             for (int i = 0; i < n; i++) {
-                ofPoint p;
-                file >> p.x;
-                file >> p.y;
-                lines.back()->addBack(p);
+                Vertex v;
+                file >> v.p.x;
+                file >> v.p.y;
+                l->addBack(&v);
             }
-            if (lines.back()->closed) {
-                lines.back()->toPolygon();
+            if (l->closed) {
+                l->back->next = l->front;
+                l->front->prev = l->back;
             }
         }
         file.close();

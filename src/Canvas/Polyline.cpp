@@ -8,6 +8,16 @@
 
 #include "Polyline.h"
 
+InteractiveObject *Vertex::getCopy() {
+
+    Vertex *v = new Vertex();
+    v->p = this->p;
+    v->start_p = this->start_p;
+    v->parent = NULL;
+
+    return v;
+}
+
 void Vertex::draw() {
 
     float point_size = 3.0f * zoom;
@@ -26,138 +36,6 @@ void Vertex::draw() {
     }
 
     ofCircle(getPx(p), point_size);
-}
-
-void Polyline::cloneFrom(Polyline *p) {
-
-    *this = *p;
-    front = NULL;
-    back = NULL;
-
-    release();
-
-    for (InteractiveObject *v = p->front; v != NULL; v = v->next) {
-        addBack(v->p);
-        if (v->next == p->front) break; // closed polylines
-    }
-    if (closed) {
-        back->next = front;
-        front->prev = back;
-    }
-    
-    update();
-}
-
-void Polyline::init(ofPoint p) {
-    front = new Vertex();
-    back = front;
-    front->p = p;
-    front->parent = this;
-    update();
-}
-
-void Polyline::addBack(Joint *j_in) {
-
-    if (front == NULL) {
-        Joint *j = new Joint();
-        j->p = j_in->p;
-        j->start_p = j_in->start_p;
-        j->type = j_in->type;
-        j->parent = this;
-        front = j;
-        back = front;
-    } else {
-        // new element
-        Joint *j = new Joint();
-        j->p = j_in->p;
-        j->start_p = j_in->start_p;
-        j->type = j_in->type;
-        j->parent = this;
-        // update the list
-        back->next = j;
-        j->prev = back;
-        back = j;
-    }
-    update();
-}
-
-void Polyline::addBack(Vertex *vertex) {
-
-    if (front == NULL) {
-        init(vertex->p);
-    } else {
-        // new element
-        Vertex *v = new Vertex();
-        v->p = vertex->p;
-        v->start_p = vertex->start_p;
-        v->parent = this;
-        // update the list
-        back->next = v;
-        v->prev = back;
-        back = v;
-    }
-    update();
-}
-
-void Polyline::addBack(ofPoint p) {
-
-    if (front == NULL) {
-        init(p);
-    } else {
-        // new element
-        Vertex *v = new Vertex();
-        v->p = p;
-        v->parent = this;
-        // update the list
-        back->next = v;
-        v->prev = back;
-        back = v;
-    }
-    update();
-}
-
-void Polyline::addFront(ofPoint p) {
-
-    if (front == NULL) {
-        init(p);
-    } else {
-        // new element
-        Vertex *v = new Vertex();
-        v->p = p;
-        v->parent = this;
-        // update the list
-        front->prev = v;
-        v->next = front;
-        front = v;
-    }
-    update();
-}
-
-void Polyline::addFront(Polyline *p) {
-
-    if (front == NULL || p->closed) {
-        return;
-    }
-
-    for (InteractiveObject *v = p->back; v != NULL; v = v->prev) {
-        addFront(v->p);
-    }
-}
-
-void Polyline::addBack(Polyline *p) {
-
-    if (front == NULL || p->closed) {
-        return;
-    }
-
-    for (InteractiveObject *v = p->front; v != NULL; v = v->next) {
-        addBack(v->p);
-    }
-}
-
-void Polyline::toPolygon() {
-    back->next = front;
-    front->prev = back;
 }
 
 void Polyline::update() {

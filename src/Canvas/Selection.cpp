@@ -119,6 +119,9 @@ void Canvas::clearSelection() {
         }
         lines[i]->selected = false;
     }
+
+    selected_point = false;;
+    selected_p = NULL;
 }
 
 void Canvas::resetHover() {
@@ -184,31 +187,31 @@ void Canvas::setHover(ofPoint p) {
 
     setHoverPoint(p);
 
-    for (int i = 0; i < lines.size(); i++) {
-        if (lines[i] == NULL) {
-            continue;
-        }
-        // check selection of line segments
-        for (InteractiveObject *v = lines[i]->front; v != NULL && v->next != NULL; v = v->next) {
-            float d = segmentDistance(v->p, v->next->p, p);
-            float d1 = (p - v->p).length();
-            float d2 = (p - v->next->p).length();
-            if (d < 2.0f && d1 > 2.0f && d2 > 2.0f) {
-
-                hover_line_p[0] = v;
-                hover_line_p[1] = v->next;
-                hover_line = true;
-
-                v->hover = true;
-                v->next->hover = true;
-                break;
-            }
-            if (hover_line) {
-                break;
-            }
-            if (v->next == lines[i]->front) break; // closed polylines
-        }
-    }
+//    for (int i = 0; i < lines.size(); i++) {
+//        if (lines[i] == NULL) {
+//            continue;
+//        }
+//        // check selection of line segments
+//        for (InteractiveObject *v = lines[i]->front; v != NULL && v->next != NULL; v = v->next) {
+//            float d = segmentDistance(v->p, v->next->p, p);
+//            float d1 = (p - v->p).length();
+//            float d2 = (p - v->next->p).length();
+//            if (d < 2.0f && d1 > 2.0f && d2 > 2.0f) {
+//
+//                hover_line_p[0] = v;
+//                hover_line_p[1] = v->next;
+//                hover_line = true;
+//
+//                v->hover = true;
+//                v->next->hover = true;
+//                break;
+//            }
+//            if (hover_line) {
+//                break;
+//            }
+//            if (v->next == lines[i]->front) break; // closed polylines
+//        }
+//    }
 
     if (!hover_point && !hover_line) {
         for (int i = 0; i < lines.size(); i++) {
@@ -220,6 +223,7 @@ void Canvas::setHover(ofPoint p) {
             if (lines[i]->ofp.inside(getPx(p))) {
                 hover_polygon = true;
                 hover_polygon_p = lines[i];
+                lines[i]->hover = true;
             }
         }
     }

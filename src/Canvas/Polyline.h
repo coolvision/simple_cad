@@ -22,6 +22,7 @@ public:
     Vertex() {};
     virtual ~Vertex() {};
     void draw();
+    InteractiveObject *getCopy();
 };
 
 class Polyline: public InteractiveContainer {
@@ -31,26 +32,9 @@ public:
         back = NULL;
         closed = false;
     };
-    virtual ~Polyline() {
-        release();
-    }
-
-    void cloneFrom(Polyline *p);
-    void init(ofPoint p);
-
-    void addFront(ofPoint p);
-
-    void addBack(ofPoint p);
-    void addBack(Vertex *vertex);
-    void addBack(Joint *j);
-
-    void addFront(Polyline *p);
-    void addBack(Polyline *p);
+    virtual ~Polyline() {};
 
     // geometry specific
-    void toPolygon();
-    bool closed;
-
     ofPath path;
     ofPolyline ofp;
 

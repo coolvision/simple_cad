@@ -30,6 +30,7 @@ public:
     virtual ~Joint() {};
 
     void draw();
+    InteractiveObject *getCopy();
 
     int width;
     int height;

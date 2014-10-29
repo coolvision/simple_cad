@@ -70,8 +70,8 @@ void AddLineAction::doAction(Canvas *c) {
     if (undo) {
         c->lines.push_back(new Polyline());
         c->lines.back()->id = c->lines.size() - 1;
-        c->lines.back()->addBack(p[0]);
-        c->lines.back()->addBack(p[1]);
+        c->lines.back()->addBack(&p[0]);
+        c->lines.back()->addBack(&p[1]);
     }
     undo = false;
 }
@@ -188,11 +188,11 @@ void ConnectPolylinesAction::doAction(Canvas *c) {
         }
         if (add_back) {
             for (InteractiveObject *v = l->front->next; v != NULL; v = v->next) {
-                p->addBack(v->p);
+                p->addBack(v);
             }
         } else {
             for (InteractiveObject *v = l->back->prev; v != NULL; v = v->prev) {
-                p->addFront(v->p);
+                p->addFront(v);
             }
         }
 

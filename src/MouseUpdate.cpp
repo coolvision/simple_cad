@@ -85,5 +85,10 @@ void ofApp::mouseDragged(int x, int y, int button) {
             v->p = v->start_p + (p_mm - c.start_click);
         }
     }
+
+    if (c.ui_state == UI_MOVING_POINT) {
+        c.selected_p->parent->update();
+        c.selected_p->p = c.selected_p->start_p + (p_mm - c.start_click);
+    }
 }
 

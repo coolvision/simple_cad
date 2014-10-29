@@ -12,6 +12,17 @@
 ofImage Joint::joint_icon_fixed;
 ofImage Joint::joint_icon_r;
 
+InteractiveObject *Joint::getCopy() {
+
+    Joint *j = new Joint();
+    j->p = this->p;
+    j->start_p = this->start_p;
+    j->type = this->type;
+    j->parent = NULL;
+
+    return j;
+}
+
 void Joint::draw() {
 
     ofPoint icon_offset(13, 13);

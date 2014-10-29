@@ -26,7 +26,11 @@ void Polyline::draw() {
 
     if (closed) {
         path.setFilled(true);
-        path.setFillColor(ofColor(200, 200, 200, 200));
+        if (hover) {
+            path.setFillColor(ofColor(180, 180, 180, 200));
+        } else {
+            path.setFillColor(ofColor(200, 200, 200, 200));
+        }
     } else {
         path.setFilled(false);
     }

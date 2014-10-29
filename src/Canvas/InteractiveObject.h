@@ -36,9 +36,11 @@ public:
         next = NULL;
         prev = NULL;
         parent = NULL;
+        dragged = false;
     }
     virtual ~InteractiveObject() {};
     virtual void draw() {};
+    virtual InteractiveObject *getCopy() {};
     ofPoint getPx();
     ofPoint getPx(ofPoint p);
     ItemId getId();
@@ -51,6 +53,7 @@ public:
 
     bool selected;
     bool hover;
+    bool dragged;
 
     InteractiveContainer *parent;
 
@@ -64,10 +67,19 @@ public:
         selected = false;
         z_index = 0;
     }
-    virtual ~InteractiveContainer() {};
+    virtual ~InteractiveContainer() {
+        release();
+    };
 
     virtual void draw() {};
     virtual void update() {};
+
+    void cloneFrom(InteractiveContainer *p);
+    void init(InteractiveObject *p);
+    void addBack(InteractiveObject *p);
+    void addFront(InteractiveObject *p);
+    void addBack(InteractiveContainer *p);
+    void addFront(InteractiveContainer *p);
 
     int getId();
     void release();
@@ -83,6 +95,7 @@ public:
 
     InteractiveObject *front;
     InteractiveObject *back;
+    bool closed; // list can be circular
 
     int id;
 

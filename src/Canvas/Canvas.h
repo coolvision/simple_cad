@@ -21,6 +21,7 @@ enum UIState {
     UI_SELECT,
     UI_MOUSE_SELECTION,
     UI_MOVING_SELECTION,
+    UI_MOVING_POINT,
     UI_ADD_VERTEX,
     UI_MOVE_CANVAS,
     UI_MOVING_CANVAS,
@@ -67,6 +68,9 @@ public:
     SelectionList new_selection;
 
     ofRectangle selection_r;
+
+    bool selected_point;
+    InteractiveObject *selected_p;
 
     // points
     bool hover_point;
