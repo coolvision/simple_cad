@@ -52,23 +52,16 @@ void ofApp::mousePressed(int x, int y, int button) {
     // points, lines, etc...
     if (c.ui_state == UI_SELECT) {
 
-
         if (c.hover_point && c.hover_point_p) {
 
-            //            if (c.hover_point_p->selected) {
-            //                selected = true;
-            //            }
             c.selected_point = true;
             c.selected_p = c.hover_point_p;
 
             c.selected_p->start_p = c.selected_p->p;
             c.selected_p->dragged = true;
 
-            // change selection
-            //c.new_selection.add(c.selected_p->getId());
             c.ui_state = UI_MOVING_POINT;
         }
-
 
         bool shift = ofGetKeyPressed(OF_KEY_SHIFT);
 
@@ -80,22 +73,6 @@ void ofApp::mousePressed(int x, int y, int button) {
         }
 
         bool selected = false;
-
-        // if there is a hover object, start dragging it
-//        if (c.hover_point && c.hover_point_p) {
-
-//            if (c.hover_point_p->selected) {
-//                selected = true;
-//            }
-//
-//            c.selected_p = c.hover_point_p;
-//
-//            c.selected_p->start_p = c.selected_p->p;
-//            c.selected_p->dragged = true;
-
-            // change selection
-            //c.new_selection.add(c.selected_p->getId());
- //           c.ui_state = UI_MOVING_POINT;
 
         if (c.hover_line && c.hover_line_p[0] && c.hover_line_p[1]) {
 
@@ -166,8 +143,9 @@ void ofApp::mousePressed(int x, int y, int button) {
             *v = c.add_v;
 
             ModifyPolylineAction *add = new ModifyPolylineAction();
-            add->p_before.cloneFrom((Polyline *)v0->parent);
+            add->p_before.cloneFrom(v0->parent);
 
+            v->parent = v0->parent;
             v->p = v0->p;
             v->prev = v0;
             v->next = v1;
@@ -177,7 +155,7 @@ void ofApp::mousePressed(int x, int y, int button) {
             v->start_p = v->p;
             ItemId new_id = v->getId();
 
-            add->p_after.cloneFrom((Polyline *)v0->parent);
+            add->p_after.cloneFrom(v0->parent);
             c.addAction(add);
 
             unselectMode();
@@ -253,13 +231,36 @@ void ofApp::mouseReleased(int x, int y, int button) {
 
 
     if (c.ui_state == UI_MOVING_POINT) {
-        c.selected_p->p = c.selected_p->start_p;
-        c.selected_p->dragged = false;
 
         ofPoint move_v = (p_mm - c.start_click);
 
-        c.selected_p->p += move_v;
-        c.selected_p->parent->update();
+        ofPoint move_no_snap = (c.getMm(ofPoint(x, y)) - c.start_click);
+        if (abs(move_no_snap.x) < 1.0f && abs(move_no_snap.y) < 1.0f) {
+
+            // add to the selection
+            if (ofGetKeyPressed(OF_KEY_SHIFT)) {
+                c.new_selection = c.selection;
+            } else {
+                c.new_selection.clear();
+            }
+            c.new_selection.add(c.selected_p->getId());
+            ChangeSelectionAction *select = new ChangeSelectionAction();
+            select->prev_selection = c.selection;
+            select->new_selection = c.new_selection;
+            c.addAction(select);
+
+        } else {
+
+            c.selected_p->p = c.selected_p->start_p;
+            c.selected_p->dragged = false;
+
+            ofPoint move_v = (p_mm - c.start_click);
+
+            MoveSelectionAction *move_action = new MoveSelectionAction();
+            move_action->selection.add(c.selected_p->getId());
+            move_action->v = move_v;
+            c.addAction(move_action);
+        }
 
         c.ui_state = UI_SELECT;
     }
