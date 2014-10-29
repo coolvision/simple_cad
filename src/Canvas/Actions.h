@@ -10,6 +10,7 @@
 
 #include "ofMain.h"
 #include "Polyline.h"
+#include "Joint.h"
 
 class Canvas;
 
@@ -33,6 +34,19 @@ public:
 // input: 2 points
 // result: new polyline inserted at the back of the vector
     ofPoint p[2];
+};
+
+class AddJointAction: public Action {
+public:
+    AddJointAction();
+    virtual ~AddJointAction() {};
+    virtual void doAction(Canvas *c);
+    virtual void undoAction(Canvas *c);
+
+// input: joint position and type
+// result: new joint added
+    ofPoint p;
+    JointType type;
 };
 
 class MoveSelectionAction: public Action {

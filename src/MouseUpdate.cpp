@@ -24,11 +24,11 @@ void ofApp::mouseMoved(int x, int y ) {
         c.resetHover();
 
         for (int i = 0; i < c.lines.size(); i++) {
-            for (Vertex *v = c.lines[i]->front; v != NULL && v->next != NULL; v = v->next) {
-                float d = segmentDistance(*v, *v->next, p_mm);
+            for (InteractiveObject *v = c.lines[i]->front; v != NULL && v->next != NULL; v = v->next) {
+                float d = segmentDistance(v->p, v->next->p, p_mm);
                 if (d < 2.0f) {
                     c.hover_line = true;
-                    c.add_v = lineProjection(*v, *v->next, p_mm);
+                    c.add_v.p = lineProjection(v->p, v->next->p, p_mm);
                     c.hover_line_p[0] = v;
                     c.hover_line_p[1] = v->next;
                     v->hover = true;
@@ -68,11 +68,11 @@ void ofApp::mouseDragged(int x, int y, int button) {
     if (c.ui_state == UI_DRAWING_LINE) {
         c.resetHover();
         c.setHover(p_mm);
-        *c.curr_line.back = p_mm;
+        c.curr_line.back->p = p_mm;
         c.curr_line.back->hover = true;
         c.curr_line.front->hover = true;
         ofPoint p = c.snapMm(c.getMm(ofPoint(x, y)));
-        line_length_info = (p - *c.curr_line.front).length();
+        line_length_info = (p - c.curr_line.front->p).length();
     }
 
     c.resetHover();
@@ -80,9 +80,9 @@ void ofApp::mouseDragged(int x, int y, int button) {
 
     if (c.ui_state == UI_MOVING_SELECTION) {
         for (int i = 0; i < c.selection.items.size(); i++) {
-            Vertex *v = c.getVertex(c.selection.items[i]);
-            v->polyline->updatePath();
-            *v = v->start_p + (p_mm - c.start_click);
+            InteractiveObject *v = c.getItem(c.selection.items[i]);
+            v->parent->update();
+            v->p = v->start_p + (p_mm - c.start_click);
         }
     }
 }

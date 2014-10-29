@@ -26,12 +26,12 @@ void Canvas::connectPolylines(Polyline *p) {
         return;
     }
 
-    if (close(*p->front, *p->back) && p->getLength() > 2) {
+    if (close(p->front->p, p->back->p) && p->getLength() > 2) {
 
         ModifyPolylineAction *close = new ModifyPolylineAction();
         close->p_before.cloneFrom(p);
 
-        Vertex *tmp = p->back;
+        InteractiveObject *tmp = p->back;
         p->back = p->back->prev;
         delete tmp;
         p->back->next = p->front;
@@ -47,8 +47,8 @@ void Canvas::connectPolylines(Polyline *p) {
     ofPoint front[2];
     ofPoint back[2];
 
-    front[0] = *p->front;
-    back[0] = *p->back;
+    front[0] = p->front->p;
+    back[0] = p->back->p;
 
     for (int i = 0; i < lines.size(); i++) {
         if (lines[i] == NULL) {
@@ -57,8 +57,8 @@ void Canvas::connectPolylines(Polyline *p) {
         Polyline *l = lines[i];
         if (l->front == NULL || l->closed) continue;
         if (l == p) continue;
-        front[1] = *l->front;
-        back[1] = *l->back;
+        front[1] = l->front->p;
+        back[1] = l->back->p;
 
         if (close(front[0], front[1])) {
 

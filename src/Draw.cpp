@@ -60,10 +60,14 @@ void ofApp::draw(){
     // objects
 //==============================================================================
     for (int i = 0; i < c.lines.size(); i++) {
-        c.lines[i]->draw();
+        if (c.lines[i]->z_index <= 0) {
+            c.lines[i]->draw();
+        }
     }
-    for (int i = 0; i < c.joints.size(); i++) {
-        c.joints[i]->draw();
+    for (int i = 0; i < c.lines.size(); i++) {
+        if (c.lines[i]->z_index > 0) {
+            c.lines[i]->draw();
+        }
     }
 
     if (c.ui_state == UI_DRAWING_LINE) {
@@ -101,14 +105,12 @@ void ofApp::draw(){
     ofPoint p1(ofGetMouseX(), ofGetMouseY());
     if (c.ui_state == UI_ADD_JOINT_R) {
         ofSetColor(ofColor::red);
-        JointContainer::joint_icon_r.draw(p1 - icon_offset);
+        Joint::joint_icon_r.draw(p1 - icon_offset);
     }
     if (c.ui_state == UI_ADD_JOINT_FIXED) {
         ofSetColor(ofColor::red);
-        JointContainer::joint_icon_fixed.draw(p1 - icon_offset);
+        Joint::joint_icon_fixed.draw(p1 - icon_offset);
     }
-
-
 
     ofPopStyle();
 }

@@ -32,7 +32,6 @@ void Canvas::deleteSelection() {
     // new selection is empty
     addAction(select);
 
-
     // see which polylines are modified
     vector<bool> lines_modified;
     lines_modified.resize(lines.size());
@@ -59,7 +58,7 @@ void Canvas::deleteSelection() {
                 continue;
             }
 
-            Vertex *v = getVertex(s.items[j]);
+            InteractiveObject *v = getItem(s.items[j]);
 
             if (v == NULL) continue;
 
@@ -70,13 +69,13 @@ void Canvas::deleteSelection() {
             if (v->prev != NULL) {
                 v->prev->next = v->next;
             }
-            if (v == v->polyline->front && v == v->polyline->back) {
-                v->polyline->front = NULL;
-                v->polyline->back = NULL;
-            } else if (v == v->polyline->front) {
-                v->polyline->front = v->next;
-            } else if (v == v->polyline->back) {
-                v->polyline->back = v->prev;
+            if (v == v->parent->front && v == v->parent->back) {
+                v->parent->front = NULL;
+                v->parent->back = NULL;
+            } else if (v == v->parent->front) {
+                v->parent->front = v->next;
+            } else if (v == v->parent->back) {
+                v->parent->back = v->prev;
             }
             
             delete v;
@@ -92,7 +91,7 @@ void Canvas::deleteSelection() {
                 lines[i]->back->next = NULL;
             }
         }
-        lines[i]->updatePath();
+        lines[i]->update();
 
         clear->p_after.cloneFrom(lines[i]);
         addAction(clear);
@@ -114,7 +113,7 @@ void Canvas::clearSelection() {
     selection.clear();
 
     for (int i = 0; i < lines.size(); i++) {
-        for (Vertex *v = lines[i]->front; v != NULL; v = v->next) {
+        for (InteractiveObject *v = lines[i]->front; v != NULL; v = v->next) {
             v->selected = false;
             if (v->next == lines[i]->front) break; // closed polylines
         }
@@ -138,7 +137,7 @@ void Canvas::resetHover() {
         if (lines[i] == NULL) {
             continue;
         }
-        for (Vertex *v = lines[i]->front; v != NULL; v = v->next) {
+        for (InteractiveObject *v = lines[i]->front; v != NULL; v = v->next) {
             v->hover = false;
             if (v->next == lines[i]->front) break; // closed polylines
         }
@@ -150,15 +149,15 @@ void Canvas::setHoverPoint(ofPoint p) {
 
     // check selection of points
     float min_d = FLT_MAX;
-    Vertex *min_d_v = NULL;
+    InteractiveObject *min_d_v = NULL;
     for (int i = 0; i < lines.size(); i++) {
         if (lines[i] == NULL) {
             continue;
         }
-        for (Vertex *v = lines[i]->front; v != NULL; v = v->next) {
+        for (InteractiveObject *v = lines[i]->front; v != NULL; v = v->next) {
             if (!(selection.items.size() == 1 && v->selected &&
                   ui_state == UI_MOVING_SELECTION)) {
-                float d0 = (p - *v).length();
+                float d0 = (p - v->p).length();
                 if (d0 < 2.0f && d0 < min_d) {
                     min_d = d0;
                     min_d_v = v;
@@ -175,7 +174,7 @@ void Canvas::setHoverPoint(ofPoint p) {
 
     if (ui_state == UI_MOVING_SELECTION) {
         for (int i = 0; i < selection.items.size(); i++) {
-            Vertex *v = getVertex(selection.items[i]);
+            InteractiveObject *v = getItem(selection.items[i]);
             v->hover = true;
         }
     }
@@ -190,10 +189,10 @@ void Canvas::setHover(ofPoint p) {
             continue;
         }
         // check selection of line segments
-        for (Vertex *v = lines[i]->front; v != NULL && v->next != NULL; v = v->next) {
-            float d = segmentDistance(*v, *v->next, p);
-            float d1 = (p - *v).length();
-            float d2 = (p - *v->next).length();
+        for (InteractiveObject *v = lines[i]->front; v != NULL && v->next != NULL; v = v->next) {
+            float d = segmentDistance(v->p, v->next->p, p);
+            float d1 = (p - v->p).length();
+            float d2 = (p - v->next->p).length();
             if (d < 2.0f && d1 > 2.0f && d2 > 2.0f) {
 
                 hover_line_p[0] = v;
@@ -217,7 +216,7 @@ void Canvas::setHover(ofPoint p) {
                 continue;
             }
             if (!lines[i]->closed) continue;
-            lines[i]->updatePath();
+            lines[i]->update();
             if (lines[i]->ofp.inside(getPx(p))) {
                 hover_polygon = true;
                 hover_polygon_p = lines[i];

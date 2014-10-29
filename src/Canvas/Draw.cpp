@@ -34,7 +34,8 @@ void Polyline::draw() {
 
     ofSetLineWidth(1.0f);
     ofSetColor(ofColor::black);
-    for (Vertex *v = front; v != NULL && v->next != NULL; v = v->next) {
+
+    for (InteractiveObject *v = front; v != NULL && v->next != NULL; v = v->next) {
         if (v->hover && v->next->hover) {
             ofSetColor(ofColor::orangeRed);
         } else if (v->selected && v->next->selected) {
@@ -42,30 +43,27 @@ void Polyline::draw() {
         } else {
             ofSetColor(ofColor::black);
         }
-        ofLine(v->getPx(*v), v->getPx(*v->next));
+        ofLine(v->getPx(v->p), v->getPx(v->next->p));
         if (v->next == front) break; // closed polylines
     }
 
-    ofSetColor(ofColor::black);
-    for (Vertex *v = front; v != NULL; v = v->next) {
+    for (InteractiveObject *v = front; v != NULL; v = v->next) {
         if (!v->hover && !v->selected) {
-            ofCircle(v->getPx(*v), point_size);
+            v->draw();
         }
         if (v->next == front) break; // closed polylines
     }
 
-    ofSetColor(ofColor::steelBlue);
-    for (Vertex *v = front; v != NULL; v = v->next) {
+    for (InteractiveObject *v = front; v != NULL; v = v->next) {
         if (v->selected && !v->hover) {
-            ofCircle(v->getPx(*v), point_size);
+            v->draw();
         }
         if (v->next == front) break; // closed polylines
     }
 
-    ofSetColor(ofColor::orangeRed);
-    for (Vertex *v = front; v != NULL; v = v->next) {
+    for (InteractiveObject *v = front; v != NULL; v = v->next) {
         if (v->hover) {
-            ofCircle(v->getPx(*v), point_size);
+            v->draw();
         }
         if (v->next == front) break; // closed polylines
     }

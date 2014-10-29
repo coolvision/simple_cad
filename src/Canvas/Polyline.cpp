@@ -8,48 +8,24 @@
 
 #include "Polyline.h"
 
-// can be made more efficient by maintaining an array of the vertices
-Vertex *Polyline::getVertex(int i) {
+void Vertex::draw() {
 
-    if (i < vertices.size()) {
-        return vertices[i];
+    float point_size = 3.0f * zoom;
+    if (point_size < 1.0f) {
+        point_size = 1.0f;
     }
-    return NULL;
-}
 
-void Polyline::updateIndexes() {
-
-    int n = getLength();
-    vertices.resize(n);
-
-    int l = 0;
-    for (Vertex *v = front; v != NULL; v = v->next) {
-        vertices[l] = v;
-        v->id = l;
-        l++;
-        if (v->next == front) break; // closed polylines
+    if (!hover && !selected) {
+        ofSetColor(ofColor::black);
     }
-}
-
-void Polyline::release() {
-
-    if (front != NULL) {
-        Vertex *v = front;
-        Vertex *tmp;
-        while (v != NULL) {
-            tmp = v->next;
-            delete v;
-            v = tmp;
-            if (tmp == front) {  // closed polylines
-                break;
-            }
-        }
+    if (selected && !hover) {
+        ofSetColor(ofColor::steelBlue);
     }
-    front = NULL;
-    back = NULL;
+    if (hover) {
+        ofSetColor(ofColor::orangeRed);
+    }
 
-    updatePath();
-    updateIndexes();
+    ofCircle(getPx(p), point_size);
 }
 
 void Polyline::cloneFrom(Polyline *p) {
@@ -60,8 +36,8 @@ void Polyline::cloneFrom(Polyline *p) {
 
     release();
 
-    for (Vertex *v = p->front; v != NULL; v = v->next) {
-        addBack(v);
+    for (InteractiveObject *v = p->front; v != NULL; v = v->next) {
+        addBack(v->p);
         if (v->next == p->front) break; // closed polylines
     }
     if (closed) {
@@ -69,37 +45,58 @@ void Polyline::cloneFrom(Polyline *p) {
         front->prev = back;
     }
     
-    updateIndexes();
+    update();
 }
 
 void Polyline::init(ofPoint p) {
     front = new Vertex();
     back = front;
-    *front = p;
-    front->polyline = this;
+    front->p = p;
     front->parent = this;
-    updateIndexes();
+    update();
+}
+
+void Polyline::addBack(Joint *j_in) {
+
+    if (front == NULL) {
+        Joint *j = new Joint();
+        j->p = j_in->p;
+        j->start_p = j_in->start_p;
+        j->type = j_in->type;
+        j->parent = this;
+        front = j;
+        back = front;
+    } else {
+        // new element
+        Joint *j = new Joint();
+        j->p = j_in->p;
+        j->start_p = j_in->start_p;
+        j->type = j_in->type;
+        j->parent = this;
+        // update the list
+        back->next = j;
+        j->prev = back;
+        back = j;
+    }
+    update();
 }
 
 void Polyline::addBack(Vertex *vertex) {
 
     if (front == NULL) {
-        init(*vertex);
+        init(vertex->p);
     } else {
         // new element
         Vertex *v = new Vertex();
-        v->x = vertex->x;
-        v->y = vertex->y;
+        v->p = vertex->p;
         v->start_p = vertex->start_p;
-        v->polyline = this;
         v->parent = this;
         // update the list
         back->next = v;
         v->prev = back;
         back = v;
     }
-    updatePath();
-    updateIndexes();
+    update();
 }
 
 void Polyline::addBack(ofPoint p) {
@@ -109,16 +106,14 @@ void Polyline::addBack(ofPoint p) {
     } else {
         // new element
         Vertex *v = new Vertex();
-        *v = p;
-        v->polyline = this;
+        v->p = p;
         v->parent = this;
         // update the list
         back->next = v;
         v->prev = back;
         back = v;
     }
-    updatePath();
-    updateIndexes();
+    update();
 }
 
 void Polyline::addFront(ofPoint p) {
@@ -128,37 +123,14 @@ void Polyline::addFront(ofPoint p) {
     } else {
         // new element
         Vertex *v = new Vertex();
-        *v = p;
-        v->polyline = this;
+        v->p = p;
         v->parent = this;
         // update the list
         front->prev = v;
         v->next = front;
         front = v;
     }
-    updatePath();
-    updateIndexes();
-}
-
-void Polyline::reverse() {
-
-    if (front == NULL) {
-        return;
-    }
-
-    Vertex *tmp;
-    Vertex *v = front;
-    for (Vertex *v = front; v != NULL; v = tmp) {
-        tmp = v->next;
-        v->next = v->prev;
-        v->prev = tmp;
-        v = tmp;
-        if (tmp == front) break; // closed polylines
-    }
-    tmp = front;
-    front = back;
-    back = tmp;
-    updateIndexes();
+    update();
 }
 
 void Polyline::addFront(Polyline *p) {
@@ -167,8 +139,8 @@ void Polyline::addFront(Polyline *p) {
         return;
     }
 
-    for (Vertex *v = p->back; v != NULL; v = v->prev) {
-        addFront(ofPoint(*v));
+    for (InteractiveObject *v = p->back; v != NULL; v = v->prev) {
+        addFront(v->p);
     }
 }
 
@@ -178,8 +150,8 @@ void Polyline::addBack(Polyline *p) {
         return;
     }
 
-    for (Vertex *v = p->front; v != NULL; v = v->next) {
-        addBack(ofPoint(*v));
+    for (InteractiveObject *v = p->front; v != NULL; v = v->next) {
+        addBack(v->p);
     }
 }
 
@@ -188,33 +160,35 @@ void Polyline::toPolygon() {
     front->prev = back;
 }
 
-void Polyline::updatePath() {
+void Polyline::update() {
+
+    int n = getLength();
+    items.resize(n);
+
+    int l = 0;
+    for (InteractiveObject *v = front; v != NULL; v = v->next) {
+        items[l] = v;
+        v->id = l;
+        l++;
+        if (v->next == front) break; // closed polylines
+    }
 
     path.clear();
-    for (Vertex *v = front; v != NULL; v = v->next) {
+    for (InteractiveObject *v = front; v != NULL; v = v->next) {
         if (v == front) {
             path.newSubPath();
-            path.moveTo(v->getPx(*v));
+            path.moveTo(v->getPx(v->p));
         }
-        path.lineTo(v->getPx(*v));
+        path.lineTo(v->getPx(v->p));
         if (v->next == front) break; // closed polylines
     }
 
     ofp.clear();
-    for (Vertex *v = front; v != NULL; v = v->next) {
-        ofp.addVertex(v->getPx(*v));
+    for (InteractiveObject *v = front; v != NULL; v = v->next) {
+        ofp.addVertex(v->getPx(v->p));
         if (v->next == front) break; // closed polylines
     }
     ofp.setClosed(closed);
-}
-
-int Polyline::getLength() {
-    int l = 0;
-    for (Vertex *v = front; v != NULL; v = v->next) {
-        l++;
-        if (v->next == front) break; // closed polylines
-    }
-    return l;
 }
 
 float segmentDistance(ofPoint v, ofPoint w, ofPoint p) {

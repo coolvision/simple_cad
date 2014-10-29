@@ -13,7 +13,7 @@ void ofApp::mousePressed(int x, int y, int button) {
     ofPoint p_mm = c.snapMm(c.getMm(ofPoint(x, y)));
     // snap to the hovering point
     if (c.hover_point && c.hover_point_p) {
-        p_mm = *c.hover_point_p;
+        p_mm = c.hover_point_p->p;
     }
 
     c.start_click = p_mm;
@@ -26,17 +26,17 @@ void ofApp::mousePressed(int x, int y, int button) {
 
     ofPoint icon_offset(13, 13);
     if (c.ui_state == UI_ADD_JOINT_R) {
-        c.joints.push_back(new JointContainer());
-        JointContainer *j = (JointContainer *)c.joints.back();
-        j->joint->type = JOINT_REVOLUTE;
-        j->joint->p = p_mm;
+        AddJointAction *add = new AddJointAction();
+        add->p = p_mm;
+        add->type = JOINT_REVOLUTE;
+        c.addAction(add);
         c.ui_state = UI_SELECT;
     }
     if (c.ui_state == UI_ADD_JOINT_FIXED) {
-        c.joints.push_back(new JointContainer());
-        JointContainer *j = (JointContainer *)c.joints.back();
-        j->joint->type = JOINT_FIXED;
-        j->joint->p = p_mm;
+        AddJointAction *add = new AddJointAction();
+        add->p = p_mm;
+        add->type = JOINT_FIXED;
+        c.addAction(add);
         c.ui_state = UI_SELECT;
     }
 
@@ -88,7 +88,7 @@ void ofApp::mousePressed(int x, int y, int button) {
         } else if (c.hover_polygon && c.hover_polygon_p)  {
 
             selected = true;
-            for (Vertex *v = c.hover_polygon_p->front; v != NULL; v = v->next) {
+            for (InteractiveObject *v = c.hover_polygon_p->front; v != NULL; v = v->next) {
                 if (!v->selected) {
                     selected = false;
                 }
@@ -113,8 +113,8 @@ void ofApp::mousePressed(int x, int y, int button) {
         }
 
         for (int i = 0; i < c.selection.items.size(); i++) {
-            Vertex *vertex = c.getVertex(c.selection.items[i]);
-            vertex->start_p = *vertex;
+            InteractiveObject *vertex = c.getItem(c.selection.items[i]);
+            vertex->start_p = vertex->p;
         }
     }
 
@@ -132,25 +132,25 @@ void ofApp::mousePressed(int x, int y, int button) {
         // insert a new point between the points of the hover line
         if (c.hover_line && c.hover_line_p[0] && c.hover_line_p[1]) {
 
-            Vertex *v0 = c.hover_line_p[0];
-            Vertex *v1 = c.hover_line_p[1];
+            InteractiveObject *v0 = c.hover_line_p[0];
+            InteractiveObject *v1 = c.hover_line_p[1];
 
             Vertex *v = new Vertex();
             *v = c.add_v;
 
             ModifyPolylineAction *add = new ModifyPolylineAction();
-            add->p_before.cloneFrom(v0->polyline);
+            add->p_before.cloneFrom((Polyline *)v0->parent);
 
             v->p = v0->p;
             v->prev = v0;
             v->next = v1;
             v0->next = v;
             v1->prev = v;
-            v->polyline->updateIndexes();
-            v->start_p = *v;
+            v->parent->update();
+            v->start_p = v->p;
             ItemId new_id = v->getId();
 
-            add->p_after.cloneFrom(v0->polyline);
+            add->p_after.cloneFrom((Polyline *)v0->parent);
             c.addAction(add);
 
             unselectMode();
@@ -163,7 +163,7 @@ void ofApp::mousePressed(int x, int y, int button) {
             c.addAction(select);
 
             c.resetHover();
-            c.hover_point_p = c.getVertex(new_id);
+            c.hover_point_p = c.getItem(new_id);
             c.hover_point = true;
 
             c.ui_state = UI_MOVING_SELECTION;
@@ -182,7 +182,7 @@ void ofApp::mouseReleased(int x, int y, int button) {
 
     // snap to the hovering point
     if (c.hover_point && c.hover_point_p) {
-        p_mm = *c.hover_point_p;
+        p_mm = c.hover_point_p->p;
     }
 
     if (c.ui_state == UI_MOUSE_SELECTION) {
@@ -195,8 +195,8 @@ void ofApp::mouseReleased(int x, int y, int button) {
             select->prev_selection = c.selection;
 
             for (int i = 0; i < c.lines.size(); i++) {
-                for (Vertex *v = c.lines[i]->front; v != NULL; v = v->next) {
-                    if (r.inside(*v)) {
+                for (InteractiveObject *v = c.lines[i]->front; v != NULL; v = v->next) {
+                    if (r.inside(v->p)) {
                         select->new_selection.add(v->getId());
                     }
                     if (v->next == c.lines[i]->front) break; // closed polylines
@@ -225,8 +225,8 @@ void ofApp::mouseReleased(int x, int y, int button) {
     if (c.ui_state == UI_MOVING_SELECTION) {
 
         for (int i = 0; i < c.selection.items.size(); i++) {
-            Vertex *v = c.getVertex(c.selection.items[i]);
-            *v = v->start_p;
+            InteractiveObject *v = c.getItem(c.selection.items[i]);
+            v->p = v->start_p;
         }
 
         ofPoint move_v = (p_mm - c.start_click);
@@ -242,22 +242,22 @@ void ofApp::mouseReleased(int x, int y, int button) {
             c.addAction(move_action);
 
             if (c.selection.items.size() == 1) {
-                Vertex *v = c.getVertex(c.selection.items[0]);
+                InteractiveObject *v = c.getItem(c.selection.items[0]);
 
                 ChangeSelectionAction *select = new ChangeSelectionAction();
                 select->prev_selection = c.selection;
                 c.addAction(select);
 
-                c.connectPolylines(v->polyline);
+                c.connectPolylines((Polyline *)v->parent);
             }
 
             // connect polylines after the line's dragging
             if (c.selection.items.size() == 2) {
-                Vertex *v1 = c.getVertex(c.selection.items[0]);
-                Vertex *v2 = c.getVertex(c.selection.items[1]);
+                InteractiveObject *v1 = c.getItem(c.selection.items[0]);
+                InteractiveObject *v2 = c.getItem(c.selection.items[1]);
                 if (v1->p == v2->p) {
-                    c.connectPolylines(v1->polyline);
-                    c.connectPolylines(v1->polyline);
+                    c.connectPolylines((Polyline *)v1->parent);
+                    c.connectPolylines((Polyline *)v1->parent);
                 }
             }
         }

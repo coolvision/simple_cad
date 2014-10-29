@@ -29,28 +29,16 @@ public:
     Joint() {};
     virtual ~Joint() {};
 
+    void draw();
+
     int width;
     int height;
+
+    static ofImage joint_icon_fixed;
+    static ofImage joint_icon_r;
 
     JointType type;
 
     // events
     ofEvent<JointClickEventData> click_event;
-};
-
-class JointContainer: public InteractiveContainer {
-public:
-    JointContainer() {
-        joint = new Joint();
-    };
-    virtual ~JointContainer() {
-        delete joint;
-    };
-
-    void draw();
-
-    static ofImage joint_icon_fixed;
-    static ofImage joint_icon_r;
-
-    Joint *joint;
 };

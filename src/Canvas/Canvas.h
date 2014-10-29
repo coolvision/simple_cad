@@ -42,14 +42,10 @@ public:
 
     UIState ui_state;
 
-// joints
-//==============================================================================
-    vector<InteractiveContainer *> joints;
-
-// content storage & vis
+// storage & vis
 //==============================================================================
     vector<Polyline *> lines;
-    Vertex *getVertex(ItemId v_id);
+    InteractiveObject *getItem(ItemId item_id);
 
     Polyline curr_line;
     Vertex add_v;
@@ -74,11 +70,11 @@ public:
 
     // points
     bool hover_point;
-    Vertex *hover_point_p;
+    InteractiveObject *hover_point_p;
 
     // line segments
     bool hover_line;
-    Vertex *hover_line_p[2];
+    InteractiveObject *hover_line_p[2];
 
     // polygons
     bool hover_polygon;
@@ -87,7 +83,7 @@ public:
     ofPoint snap(ofPoint p);
     ofPoint snapMm(ofPoint p);
     ofPoint getPx(ofPoint p);
-    ofPoint getPx(Vertex *v);
+    ofPoint getPx(InteractiveObject *v);
     ofPoint getMm(ofPoint p);
 
     void resetHover();

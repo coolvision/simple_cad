@@ -16,10 +16,10 @@ Canvas::Canvas() {
     curr_action_i = 0;
 }
 
-Vertex *Canvas::getVertex(ItemId v_id) {
+InteractiveObject *Canvas::getItem(ItemId item_id) {
 
-    if (v_id.container_id < lines.size()) {
-        return lines[v_id.container_id]->getVertex(v_id.item_id);
+    if (item_id.container_id < lines.size()) {
+        return lines[item_id.container_id]->getItem(item_id.item_id);
     }
     return NULL;
 }
@@ -72,8 +72,8 @@ ofPoint Canvas::getPx(ofPoint p) {
     return p;
 }
 
-ofPoint Canvas::getPx(Vertex *v) {
-    return getPx(*v);
+ofPoint Canvas::getPx(InteractiveObject *v) {
+    return getPx(v->p);
 }
 
 ofPoint Canvas::getMm(ofPoint p) {
@@ -115,8 +115,8 @@ void Canvas::save(string path) {
             if (n <= 0) continue;
             file << n << " ";
             file << lines[i]->closed << " ";
-            for (Vertex *v = lines[i]->front; v != NULL; v = v->next) {
-                file << v->x << " " << v->y << " ";
+            for (InteractiveObject *v = lines[i]->front; v != NULL; v = v->next) {
+                file << v->p.x << " " << v->p.y << " ";
                 if (v->next == lines[i]->front) break; // closed polylines
             }
             file << endl;

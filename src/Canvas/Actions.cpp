@@ -23,6 +23,41 @@ void Action::undoAction(Canvas *c) {
 }
 
 //==============================================================================
+AddJointAction::AddJointAction() {
+    label = "AddJointAction";
+    undo = true;
+}
+
+void AddJointAction::doAction(Canvas *c) {
+
+    label = "add joint";
+
+    if (undo) {
+        c->lines.push_back(new Polyline());
+        c->lines.back()->id = c->lines.size() - 1;
+        c->lines.back()->z_index = 1;
+        Joint j;
+        j.type = type;
+        j.p = p;
+        c->lines.back()->addBack(&j);
+    }
+    undo = false;
+}
+
+void AddJointAction::undoAction(Canvas *c) {
+
+    label = "undo add joint";
+
+    if (!undo) {
+        if (!c->lines.empty()) {
+            delete c->lines.back();
+            c->lines.pop_back();
+        }
+    }
+    undo = true;
+}
+
+//==============================================================================
 AddLineAction::AddLineAction() {
     label = "AddLineAction";
     undo = true;
@@ -66,9 +101,9 @@ void MoveSelectionAction::doAction(Canvas *c) {
 
     if (undo) {
         for (int i = 0; i < selection.items.size(); i++) {
-            Vertex *vertex = c->getVertex(selection.items[i]);
-            *vertex = *vertex + v;
-            vertex->polyline->updatePath();
+            InteractiveObject *item = c->getItem(selection.items[i]);
+            item->p += v;
+            item->parent->update();
         }
     }
     undo = false;
@@ -80,9 +115,9 @@ void MoveSelectionAction::undoAction(Canvas *c) {
 
     if (!undo) {
         for (int i = 0; i < selection.items.size(); i++) {
-            Vertex *vertex = c->getVertex(selection.items[i]);
-            *vertex = *vertex - v;
-            vertex->polyline->updatePath();
+            InteractiveObject *item = c->getItem(selection.items[i]);
+            item->p -= v;
+            item->parent->update();
         }
     }
     undo = true;
@@ -100,11 +135,11 @@ void ChangeSelectionAction::doAction(Canvas *c) {
 
     if (undo) {
         for (int i = 0; i < prev_selection.items.size(); i++) {
-            Vertex *vertex = c->getVertex(prev_selection.items[i]);
+            Vertex *vertex = (Vertex *)c->getItem(prev_selection.items[i]);
             vertex->selected = false;
         }
         for (int i = 0; i < new_selection.items.size(); i++) {
-            Vertex *vertex = c->getVertex(new_selection.items[i]);
+            Vertex *vertex = (Vertex *)c->getItem(new_selection.items[i]);
             vertex->selected = true;
         }
         c->selection = new_selection;
@@ -119,11 +154,11 @@ void ChangeSelectionAction::undoAction(Canvas *c) {
 
     if (!undo) {
         for (int i = 0; i < new_selection.items.size(); i++) {
-            Vertex *vertex = c->getVertex(new_selection.items[i]);
+            Vertex *vertex = (Vertex *)c->getItem(new_selection.items[i]);
             vertex->selected = false;
         }
         for (int i = 0; i < prev_selection.items.size(); i++) {
-            Vertex *vertex = c->getVertex(prev_selection.items[i]);
+            Vertex *vertex = (Vertex *)c->getItem(prev_selection.items[i]);
             vertex->selected = true;
         }
         c->selection = prev_selection;
@@ -152,12 +187,12 @@ void ConnectPolylinesAction::doAction(Canvas *c) {
             l->reverse();
         }
         if (add_back) {
-            for (Vertex *v = l->front->next; v != NULL; v = v->next) {
-                p->addBack(*v);
+            for (InteractiveObject *v = l->front->next; v != NULL; v = v->next) {
+                p->addBack(v->p);
             }
         } else {
-            for (Vertex *v = l->back->prev; v != NULL; v = v->prev) {
-                p->addFront(*v);
+            for (InteractiveObject *v = l->back->prev; v != NULL; v = v->prev) {
+                p->addFront(v->p);
             }
         }
 
