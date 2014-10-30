@@ -24,10 +24,19 @@ void Polyline::draw() {
         point_size = 1.0f;
     }
 
+    selected = true;
+    for (InteractiveObject *v = front; v != NULL && v->next != NULL; v = v->next) {
+        if (!v->selected) {
+            selected = false;
+            break;
+        }
+        if (v->next == front) break; // closed polylines
+    }
+
     if (closed) {
         path.setFilled(true);
-        if (hover) {
-            path.setFillColor(ofColor(180, 180, 180, 200));
+        if (hover || selected) {
+            path.setFillColor(ofColor(190, 190, 190, 200));
         } else {
             path.setFillColor(ofColor(200, 200, 200, 200));
         }

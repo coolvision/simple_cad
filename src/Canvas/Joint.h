@@ -26,7 +26,10 @@ public:
 
 class Joint: public InteractiveObject {
 public:
-    Joint() {};
+    Joint() {
+        grid_snap = false;
+        type = JOINT;
+    };
     virtual ~Joint() {};
 
     void draw();
@@ -38,7 +41,7 @@ public:
     static ofImage joint_icon_fixed;
     static ofImage joint_icon_r;
 
-    JointType type;
+    JointType joint_type;
 
     // events
     ofEvent<JointClickEventData> click_event;

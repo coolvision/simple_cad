@@ -94,6 +94,7 @@ public:
     void setHover(ofPoint p);
     void setHoverPoint(ofPoint p);
 
+    ofPoint start_click_snap;
     ofPoint start_click;
     ofPoint start_p;
 

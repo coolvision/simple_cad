@@ -70,6 +70,11 @@ void ofApp::draw(){
         }
     }
 
+
+//    vector<Joint *> joints;
+
+
+
     if (c.ui_state == UI_DRAWING_LINE) {
         c.curr_line.draw();
     }

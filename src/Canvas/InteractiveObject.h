@@ -22,6 +22,11 @@ public:
     void clear();
 };
 
+enum ItemType {
+    VERTEX = 0,
+    JOINT
+};
+
 class InteractiveContainer;
 
 class InteractiveObject {
@@ -37,6 +42,7 @@ public:
         prev = NULL;
         parent = NULL;
         dragged = false;
+        grid_snap = true;
     }
     virtual ~InteractiveObject() {};
     virtual void draw() {};
@@ -54,9 +60,11 @@ public:
     bool selected;
     bool hover;
     bool dragged;
+    bool grid_snap;
 
     InteractiveContainer *parent;
 
+    ItemType type;
     int id;
 };
 

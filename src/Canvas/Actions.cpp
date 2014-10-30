@@ -37,7 +37,7 @@ void AddJointAction::doAction(Canvas *c) {
         c->lines.back()->id = c->lines.size() - 1;
         c->lines.back()->z_index = 1;
         Joint j;
-        j.type = type;
+        j.joint_type = type;
         j.p = p;
         c->lines.back()->addBack(&j);
     }

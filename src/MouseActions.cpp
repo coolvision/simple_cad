@@ -10,13 +10,9 @@
 
 void ofApp::mousePressed(int x, int y, int button) {
 
-    ofPoint p_mm = c.snapMm(c.getMm(ofPoint(x, y)));
-    // snap to the hovering point
-    if (c.hover_point && c.hover_point_p) {
-        p_mm = c.hover_point_p->p;
-    }
-
-    c.start_click = p_mm;
+    ofPoint p_mm = c.getMm(ofPoint(x, y));
+    c.start_click_snap = c.snapMm(c.getMm(ofPoint(x, y)));
+    c.start_click = c.getMm(ofPoint(x, y));
 
     // ok, this is not such a good way to do this,
     // check if the press is over a button
@@ -52,18 +48,8 @@ void ofApp::mousePressed(int x, int y, int button) {
     // points, lines, etc...
     if (c.ui_state == UI_SELECT) {
 
-        if (c.hover_point && c.hover_point_p) {
-
-            c.selected_point = true;
-            c.selected_p = c.hover_point_p;
-
-            c.selected_p->start_p = c.selected_p->p;
-            c.selected_p->dragged = true;
-
-            c.ui_state = UI_MOVING_POINT;
-        }
-
         bool shift = ofGetKeyPressed(OF_KEY_SHIFT);
+
 
         // add to the selection
         if (shift) {
@@ -74,7 +60,18 @@ void ofApp::mousePressed(int x, int y, int button) {
 
         bool selected = false;
 
-        if (c.hover_line && c.hover_line_p[0] && c.hover_line_p[1]) {
+        // if there is a hover object, start dragging it
+        if (c.hover_point && c.hover_point_p) {
+
+            if (c.hover_point_p->selected) {
+                selected = true;
+            }
+
+            // change selection
+            c.new_selection.add(c.hover_point_p->getId());
+            c.ui_state = UI_MOVING_SELECTION;
+
+        } else if (c.hover_line && c.hover_line_p[0] && c.hover_line_p[1]) {
 
             if (c.hover_line_p[0]->selected && c.hover_line_p[1]->selected) {
                 selected = true;
@@ -105,7 +102,7 @@ void ofApp::mousePressed(int x, int y, int button) {
                 select->new_selection = c.new_selection;
                 c.addAction(select);
             }
-        } else if (c.ui_state != UI_MOVING_POINT) {
+        } else {
             // clear selection
             ChangeSelectionAction *select = new ChangeSelectionAction();
             select->prev_selection = c.selection;
@@ -139,14 +136,12 @@ void ofApp::mousePressed(int x, int y, int button) {
             InteractiveObject *v0 = c.hover_line_p[0];
             InteractiveObject *v1 = c.hover_line_p[1];
 
-            Vertex *v = new Vertex();
-            *v = c.add_v;
-
             ModifyPolylineAction *add = new ModifyPolylineAction();
             add->p_before.cloneFrom(v0->parent);
 
+            Vertex *v = new Vertex();
+            *v = c.add_v;
             v->parent = v0->parent;
-            v->p = v0->p;
             v->prev = v0;
             v->next = v1;
             v0->next = v;
@@ -183,7 +178,7 @@ void ofApp::mousePressed(int x, int y, int button) {
 
 void ofApp::mouseReleased(int x, int y, int button) {
 
-    ofPoint p_mm = c.snapMm(c.getMm(ofPoint(x, y)));
+    ofPoint p_mm = c.getMm(ofPoint(x, y));
 
     // snap to the hovering point
     if (c.hover_point && c.hover_point_p) {
@@ -227,42 +222,6 @@ void ofApp::mouseReleased(int x, int y, int button) {
         c.ui_state = UI_SELECT;
         unselectMode();
         select_button->selected = true;
-    }
-
-
-    if (c.ui_state == UI_MOVING_POINT) {
-
-        ofPoint move_v = (p_mm - c.start_click);
-
-        ofPoint move_no_snap = (c.getMm(ofPoint(x, y)) - c.start_click);
-        if (abs(move_no_snap.x) < 1.0f && abs(move_no_snap.y) < 1.0f) {
-
-            // add to the selection
-            if (ofGetKeyPressed(OF_KEY_SHIFT)) {
-                c.new_selection = c.selection;
-            } else {
-                c.new_selection.clear();
-            }
-            c.new_selection.add(c.selected_p->getId());
-            ChangeSelectionAction *select = new ChangeSelectionAction();
-            select->prev_selection = c.selection;
-            select->new_selection = c.new_selection;
-            c.addAction(select);
-
-        } else {
-
-            c.selected_p->p = c.selected_p->start_p;
-            c.selected_p->dragged = false;
-
-            ofPoint move_v = (p_mm - c.start_click);
-
-            MoveSelectionAction *move_action = new MoveSelectionAction();
-            move_action->selection.add(c.selected_p->getId());
-            move_action->v = move_v;
-            c.addAction(move_action);
-        }
-
-        c.ui_state = UI_SELECT;
     }
 
     if (c.ui_state == UI_MOVING_SELECTION) {
