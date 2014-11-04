@@ -36,6 +36,20 @@ ofPoint InteractiveObject::getPx() {
     return p;
 }
 
+void InteractiveContainer::updateIndexes() {
+
+    int n = getLength();
+    items.resize(n);
+
+    int l = 0;
+    for (InteractiveObject *v = front; v != NULL; v = v->next) {
+        items[l] = v;
+        v->id = l;
+        l++;
+        if (v->next == front) break; // closed polylines
+    }
+}
+
 ItemId InteractiveObject::getId() {
 
     ItemId i;
@@ -52,6 +66,26 @@ void InteractiveContainer::init(InteractiveObject *p) {
     back = front;
 }
 
+void InteractiveContainer::popBack() {
+
+    if (front == NULL) {
+        return;
+    } else {
+        InteractiveObject *tmp = back;
+
+        if (back->prev != NULL) {
+            back = back->prev;
+            back->next = NULL;
+            delete tmp;
+        } else {
+            delete back;
+            back = NULL;
+            front = NULL;
+        }
+    }
+    updateIndexes();
+}
+
 void InteractiveContainer::addBack(InteractiveObject *p) {
 
     if (front == NULL) {
@@ -65,7 +99,7 @@ void InteractiveContainer::addBack(InteractiveObject *p) {
         i->prev = back;
         back = i;
     }
-    update();
+    updateIndexes();
 }
 
 void InteractiveContainer::addFront(InteractiveObject *p) {
@@ -81,7 +115,7 @@ void InteractiveContainer::addFront(InteractiveObject *p) {
         i->next = front;
         front = i;
     }
-    update();
+    updateIndexes();
 }
 
 void InteractiveContainer::addBack(InteractiveContainer *p) {
@@ -129,6 +163,9 @@ void InteractiveContainer::cloneFrom(InteractiveContainer *p) {
 
 // can be made more efficient by maintaining an array of the vertices
 InteractiveObject *InteractiveContainer::getItem(int i) {
+
+    cout << "InteractiveContainer::getItem " << i  << endl;
+    cout << "items() " << items.size() << endl;
 
     if (i < items.size()) {
         return items[i];

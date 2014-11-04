@@ -9,7 +9,7 @@
 
 #include "Button.h"
 
-
+#include "ofxGui.h"
 
 class ofApp : public ofBaseApp {
 
@@ -30,53 +30,57 @@ public:
 
 // canvas
 //==============================================================================
-    Canvas c;
+//    Canvas c;
 
-// UI
-//==============================================================================
-    ofxFontStash font;
 
-    // store and display available patches list
-    void unselectMode();
-    void SelectButtonClick(ButtonClickEventData &d);
-    void LineButtonClick(ButtonClickEventData &d);
-    void VertexButtonClick(ButtonClickEventData &d);
-    void MoveButtonClick(ButtonClickEventData &d);
-    void ZoomInButtonClick(ButtonClickEventData &d);
-    void ZoomOutButtonClick(ButtonClickEventData &d);
-    void addFixedJointClick(ButtonClickEventData &d);
-    void addRJointClick(ButtonClickEventData &d);
+    ofxFloatSlider angle;
+    ofxPanel gui;
 
-    Button *select_button;
-    Button *line_button;
-    Button *vertex_button;
-    Button *move_button;
-
-    int button_h;
-    int button_w;
-    int margin_top;
-    int margin_left;
-    int margin_bottom;
-
-    Toolbar canvas_toolbar;
-
-    // UI state machine
-//==============================================================================
-    float line_length_info;
-    bool zoom_in;
-    bool zoom_out;
-    
-    // grid of points and lines
-//==============================================================================
-    void setGrid();
-    void drawGrid();
-    ofVbo grid_lines_vbo;
-    ofVbo grid_points_vbo;
-    ofVbo grid_points_sub_vbo;
-    int lines_step;
-    int points_step;
-    int lines_n_x;
-    int lines_n_y;
-    int points_n_x;
-    int points_n_y;
+//// UI
+////==============================================================================
+//    ofxFontStash font;
+//
+//    // store and display available patches list
+//    void unselectMode();
+//    void SelectButtonClick(ButtonClickEventData &d);
+//    void LineButtonClick(ButtonClickEventData &d);
+//    void VertexButtonClick(ButtonClickEventData &d);
+//    void MoveButtonClick(ButtonClickEventData &d);
+//    void ZoomInButtonClick(ButtonClickEventData &d);
+//    void ZoomOutButtonClick(ButtonClickEventData &d);
+//    void addFixedJointClick(ButtonClickEventData &d);
+//    void addRJointClick(ButtonClickEventData &d);
+//
+//    Button *select_button;
+//    Button *line_button;
+//    Button *vertex_button;
+//    Button *move_button;
+//
+//    int button_h;
+//    int button_w;
+//    int margin_top;
+//    int margin_left;
+//    int margin_bottom;
+//
+////    Toolbar canvas_toolbar;
+//
+//    // UI state machine
+////==============================================================================
+//    float line_length_info;
+//    bool zoom_in;
+//    bool zoom_out;
+//    
+//    // grid of points and lines
+////==============================================================================
+//    void setGrid();
+//    void drawGrid();
+//    ofVbo grid_lines_vbo;
+//    ofVbo grid_points_vbo;
+//    ofVbo grid_points_sub_vbo;
+//    int lines_step;
+//    int points_step;
+//    int lines_n_x;
+//    int lines_n_y;
+//    int points_n_x;
+//    int points_n_y;
 };

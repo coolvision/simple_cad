@@ -16,7 +16,7 @@ bool close(ofPoint p1, ofPoint p2) {
 }
 
 // check if endpoints overlap, and if they do, connect the polylines
-void Canvas::connectPolylines(Polyline *p) {
+void Canvas::connectPolylines(InteractiveContainer *p) {
 
     if (p == NULL) {
         return;
@@ -54,7 +54,7 @@ void Canvas::connectPolylines(Polyline *p) {
         if (lines[i] == NULL) {
             continue;
         }
-        Polyline *l = lines[i];
+        InteractiveContainer *l = lines[i];
         if (l->front == NULL || l->closed) continue;
         if (l == p) continue;
         front[1] = l->front->p;

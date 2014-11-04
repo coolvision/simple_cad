@@ -10,9 +10,9 @@
 
 void ofApp::unselectMode() {
 
-    for (int i = 0; i < canvas_toolbar.buttons.size(); i++) {
-        canvas_toolbar.buttons[i]->selected = false;
-    }
+//    for (int i = 0; i < canvas_toolbar.buttons.size(); i++) {
+//        canvas_toolbar.buttons[i]->selected = false;
+//    }
 }
 
 void ofApp::addFixedJointClick(ButtonClickEventData &d) {
@@ -73,6 +73,8 @@ void ofApp::ZoomOutButtonClick(ButtonClickEventData &d) {
 }
 
 void ofApp::update() {
+
+    c.update();
 
     if (zoom_in && (ofGetKeyPressed(OF_KEY_CONTROL) ||
                     ofGetKeyPressed(OF_KEY_COMMAND))) {

@@ -12,6 +12,24 @@
 ofImage Joint::joint_icon_fixed;
 ofImage Joint::joint_icon_r;
 
+void JointsContainer::draw() {
+
+    for (InteractiveObject *v = front; v != NULL; v = v->next) {
+        v->draw();
+        if (v->next == front) break; // closed polylines
+    }
+}
+
+void JointsContainer::update(ofPoint p) {
+
+    update();
+}
+
+void JointsContainer::update() {
+
+    updateIndexes();
+}
+
 InteractiveObject *Joint::getCopy() {
 
     Joint *j = new Joint();
@@ -20,19 +38,22 @@ InteractiveObject *Joint::getCopy() {
     j->joint_type = this->joint_type;
     j->parent = NULL;
 
-    return j;
+    return (InteractiveObject *)j;
 }
 
 void Joint::draw() {
+
+//    gui.setPosition(getPx(p) + ofPoint(20.0f, 20.0f));
+//    gui.draw();
 
     ofPoint icon_offset(13, 13);
     
     if (selected) {
         ofSetColor(ofColor::steelBlue);
     } else if (hover) {
-        ofSetColor(ofColor::indigo);
-    } else {
         ofSetColor(ofColor::red);
+    } else {
+        ofSetColor(ofColor::indigo);
     }
 
     ofPoint p1 = getPx(p);

@@ -14,9 +14,16 @@
 Canvas::Canvas() {
 
     curr_action_i = 0;
+
+    lines.push_back(new JointsContainer());
+    lines.back()->id = 0;
+    lines.back()->z_index = 1;
 }
 
 InteractiveObject *Canvas::getItem(ItemId item_id) {
+
+    cout << "Canvas::getItem " << item_id.container_id << " " << item_id.item_id << endl;
+    cout << "lines.size() " << lines.size() << endl;
 
     if (item_id.container_id < lines.size()) {
         return lines[item_id.container_id]->getItem(item_id.item_id);
@@ -136,6 +143,10 @@ void Canvas::load(string path) {
     }
     lines.clear();
 
+    lines.push_back(new JointsContainer());
+    lines.back()->id = 0;
+    lines.back()->z_index = 1;
+
     int lines_n;
     int n;
 
@@ -148,7 +159,7 @@ void Canvas::load(string path) {
 
         for (int i = 0; i < lines_n; i++) {
             lines.push_back(new Polyline());
-            Polyline *l = lines.back();
+            InteractiveContainer *l = lines.back();
             l->id = lines.size() - 1;
             file >> n;
             file >> l->closed;

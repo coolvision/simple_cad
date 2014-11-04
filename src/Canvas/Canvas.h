@@ -14,6 +14,7 @@
 #include "Actions.h"
 #include "Joint.h"
 
+
 // ui state machine
 enum UIState {
     UI_DRAW_LINE = 0,
@@ -36,6 +37,9 @@ public:
     void save(string path);
     void load(string path);
 
+    void update();
+    void draw();
+
     vector<Action *> actions;
     int curr_action_i;
     void resetActions();
@@ -43,13 +47,16 @@ public:
 
     UIState ui_state;
 
+
 // storage & vis
 //==============================================================================
-    vector<Polyline *> lines;
+    vector<InteractiveContainer *> lines;
     InteractiveObject *getItem(ItemId item_id);
 
     Polyline curr_line;
     Vertex add_v;
+
+    JointsContainer joints;
 
 // zoom and offset
 //==============================================================================
@@ -82,7 +89,7 @@ public:
 
     // polygons
     bool hover_polygon;
-    Polyline *hover_polygon_p;
+    InteractiveContainer *hover_polygon_p;
 
     ofPoint snap(ofPoint p);
     ofPoint snapMm(ofPoint p);
@@ -98,5 +105,5 @@ public:
     ofPoint start_click;
     ofPoint start_p;
 
-    void connectPolylines(Polyline *p);
+    void connectPolylines(InteractiveContainer *p);
 };

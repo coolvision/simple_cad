@@ -29,11 +29,7 @@ public:
 
 class Polyline: public InteractiveContainer {
 public:
-    Polyline() {
-        front = NULL;
-        back = NULL;
-        closed = false;
-    };
+    Polyline() {};
     virtual ~Polyline() {};
 
     // geometry specific
@@ -43,4 +39,6 @@ public:
     // virtual
     void draw();
     void update();
+    void update(ofPoint p);
+    bool inside(ofPoint p);
 };

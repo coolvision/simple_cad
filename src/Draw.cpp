@@ -71,9 +71,10 @@ void ofApp::draw(){
     }
 
 
-//    vector<Joint *> joints;
 
+    c.update();
 
+    c.joints.draw();
 
     if (c.ui_state == UI_DRAWING_LINE) {
         c.curr_line.draw();
@@ -104,20 +105,22 @@ void ofApp::draw(){
 
     // buttons
 //==============================================================================
-    canvas_toolbar.draw();
-
-    ofPoint icon_offset(13, 13);
-    ofPoint p1(ofGetMouseX(), ofGetMouseY());
-    if (c.ui_state == UI_ADD_JOINT_R) {
-        ofSetColor(ofColor::red);
-        Joint::joint_icon_r.draw(p1 - icon_offset);
-    }
-    if (c.ui_state == UI_ADD_JOINT_FIXED) {
-        ofSetColor(ofColor::red);
-        Joint::joint_icon_fixed.draw(p1 - icon_offset);
-    }
+//    canvas_toolbar.draw();
+//
+//    ofPoint icon_offset(13, 13);
+//    ofPoint p1(ofGetMouseX(), ofGetMouseY());
+//    if (c.ui_state == UI_ADD_JOINT_R) {
+//        ofSetColor(ofColor::red);
+//        Joint::joint_icon_r.draw(p1 - icon_offset);
+//    }
+//    if (c.ui_state == UI_ADD_JOINT_FIXED) {
+//        ofSetColor(ofColor::red);
+//        Joint::joint_icon_fixed.draw(p1 - icon_offset);
+//    }
 
     ofPopStyle();
+
+    gui.draw();
 }
 
 void ofApp::drawGrid() {

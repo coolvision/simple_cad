@@ -193,11 +193,11 @@ void Canvas::setHover(ofPoint p) {
                 continue;
             }
             if (!lines[i]->closed) continue;
-            lines[i]->update();
-            if (lines[i]->ofp.inside(getPx(p))) {
+            lines[i]->update(getPx(p));
+
+            if (lines[i]->hover) {
                 hover_polygon = true;
                 hover_polygon_p = lines[i];
-                lines[i]->hover = true;
             }
         }
     }

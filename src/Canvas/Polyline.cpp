@@ -8,6 +8,93 @@
 
 #include "Polyline.h"
 
+void Polyline::draw() {
+
+    if (front == NULL || back == NULL) {
+        return;
+    }
+
+    ofPoint center;
+    int n = 0;
+    for (InteractiveObject *v = front; v != NULL; v = v->next) {
+        center += v->p;
+        n++;
+        if (v->next == front) break; // closed polylines
+    }
+    center /= (float)n;
+    p = center;
+
+    ofPushStyle();
+
+    ofEnableSmoothing();
+    ofEnableAntiAliasing();
+
+    float point_size = 3.0f * InteractiveObject::zoom;
+    if (point_size < 1.0f) {
+        point_size = 1.0f;
+    }
+
+    selected = true;
+    for (InteractiveObject *v = front; v != NULL && v->next != NULL; v = v->next) {
+        if (!v->selected) {
+            selected = false;
+            break;
+        }
+        if (v->next == front) break; // closed polylines
+    }
+
+    if (closed) {
+        path.setFilled(true);
+        if (hover || selected) {
+            path.setFillColor(ofColor(190, 190, 190, 200));
+        } else {
+            path.setFillColor(ofColor(200, 200, 200, 200));
+        }
+    } else {
+        path.setFilled(false);
+    }
+    path.draw();
+
+    ofSetLineWidth(1.0f);
+    ofSetColor(ofColor::black);
+
+    for (InteractiveObject *v = front; v != NULL && v->next != NULL; v = v->next) {
+        if (v->hover && v->next->hover) {
+            ofSetColor(ofColor::orangeRed);
+        } else if (v->selected && v->next->selected) {
+            ofSetColor(ofColor::steelBlue);
+        } else {
+            ofSetColor(ofColor::black);
+        }
+        ofLine(v->getPx(v->p), v->getPx(v->next->p));
+        if (v->next == front) break; // closed polylines
+    }
+
+    for (InteractiveObject *v = front; v != NULL; v = v->next) {
+        if (!v->hover && !v->selected) {
+            v->draw();
+        }
+        if (v->next == front) break; // closed polylines
+    }
+
+    for (InteractiveObject *v = front; v != NULL; v = v->next) {
+        if (v->selected && !v->hover) {
+            v->draw();
+        }
+        if (v->next == front) break; // closed polylines
+    }
+
+    for (InteractiveObject *v = front; v != NULL; v = v->next) {
+        if (v->hover) {
+            v->draw();
+        }
+        if (v->next == front) break; // closed polylines
+    }
+
+    ofDisableAntiAliasing();
+    ofDisableSmoothing();
+}
+
 InteractiveObject *Vertex::getCopy() {
 
     Vertex *v = new Vertex();
@@ -38,18 +125,28 @@ void Vertex::draw() {
     ofCircle(getPx(p), point_size);
 }
 
+bool Polyline::inside(ofPoint p) {
+
+    if (ofp.inside(p)) {
+        return true;
+    }
+
+    return false;
+}
+
+void Polyline::update(ofPoint p) {
+    update();
+
+    if (ofp.inside(p)) {
+        hover = true;
+    } else {
+        hover = false;
+    }
+}
+
 void Polyline::update() {
 
-    int n = getLength();
-    items.resize(n);
-
-    int l = 0;
-    for (InteractiveObject *v = front; v != NULL; v = v->next) {
-        items[l] = v;
-        v->id = l;
-        l++;
-        if (v->next == front) break; // closed polylines
-    }
+    updateIndexes();
 
     path.clear();
     for (InteractiveObject *v = front; v != NULL; v = v->next) {

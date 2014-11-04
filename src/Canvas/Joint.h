@@ -10,6 +10,7 @@
 
 #include "ofMain.h"
 #include "InteractiveObject.h"
+#include "ofxGui.h"
 
 enum JointType {
     JOINT_FIXED = 0,
@@ -29,6 +30,10 @@ public:
     Joint() {
         grid_snap = false;
         type = JOINT;
+
+//        gui.setup();
+//        gui.add(angle.setup("angle", 0.0f, -180.0f, 180.0f));
+//        gui.add(velocity.setup("velocity", 0.0f, 0.0f, 1.0f));
     };
     virtual ~Joint() {};
 
@@ -43,6 +48,22 @@ public:
 
     JointType joint_type;
 
+    vector<int> links;
+
+//	ofxFloatSlider angle;
+//	ofxFloatSlider velocity;
+//    ofxPanel gui;
+
     // events
-    ofEvent<JointClickEventData> click_event;
+    //ofEvent<JointClickEventData> click_event;
+};
+
+class JointsContainer: public InteractiveContainer {
+public:
+    JointsContainer() {};
+    virtual ~JointsContainer() {};
+
+    void draw();
+    void update();
+    void update(ofPoint p);
 };

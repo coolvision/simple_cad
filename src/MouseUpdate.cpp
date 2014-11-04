@@ -15,10 +15,10 @@ void ofApp::mouseMoved(int x, int y ) {
 
     // ok, this is not such a good way to do this,
     // check if the press is over a button
-    if (canvas_toolbar.inside(p)) {
-        return;
-    }
-    
+//    if (canvas_toolbar.inside(p)) {
+//        return;
+//    }
+
     if (c.ui_state == UI_ADD_VERTEX) {
 
         c.resetHover();

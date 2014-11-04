@@ -16,9 +16,9 @@ void ofApp::mousePressed(int x, int y, int button) {
 
     // ok, this is not such a good way to do this,
     // check if the press is over a button
-    if (canvas_toolbar.inside(ofPoint(x, y))) {
-        return;
-    }
+//    if (canvas_toolbar.inside(ofPoint(x, y))) {
+//        return;
+//    }
 
     ofPoint icon_offset(13, 13);
     if (c.ui_state == UI_ADD_JOINT_R) {
@@ -233,7 +233,7 @@ void ofApp::mouseReleased(int x, int y, int button) {
         }
 
         ofPoint move_v = (p_mm - c.start_click);
-        if (abs(move_v.x) < 1.0f && abs(move_v.y) < 1.0f) {
+        if (abs(move_v.x) < 0.1f && abs(move_v.y) < 0.1f) {
             ChangeSelectionAction *select = new ChangeSelectionAction();
             select->prev_selection = c.selection;
             select->new_selection = c.new_selection;
@@ -258,7 +258,7 @@ void ofApp::mouseReleased(int x, int y, int button) {
             if (c.selection.items.size() == 2) {
                 InteractiveObject *v1 = c.getItem(c.selection.items[0]);
                 InteractiveObject *v2 = c.getItem(c.selection.items[1]);
-                if (v1->p == v2->p) {
+                if (v1->parent == v2->parent) {
                     c.connectPolylines((Polyline *)v1->parent);
                     c.connectPolylines((Polyline *)v1->parent);
                 }

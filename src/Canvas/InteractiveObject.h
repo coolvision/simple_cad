@@ -9,6 +9,7 @@
 #pragma once
 
 #include "ofMain.h"
+#include "ofxGui.h"
 
 struct ItemId {
     int container_id;
@@ -43,6 +44,7 @@ public:
         parent = NULL;
         dragged = false;
         grid_snap = true;
+
     }
     virtual ~InteractiveObject() {};
     virtual void draw() {};
@@ -50,6 +52,8 @@ public:
     ofPoint getPx();
     ofPoint getPx(ofPoint p);
     ItemId getId();
+
+
 
     InteractiveObject *next;
     InteractiveObject *prev;
@@ -74,6 +78,9 @@ public:
         hover = false;
         selected = false;
         z_index = 0;
+        front = NULL;
+        back = NULL;
+        closed = false;
     }
     virtual ~InteractiveContainer() {
         release();
@@ -81,10 +88,15 @@ public:
 
     virtual void draw() {};
     virtual void update() {};
+    virtual void update(ofPoint p) {};
+    virtual bool inside(ofPoint p) {};
+
+    void updateIndexes();
 
     void cloneFrom(InteractiveContainer *p);
     void init(InteractiveObject *p);
     void addBack(InteractiveObject *p);
+    void popBack();
     void addFront(InteractiveObject *p);
     void addBack(InteractiveContainer *p);
     void addFront(InteractiveContainer *p);
@@ -97,9 +109,14 @@ public:
 
     bool selected;
     bool hover;
+    ofPoint p;
+
     // larger indexes in front
     // using only 0 and 1 for now
     int z_index;
+
+    ofxFloatSlider angle;
+    ofxPanel gui;
 
     InteractiveObject *front;
     InteractiveObject *back;
