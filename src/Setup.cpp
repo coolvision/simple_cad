@@ -17,7 +17,7 @@ void ofApp::setup(){
 
     c.zoom = 1.0f;
 
-    ofSetFrameRate(30);
+    ofSetFrameRate(60);
 
     setGrid();
 
@@ -35,79 +35,80 @@ void ofApp::setup(){
     int start_y = margin_top;
     int inc_y = button_h + margin_bottom;
 
-//    canvas_toolbar.y = start_y;
-//    canvas_toolbar.x = margin_left;
-//    canvas_toolbar.button_h = 24;
-//    canvas_toolbar.button_w = 24;
-//    canvas_toolbar.margin = margin_bottom;
+    canvas_toolbar.y = start_y;
+    canvas_toolbar.x = margin_left;
+    canvas_toolbar.button_h = 24;
+    canvas_toolbar.button_w = 24;
+    canvas_toolbar.margin = margin_bottom;
 
     int i = 0;
 
-//    select_button = new Button("select", margin_left,
-//                                start_y, button_w, button_h);
-//    select_button->icon.loadImage(ofToDataPath("icons/cursor/icon.png"));
-//    ofAddListener(select_button->click_event, this, &ofApp::SelectButtonClick);
-//    canvas_toolbar.buttons.push_back(select_button);
-//    select_button->hover = true;
-//    i++;
-//
-//    line_button = new Button("draw line",
-//                        margin_left, start_y + inc_y * i, button_w, button_h);
-//    line_button->icon.loadImage(ofToDataPath("icons/polyline/icon.png"));
-//    ofAddListener(line_button->click_event, this, &ofApp::LineButtonClick);
-//    canvas_toolbar.buttons.push_back(line_button);
-//    i++;
-//
-//    vertex_button = new Button("add vertex",
-//                             margin_left, start_y + inc_y * i, button_w, button_h);
-//    vertex_button->icon.loadImage(ofToDataPath("icons/dot/icon.png"));
-//    ofAddListener(vertex_button->click_event, this, &ofApp::VertexButtonClick);
-//    canvas_toolbar.buttons.push_back(vertex_button);
-//    i++;
-//
-//    move_button = new Button("move", margin_left,
-//                        start_y + inc_y * i, button_w, button_h);
-//    move_button->icon.loadImage(ofToDataPath("icons/move/icon.png"));
-//    ofAddListener(move_button->click_event, this, &ofApp::MoveButtonClick);
-//    canvas_toolbar.buttons.push_back(move_button);
-//    i++;
-//
-//    Button *button = new Button("zoom in",
-//                        margin_left, start_y + inc_y * i, button_w, button_h);
-//    button->icon.loadImage(ofToDataPath("icons/plus/icon.png"));
-//    ofAddListener(button->click_event, this, &ofApp::ZoomInButtonClick);
-//    canvas_toolbar.buttons.push_back(button);
-//    i++;
-//
-//    button = new Button("zoom out",
-//                        margin_left, start_y + inc_y * i, button_w, button_h);
-//    button->icon.loadImage(ofToDataPath("icons/minus/icon.png"));
-//    ofAddListener(button->click_event, this, &ofApp::ZoomOutButtonClick);
-//    canvas_toolbar.buttons.push_back(button);
-//    i++;
-//
-//    button = new Button("revolute", margin_left,
-//                             start_y + inc_y * i, button_w, button_h);
-//    button->icon.loadImage(ofToDataPath("icons/revolute.png"));
-//    ofAddListener(button->click_event, this, &ofApp::addRJointClick);
-//    canvas_toolbar.buttons.push_back(button);
-//    i++;
-//
-//    button = new Button("fixed",
-//                                margin_left, start_y + inc_y * i, button_w, button_h);
-//    button->icon.loadImage(ofToDataPath("icons/fix2.png"));
-//    ofAddListener(button->click_event, this, &ofApp::addFixedJointClick);
-//    canvas_toolbar.buttons.push_back(button);
-//    i++;
-//
-//    button = new Button("gear",
-//                        margin_left, start_y + inc_y * i, button_w, button_h);
-//    button->icon.loadImage(ofToDataPath("icons/gear.png"));
-//    //ofAddListener(button->click_event, this, &ofApp::ZoomOutButtonClick);
-//    canvas_toolbar.buttons.push_back(button);
+    select_button = new Button("select", margin_left,
+                                start_y, button_w, button_h);
+    select_button->icon.loadImage(ofToDataPath("icons/cursor/icon.png"));
+    ofAddListener(select_button->click_event, this, &ofApp::SelectButtonClick);
+    canvas_toolbar.buttons.push_back(select_button);
+    select_button->hover = true;
+    i++;
 
-    Joint::joint_icon_fixed.loadImage(ofToDataPath("icons/fix_canvas.png"));
-    Joint::joint_icon_r.loadImage(ofToDataPath("icons/revolute_canvas.png"));
+    line_button = new Button("draw line",
+                        margin_left, start_y + inc_y * i, button_w, button_h);
+    line_button->icon.loadImage(ofToDataPath("icons/polyline/icon.png"));
+    ofAddListener(line_button->click_event, this, &ofApp::LineButtonClick);
+    canvas_toolbar.buttons.push_back(line_button);
+    i++;
+
+    vertex_button = new Button("add vertex",
+                             margin_left, start_y + inc_y * i, button_w, button_h);
+    vertex_button->icon.loadImage(ofToDataPath("icons/dot/icon.png"));
+    ofAddListener(vertex_button->click_event, this, &ofApp::VertexButtonClick);
+    canvas_toolbar.buttons.push_back(vertex_button);
+    i++;
+
+    move_button = new Button("move", margin_left,
+                        start_y + inc_y * i, button_w, button_h);
+    move_button->icon.loadImage(ofToDataPath("icons/move/icon.png"));
+    ofAddListener(move_button->click_event, this, &ofApp::MoveButtonClick);
+    canvas_toolbar.buttons.push_back(move_button);
+    i++;
+
+    Button *button = new Button("zoom in",
+                        margin_left, start_y + inc_y * i, button_w, button_h);
+    button->icon.loadImage(ofToDataPath("icons/plus/icon.png"));
+    ofAddListener(button->click_event, this, &ofApp::ZoomInButtonClick);
+    canvas_toolbar.buttons.push_back(button);
+    i++;
+
+    button = new Button("zoom out",
+                        margin_left, start_y + inc_y * i, button_w, button_h);
+    button->icon.loadImage(ofToDataPath("icons/minus/icon.png"));
+    ofAddListener(button->click_event, this, &ofApp::ZoomOutButtonClick);
+    canvas_toolbar.buttons.push_back(button);
+    i++;
+
+    button = new Button("revolute", margin_left,
+                             start_y + inc_y * i, button_w, button_h);
+    button->icon.loadImage(ofToDataPath("icons/revolute.png"));
+    ofAddListener(button->click_event, this, &ofApp::addRJointClick);
+    canvas_toolbar.buttons.push_back(button);
+    i++;
+
+    button = new Button("fixed",
+                                margin_left, start_y + inc_y * i, button_w, button_h);
+    button->icon.loadImage(ofToDataPath("icons/fix3.png"));
+    ofAddListener(button->click_event, this, &ofApp::addFixedJointClick);
+    canvas_toolbar.buttons.push_back(button);
+    i++;
+
+    button = new Button("gear",
+                        margin_left, start_y + inc_y * i, button_w, button_h);
+    button->icon.loadImage(ofToDataPath("icons/gear.png"));
+    //ofAddListener(button->click_event, this, &ofApp::ZoomOutButtonClick);
+    canvas_toolbar.buttons.push_back(button);
+
+    Joint::joint_icon_fixed.loadImage(ofToDataPath("icons/fix3_canvas.png"));
+    Joint::joint_icon_r.loadImage(ofToDataPath("icons/revolute2_canvas.png"));
+    Vertex::dot_icon.loadImage(ofToDataPath("icons/dot.png"));
 
 //==============================================================================
     // default start state
@@ -120,9 +121,6 @@ void ofApp::setup(){
     zoom_out = false;
 
     line_length_info = 0.0f;
-
-    gui.setup();
-    gui.add(angle.setup("angle", 0.0f, -180.0f, 180.0f));
 }
 
 void ofApp::setGrid() {
@@ -130,7 +128,7 @@ void ofApp::setGrid() {
     float w = ofGetWindowWidth();
     float h = ofGetWindowHeight();
 
-    points_step = 8.0f * c.zoom;
+    points_step = 4 * c.zoom;
     c.px_step = points_step;
     lines_step = points_step * 5;
 

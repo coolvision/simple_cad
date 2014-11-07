@@ -37,14 +37,6 @@ void AddJointAction::doAction(Canvas *c) {
         j.joint_type = type;
         j.p = p;
         c->lines[0]->addBack(&j);
-
-//        c->lines.push_back(new Polyline());
-//        c->lines.back()->id = c->lines.size() - 1;
-//        c->lines.back()->z_index = 1;
-//        Joint j;
-//        j.joint_type = type;
-//        j.p = p;
-//        c->lines.back()->addBack(&j);
     }
     undo = false;
 }
@@ -55,10 +47,6 @@ void AddJointAction::undoAction(Canvas *c) {
 
     if (!undo) {
         c->lines[0]->popBack();
-//        if (!c->lines.empty()) {
-//            delete c->lines.back();
-//            c->lines.pop_back();
-//        }
     }
     undo = true;
 }

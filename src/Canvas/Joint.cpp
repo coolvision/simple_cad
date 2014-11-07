@@ -43,8 +43,12 @@ InteractiveObject *Joint::getCopy() {
 
 void Joint::draw() {
 
-//    gui.setPosition(getPx(p) + ofPoint(20.0f, 20.0f));
-//    gui.draw();
+    if (joint_type == JOINT_REVOLUTE) {
+        if (hover || selected) {
+            gui.setPosition(getPx(p) + ofPoint(20.0f, 20.0f));
+            gui.draw();
+        }
+    }
 
     ofPoint icon_offset(13, 13);
     
@@ -53,7 +57,7 @@ void Joint::draw() {
     } else if (hover) {
         ofSetColor(ofColor::red);
     } else {
-        ofSetColor(ofColor::indigo);
+        ofSetColor(ofColor::black);
     }
 
     ofPoint p1 = getPx(p);

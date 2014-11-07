@@ -16,9 +16,9 @@ void ofApp::mousePressed(int x, int y, int button) {
 
     // ok, this is not such a good way to do this,
     // check if the press is over a button
-//    if (canvas_toolbar.inside(ofPoint(x, y))) {
-//        return;
-//    }
+    if (canvas_toolbar.inside(ofPoint(x, y))) {
+        return;
+    }
 
     ofPoint icon_offset(13, 13);
     if (c.ui_state == UI_ADD_JOINT_R) {

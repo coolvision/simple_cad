@@ -12,39 +12,40 @@ void ofApp::draw(){
 
     ofPushStyle();
     ofBackground(220);
+    //ofBackground(150);
 
     drawGrid();
 
     int off_x = 170;
 
-    int j = 0;
-    int n = c.actions.size();
-    for (int i = MIN(c.curr_action_i, n-30); i < n; i++) {
-        if (i < 0) {
-            continue;
-        }
-        if (i == c.curr_action_i) {
-            ofSetColor(ofColor::darkRed);
-        } else {
-            ofSetColor(ofColor::black);
-        }
-        font.draw(c.actions[i]->label, 16, ofGetWindowWidth() - off_x,
-                  120 + 20 * j);
-        j++;
-    }
-
-    ofSetColor(ofColor::black);
-    for (int i = 0; i < c.selection.items.size(); i++) {
-        ItemId v = c.selection.items[i];
-        font.draw("line:" + ofToString(v.container_id) + " v:" + ofToString(v.item_id),
-                  16, ofGetWindowWidth() - 400,
-                  20 + 20 * i);
-    }
+//    int j = 0;
+//    int n = c.actions.size();
+//    for (int i = MIN(c.curr_action_i, n-30); i < n; i++) {
+//        if (i < 0) {
+//            continue;
+//        }
+//        if (i == c.curr_action_i) {
+//            ofSetColor(ofColor::darkRed);
+//        } else {
+//            ofSetColor(ofColor::black);
+//        }
+//        font.draw(c.actions[i]->label, 16, ofGetWindowWidth() - off_x,
+//                  120 + 20 * j);
+//        j++;
+//    }
+//
+//    ofSetColor(ofColor::black);
+//    for (int i = 0; i < c.selection.items.size(); i++) {
+//        ItemId v = c.selection.items[i];
+//        font.draw("line:" + ofToString(v.container_id) + " v:" + ofToString(v.item_id),
+//                  16, ofGetWindowWidth() - 400,
+//                  20 + 20 * i);
+//    }
 
     ofPoint p = c.snap(ofPoint(ofGetMouseX(), ofGetMouseY()));
 
     ofSetColor(0.0f);
-    font.draw("FPS: " + ofToString((int)ofGetFrameRate()), 16,
+    font.draw("FPS: " + ofToString(round(ofGetFrameRate())), 16,
               ofGetWindowWidth() - off_x, 20);
     font.draw("zoom: " + ofToString(c.zoom * 100) + "%", 16,
               ofGetWindowWidth() - off_x, 40);
@@ -70,11 +71,10 @@ void ofApp::draw(){
         }
     }
 
-
-
     c.update();
 
     c.joints.draw();
+
 
     if (c.ui_state == UI_DRAWING_LINE) {
         c.curr_line.draw();
@@ -105,22 +105,27 @@ void ofApp::draw(){
 
     // buttons
 //==============================================================================
-//    canvas_toolbar.draw();
-//
-//    ofPoint icon_offset(13, 13);
-//    ofPoint p1(ofGetMouseX(), ofGetMouseY());
-//    if (c.ui_state == UI_ADD_JOINT_R) {
+    canvas_toolbar.draw();
+
+    ofPoint icon_offset(13, 13);
+    ofPoint p1(ofGetMouseX(), ofGetMouseY());
+    Joint joint;
+    if (c.ui_state == UI_ADD_JOINT_R) {
+        joint.joint_type = JOINT_REVOLUTE;
+        joint.p = c.getMm(p1);
+        joint.draw();
 //        ofSetColor(ofColor::red);
 //        Joint::joint_icon_r.draw(p1 - icon_offset);
-//    }
-//    if (c.ui_state == UI_ADD_JOINT_FIXED) {
+    }
+    if (c.ui_state == UI_ADD_JOINT_FIXED) {
+        joint.joint_type = JOINT_FIXED;
+        joint.p = c.getMm(p1);
+        joint.draw();
 //        ofSetColor(ofColor::red);
 //        Joint::joint_icon_fixed.draw(p1 - icon_offset);
-//    }
+    }
 
     ofPopStyle();
-
-    gui.draw();
 }
 
 void ofApp::drawGrid() {
@@ -133,10 +138,10 @@ void ofApp::drawGrid() {
     float w = ofGetWindowWidth();
     float h = ofGetWindowHeight();
 
-    ofSetColor(100.0f);
+    ofSetColor(150.0f);
     grid_points_vbo.draw(GL_POINTS, 0, points_n_x * points_n_y);
 
-    ofSetColor(100.0f);
+    ofSetColor(150.0f);
     ofSetLineWidth(1.0f);
     grid_lines_vbo.draw(GL_LINES, 0, (lines_n_x + lines_n_y) * 2);
 

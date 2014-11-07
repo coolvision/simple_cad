@@ -31,9 +31,11 @@ public:
         grid_snap = false;
         type = JOINT;
 
-//        gui.setup();
-//        gui.add(angle.setup("angle", 0.0f, -180.0f, 180.0f));
-//        gui.add(velocity.setup("velocity", 0.0f, 0.0f, 1.0f));
+        gui.setup();
+        gui.add(angle.setup("angle", 0.0f, -180.0f, 180.0f));
+        gui.add(velocity.setup("velocity", 0.0f, 0.0f, 10.0f));
+
+        curr_angle = angle;
     };
     virtual ~Joint() {};
 
@@ -50,12 +52,13 @@ public:
 
     vector<int> links;
 
-//	ofxFloatSlider angle;
-//	ofxFloatSlider velocity;
-//    ofxPanel gui;
+    float curr_angle;
+	ofxFloatSlider angle;
+	ofxFloatSlider velocity;
+    ofxPanel gui;
 
     // events
-    //ofEvent<JointClickEventData> click_event;
+    ofEvent<JointClickEventData> click_event;
 };
 
 class JointsContainer: public InteractiveContainer {

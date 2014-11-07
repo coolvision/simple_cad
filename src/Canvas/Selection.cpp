@@ -203,7 +203,7 @@ void Canvas::setHover(ofPoint p) {
     }
 
     if (!hover_point && !hover_polygon) {
-        for (int i = 0; i < lines.size(); i++) {
+        for (int i = 1; i < (int)lines.size(); i++) {
             if (lines[i] == NULL) {
                 continue;
             }

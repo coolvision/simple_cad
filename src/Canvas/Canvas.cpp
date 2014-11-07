@@ -173,6 +173,7 @@ void Canvas::load(string path) {
                 l->back->next = l->front;
                 l->front->prev = l->back;
             }
+            l->update();
         }
         file.close();
     }

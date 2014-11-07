@@ -15,10 +15,10 @@ void ofApp::mouseMoved(int x, int y ) {
 
     // ok, this is not such a good way to do this,
     // check if the press is over a button
-//    if (canvas_toolbar.inside(p)) {
-//        return;
-//    }
-
+    if (canvas_toolbar.inside(p)) {
+        return;
+    }
+    
     if (c.ui_state == UI_ADD_VERTEX) {
 
         c.resetHover();
@@ -81,8 +81,8 @@ void ofApp::mouseDragged(int x, int y, int button) {
     if (c.ui_state == UI_MOVING_SELECTION) {
         for (int i = 0; i < c.selection.items.size(); i++) {
             InteractiveObject *v = c.getItem(c.selection.items[i]);
-            v->parent->update();
             v->p = v->start_p + (p_mm - c.start_click);
+            v->parent->update();
         }
     }
 

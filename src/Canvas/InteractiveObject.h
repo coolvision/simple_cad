@@ -53,8 +53,6 @@ public:
     ofPoint getPx(ofPoint p);
     ItemId getId();
 
-
-
     InteractiveObject *next;
     InteractiveObject *prev;
 

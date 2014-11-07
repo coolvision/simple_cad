@@ -8,6 +8,8 @@
 
 #include "Polyline.h"
 
+ofImage Vertex::dot_icon;
+
 void Polyline::draw() {
 
     if (front == NULL || back == NULL) {
@@ -43,6 +45,13 @@ void Polyline::draw() {
         if (v->next == front) break; // closed polylines
     }
 
+//    path.setStrokeColor(ofColor::black);
+    if (hover) {
+        path.setStrokeColor(ofColor::orangeRed);
+    } else {
+        path.setStrokeColor(80);
+    }
+    path.setStrokeWidth(1.0f);
     if (closed) {
         path.setFilled(true);
         if (hover || selected) {
@@ -57,16 +66,18 @@ void Polyline::draw() {
 
     ofSetLineWidth(1.0f);
     ofSetColor(ofColor::black);
-
     for (InteractiveObject *v = front; v != NULL && v->next != NULL; v = v->next) {
         if (v->hover && v->next->hover) {
             ofSetColor(ofColor::orangeRed);
+            ofLine(v->getPx(v->p), v->getPx(v->next->p));
         } else if (v->selected && v->next->selected) {
             ofSetColor(ofColor::steelBlue);
-        } else {
-            ofSetColor(ofColor::black);
+            ofLine(v->getPx(v->p), v->getPx(v->next->p));
         }
-        ofLine(v->getPx(v->p), v->getPx(v->next->p));
+//        else {
+//            ofSetColor(ofColor::black);
+//        }
+
         if (v->next == front) break; // closed polylines
     }
 
@@ -111,9 +122,12 @@ void Vertex::draw() {
     if (point_size < 1.0f) {
         point_size = 1.0f;
     }
+    if (point_size > 3.0f) {
+        point_size = 3.0f;
+    }
 
     if (!hover && !selected) {
-        ofSetColor(ofColor::black);
+        ofSetColor(80);
     }
     if (selected && !hover) {
         ofSetColor(ofColor::steelBlue);
@@ -121,6 +135,9 @@ void Vertex::draw() {
     if (hover) {
         ofSetColor(ofColor::orangeRed);
     }
+
+//    ofPoint icon_off(2, 2);
+//    dot_icon.draw(getPx(p) - icon_off);
 
     ofCircle(getPx(p), point_size);
 }
@@ -155,7 +172,10 @@ void Polyline::update() {
             path.moveTo(v->getPx(v->p));
         }
         path.lineTo(v->getPx(v->p));
-        if (v->next == front) break; // closed polylines
+        if (v->next == front) {
+            path.lineTo(v->getPx(v->next->p));
+            break; // closed polylines
+        }
     }
 
     ofp.clear();

@@ -25,6 +25,7 @@ public:
     virtual ~Vertex() {};
     void draw();
     InteractiveObject *getCopy();
+    static ofImage dot_icon;
 };
 
 class Polyline: public InteractiveContainer {
