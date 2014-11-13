@@ -73,6 +73,7 @@ void ofApp::draw(){
 
     c.update();
 
+    c.draw();
     c.joints.draw();
 
 

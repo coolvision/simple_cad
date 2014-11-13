@@ -26,6 +26,10 @@ void Polyline::draw() {
     center /= (float)n;
     p = center;
 
+    for (int i = 0; i < motion_msgs.size(); i++) {
+        ofDrawBitmapString(motion_msgs[i]->label, front->getPx(center) + ofPoint(0, 15 * i));
+    }
+
     ofPushStyle();
 
     ofEnableSmoothing();
@@ -54,6 +58,7 @@ void Polyline::draw() {
     path.setStrokeWidth(1.0f);
     if (closed) {
         path.setFilled(true);
+//        if (hover) {
         if (hover || selected) {
             path.setFillColor(ofColor(190, 190, 190, 200));
         } else {

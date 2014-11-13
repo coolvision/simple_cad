@@ -40,6 +40,9 @@ public:
     void update();
     void draw();
 
+    // motion
+    void getConnectedJoints(int line_i, vector <Joint *> *connected_j);
+
     vector<Action *> actions;
     int curr_action_i;
     void resetActions();

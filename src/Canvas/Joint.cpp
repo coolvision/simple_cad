@@ -43,6 +43,10 @@ InteractiveObject *Joint::getCopy() {
 
 void Joint::draw() {
 
+    for (int i = 0; i < motion_msgs.size(); i++) {
+        ofDrawBitmapString(motion_msgs[i]->label, getPx(p) + ofPoint(0, 15 * i));
+    }
+
     if (joint_type == JOINT_REVOLUTE) {
         if (hover || selected) {
             gui.setPosition(getPx(p) + ofPoint(20.0f, 20.0f));

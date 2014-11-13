@@ -66,6 +66,7 @@ void AddLineAction::doAction(Canvas *c) {
         c->lines.back()->id = c->lines.size() - 1;
         c->lines.back()->addBack(&p[0]);
         c->lines.back()->addBack(&p[1]);
+        c->lines.back()->update();
     }
     undo = false;
 }
@@ -191,6 +192,8 @@ void ConnectPolylinesAction::doAction(Canvas *c) {
         }
 
         l->release();
+
+        p->update();
     }
 
     undo = false;

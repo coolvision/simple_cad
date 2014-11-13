@@ -59,6 +59,23 @@ ItemId InteractiveObject::getId() {
     return i;
 }
 
+
+void InteractiveContainer::reset() {
+
+    while (!motion_msgs.empty()) {
+        delete motion_msgs.front();
+        motion_msgs.pop_front();
+    }
+}
+
+void InteractiveObject::reset() {
+
+    while (!motion_msgs.empty()) {
+        delete motion_msgs.front();
+        motion_msgs.pop_front();
+    }
+}
+
 void InteractiveContainer::init(InteractiveObject *p) {
     InteractiveObject *i = p->getCopy();
     i->parent = this;
@@ -164,8 +181,8 @@ void InteractiveContainer::cloneFrom(InteractiveContainer *p) {
 // can be made more efficient by maintaining an array of the vertices
 InteractiveObject *InteractiveContainer::getItem(int i) {
 
-    cout << "InteractiveContainer::getItem " << i  << endl;
-    cout << "items() " << items.size() << endl;
+   // cout << "InteractiveContainer::getItem " << i  << endl;
+   // cout << "items() " << items.size() << endl;
 
     if (i < items.size()) {
         return items[i];

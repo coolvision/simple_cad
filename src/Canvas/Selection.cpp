@@ -198,6 +198,10 @@ void Canvas::setHover(ofPoint p) {
             if (lines[i]->hover) {
                 hover_polygon = true;
                 hover_polygon_p = lines[i];
+                for (InteractiveObject *v = lines[i]->front; v != NULL; v = v->next) {
+                    v->hover = true;
+                    if (v->next == lines[i]->front) break; // closed polylines
+                }
             }
         }
     }

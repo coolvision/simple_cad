@@ -50,8 +50,6 @@ public:
 
     JointType joint_type;
 
-    vector<int> links;
-
     float curr_angle;
 	ofxFloatSlider angle;
 	ofxFloatSlider velocity;

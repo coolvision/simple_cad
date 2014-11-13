@@ -29,6 +29,32 @@ enum ItemType {
 };
 
 class InteractiveContainer;
+class InteractiveObject;
+
+class Motion {
+public:
+    virtual void apply(InteractiveContainer *c) {};
+    virtual void apply(InteractiveObject *i) {};
+    virtual Motion *getCopy() {};
+    string label;
+    int sender_id;
+    int origin_id;
+};
+
+struct LinearMotion: public Motion {
+    void apply(InteractiveContainer *c);
+    void apply(InteractiveObject *i);
+    Motion *getCopy();
+    ofPoint v;
+};
+
+struct Rotation: public Motion {
+    void apply(InteractiveContainer *c);
+    void apply(InteractiveObject *i);
+    Motion *getCopy();
+    ofPoint pivot;
+    float angle;
+};
 
 class InteractiveObject {
 public:
@@ -58,6 +84,14 @@ public:
 
     ofPoint p; // position
     ofPoint start_p; // for dragging
+
+    // motion
+    deque<Motion *> motion_msgs;
+    void reset();
+
+    // connections
+    vector<int> links;
+    vector<ofPoint> links_rel;
 
     bool selected;
     bool hover;
@@ -121,6 +155,10 @@ public:
     bool closed; // list can be circular
 
     int id;
+
+    // motion
+    deque<Motion *> motion_msgs;
+    void reset();
 
 protected:
     // array of ordered vertices,

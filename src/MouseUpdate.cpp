@@ -13,6 +13,8 @@ void ofApp::mouseMoved(int x, int y ) {
     ofPoint p(x, y);
     ofPoint p_mm = c.getMm(p);
 
+    curr_p = p_mm;
+
     // ok, this is not such a good way to do this,
     // check if the press is over a button
     if (canvas_toolbar.inside(p)) {
@@ -55,6 +57,9 @@ void ofApp::mouseDragged(int x, int y, int button) {
 
     ofPoint p_mm = c.getMm(ofPoint(x, y));
 
+    prev_p = curr_p;
+    curr_p = p_mm;
+
     ofPoint r = p_mm - c.start_click;
     c.selection_r.set(c.start_click, r.x, r.y);
 
@@ -84,7 +89,23 @@ void ofApp::mouseDragged(int x, int y, int button) {
             v->p = v->start_p + (p_mm - c.start_click);
             v->parent->update();
         }
+        for (int i = 0; i < c.lines.size(); i++) {
+            if (c.lines[i]->selected) {
+                //cout << "c.lines[i]->selected " << i << endl;
+                LinearMotion *m = new LinearMotion();
+                ofPoint v = curr_p - prev_p;
+                m->v = v;
+                m->label = ofToString(v.x) + " " + ofToString(v.y);
+                m->sender_id = i;
+                m->origin_id = i;
+                c.lines[i]->motion_msgs.push_back(m);
+            }
+        }
+
+        c.update();
     }
+
+
 
 //    if (c.ui_state == UI_MOVING_POINT) {
 //        c.selected_p->parent->update();

@@ -22,8 +22,8 @@ Canvas::Canvas() {
 
 InteractiveObject *Canvas::getItem(ItemId item_id) {
 
-    cout << "Canvas::getItem " << item_id.container_id << " " << item_id.item_id << endl;
-    cout << "lines.size() " << lines.size() << endl;
+//    cout << "Canvas::getItem " << item_id.container_id << " " << item_id.item_id << endl;
+//    cout << "lines.size() " << lines.size() << endl;
 
     if (item_id.container_id < lines.size()) {
         return lines[item_id.container_id]->getItem(item_id.item_id);
@@ -155,7 +155,7 @@ void Canvas::load(string path) {
 
         file >> lines_n;
 
-        cout << "load " << lines_n <<  " lines" << endl;
+ //       cout << "load " << lines_n <<  " lines" << endl;
 
         for (int i = 0; i < lines_n; i++) {
             lines.push_back(new Polyline());
