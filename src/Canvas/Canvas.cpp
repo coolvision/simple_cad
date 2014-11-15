@@ -18,6 +18,8 @@ Canvas::Canvas() {
     lines.push_back(new JointsContainer());
     lines.back()->id = 0;
     lines.back()->z_index = 1;
+
+    update_i = 0;
 }
 
 InteractiveObject *Canvas::getItem(ItemId item_id) {

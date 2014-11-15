@@ -5,7 +5,7 @@
 	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>9C606DEE-B90A-4119-9693-111D47E3D57E</string>
+	<string>00F0E5F1-79AB-4A15-A56A-A325C3C528C6</string>
 	<key>IDESourceControlProjectName</key>
 	<string>simple_cad</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
@@ -16,8 +16,6 @@
 		<string>https://github.com/memo/ofxMSAInteractiveObject.git</string>
 		<key>9B774B0323186B2BCB6A3C5ECEB04025E7DCF467</key>
 		<string>https://github.com/armadillu/ofxFontStash.git</string>
-		<key>ADACB6BAEA67271B9A2BF47167EA909FD6B0CF40</key>
-		<string>https://github.com/memo/ofxSimpleGuiToo.git</string>
 		<key>CCAD433116D1C8D5FDE6FADA9F576076DEB909AA</key>
 		<string>https://github.com/coolvision/simple_cad.git</string>
 	</dict>
@@ -26,13 +24,11 @@
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>2559BBC2C6F846687D7E9F4E42C98FC44D06AE4C</key>
-		<string>../../../addons/ofxUnicode</string>
+		<string>../../../../../addons/ofxUnicode</string>
 		<key>328B2D9D97956D43F1C477558678A6865720047A</key>
-		<string>../../../addons/ofxMSAInteractiveObject</string>
+		<string>../../../../../addons/ofxMSAInteractiveObject</string>
 		<key>9B774B0323186B2BCB6A3C5ECEB04025E7DCF467</key>
-		<string>../../../addons/ofxFontStash</string>
-		<key>ADACB6BAEA67271B9A2BF47167EA909FD6B0CF40</key>
-		<string>../../../addons/ofxSimpleGuiToo</string>
+		<string>../../../../../addons/ofxFontStash</string>
 		<key>CCAD433116D1C8D5FDE6FADA9F576076DEB909AA</key>
 		<string>../..</string>
 	</dict>
@@ -59,14 +55,6 @@
 			<string>328B2D9D97956D43F1C477558678A6865720047A</string>
 			<key>IDESourceControlWCCName</key>
 			<string>ofxMSAInteractiveObject</string>
-		</dict>
-		<dict>
-			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
-			<string>public.vcs.git</string>
-			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>ADACB6BAEA67271B9A2BF47167EA909FD6B0CF40</string>
-			<key>IDESourceControlWCCName</key>
-			<string>ofxSimpleGuiToo</string>
 		</dict>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>

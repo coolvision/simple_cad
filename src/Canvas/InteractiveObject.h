@@ -30,27 +30,36 @@ enum ItemType {
 
 class InteractiveContainer;
 class InteractiveObject;
+class Canvas;
 
 class Motion {
 public:
-    virtual void apply(InteractiveContainer *c) {};
-    virtual void apply(InteractiveObject *i) {};
+    virtual void apply(InteractiveContainer *c, Canvas *canvas) {};
+    virtual void apply(InteractiveObject *i, Canvas *canvas) {};
     virtual Motion *getCopy() {};
     string label;
     int sender_id;
+    int receiver_id;
     int origin_id;
+    int sent_stamp;
 };
 
 struct LinearMotion: public Motion {
-    void apply(InteractiveContainer *c);
-    void apply(InteractiveObject *i);
+    void apply(InteractiveContainer *c, Canvas *canvas);
+    void apply(InteractiveObject *i, Canvas *canvas);
     Motion *getCopy();
     ofPoint v;
 };
 
+struct UpdateRelative: public Motion {
+    void apply(InteractiveContainer *c, Canvas *canvas);
+    void apply(InteractiveObject *i, Canvas *canvas);
+    Motion *getCopy();
+};
+
 struct Rotation: public Motion {
-    void apply(InteractiveContainer *c);
-    void apply(InteractiveObject *i);
+    void apply(InteractiveContainer *c, Canvas *canvas);
+    void apply(InteractiveObject *i, Canvas *canvas);
     Motion *getCopy();
     ofPoint pivot;
     float angle;
@@ -70,6 +79,7 @@ public:
         parent = NULL;
         dragged = false;
         grid_snap = true;
+        updated_i = 0;
 
     }
     virtual ~InteractiveObject() {};
@@ -88,10 +98,11 @@ public:
     // motion
     deque<Motion *> motion_msgs;
     void reset();
-
     // connections
     vector<int> links;
     vector<ofPoint> links_rel;
+    void updateRelative(ofPoint new_p, int parent_id);
+    int updated_i;
 
     bool selected;
     bool hover;
@@ -113,6 +124,7 @@ public:
         front = NULL;
         back = NULL;
         closed = false;
+        updated_i = 0;
     }
     virtual ~InteractiveContainer() {
         release();
@@ -159,6 +171,11 @@ public:
     // motion
     deque<Motion *> motion_msgs;
     void reset();
+    // connections
+    vector<int> links;
+    vector<ofPoint> links_rel;
+    void updateRelative(ofPoint new_p, int parent_id);
+    int updated_i;
 
 protected:
     // array of ordered vertices,

@@ -43,7 +43,9 @@ InteractiveObject *Joint::getCopy() {
 
 void Joint::draw() {
 
-    for (int i = 0; i < motion_msgs.size(); i++) {
+
+    ofDrawBitmapString(ofToString(updated_i), getPx(p) + ofPoint(0, 15 * 0));
+    for (int i = 1; i < motion_msgs.size(); i++) {
         ofDrawBitmapString(motion_msgs[i]->label, getPx(p) + ofPoint(0, 15 * i));
     }
 

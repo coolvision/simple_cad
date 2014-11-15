@@ -21,7 +21,10 @@ void Canvas::draw() {
 
         for (int i = 0; i < j->links.size(); i++) {
 
-            ofPoint p2 = getPx(lines[j->links[i]]->p);
+//            ofPoint p2 = getPx(lines[j->links[i]]->p);
+
+            ofPoint p2 = getPx(j->p - j->links_rel[i]);
+
             ofLine(p1, p2);
 
             float point_size = 3.0f * zoom;

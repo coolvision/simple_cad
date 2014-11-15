@@ -33,6 +33,8 @@ enum UIState {
 class Canvas {
 public:
 
+    int update_i;
+
     Canvas();
     void save(string path);
     void load(string path);
@@ -41,7 +43,8 @@ public:
     void draw();
 
     // motion
-    void getConnectedJoints(int line_i, vector <Joint *> *connected_j);
+    void getConnectedJoints(int line_i, vector<Joint *> *connected_j,
+                            vector<ofPoint> *connected_rel);
 
     vector<Action *> actions;
     int curr_action_i;

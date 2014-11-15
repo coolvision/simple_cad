@@ -89,20 +89,23 @@ void ofApp::mouseDragged(int x, int y, int button) {
             v->p = v->start_p + (p_mm - c.start_click);
             v->parent->update();
         }
-        for (int i = 0; i < c.lines.size(); i++) {
+        for (int i = 1; i < c.lines.size(); i++) {
             if (c.lines[i]->selected) {
                 //cout << "c.lines[i]->selected " << i << endl;
-                LinearMotion *m = new LinearMotion();
-                ofPoint v = curr_p - prev_p;
-                m->v = v;
-                m->label = ofToString(v.x) + " " + ofToString(v.y);
-                m->sender_id = i;
-                m->origin_id = i;
+                UpdateRelative *m = new UpdateRelative();
+                m->sender_id = -1;
+                m->receiver_id = c.lines[i]->id;
+                m->origin_id = c.lines[i]->id;
+                m->sent_stamp = c.update_i;
+                m->label = ofToString(i) + " " + ofToString(c.update_i);
+                c.lines[i]->updated_i = c.update_i;
                 c.lines[i]->motion_msgs.push_back(m);
             }
+            c.lines[i]->update();
         }
 
-        c.update();
+//        c.update();
+//        c.update();
     }
 
 

@@ -16,19 +16,20 @@ void Polyline::draw() {
         return;
     }
 
-    ofPoint center;
-    int n = 0;
-    for (InteractiveObject *v = front; v != NULL; v = v->next) {
-        center += v->p;
-        n++;
-        if (v->next == front) break; // closed polylines
-    }
-    center /= (float)n;
-    p = center;
+//    ofPoint center;
+//    int n = 0;
+//    for (InteractiveObject *v = front; v != NULL; v = v->next) {
+//        center += v->p;
+//        n++;
+//        if (v->next == front) break; // closed polylines
+//    }
+//    center /= (float)n;
+//    p = center;
 
-    for (int i = 0; i < motion_msgs.size(); i++) {
-        ofDrawBitmapString(motion_msgs[i]->label, front->getPx(center) + ofPoint(0, 15 * i));
-    }
+    ofSetColor(ofColor::red);
+    ofCircle(front->getPx(p), 5);
+
+
 
     ofPushStyle();
 
@@ -105,6 +106,11 @@ void Polyline::draw() {
             v->draw();
         }
         if (v->next == front) break; // closed polylines
+    }
+
+    ofDrawBitmapString(ofToString(updated_i), front->getPx(p) + ofPoint(0, 15 * 0));
+    for (int i = 1; i < motion_msgs.size(); i++) {
+        ofDrawBitmapString(motion_msgs[i]->label, front->getPx(p) + ofPoint(0, 15 * i));
     }
 
     ofDisableAntiAliasing();
@@ -189,6 +195,16 @@ void Polyline::update() {
         if (v->next == front) break; // closed polylines
     }
     ofp.setClosed(closed);
+
+    ofPoint center;
+    int n = 0;
+    for (InteractiveObject *v = front; v != NULL; v = v->next) {
+        center += v->p;
+        n++;
+        if (v->next == front) break; // closed polylines
+    }
+    center /= (float)n;
+    this->p = center;
 }
 
 float segmentDistance(ofPoint v, ofPoint w, ofPoint p) {

@@ -68,7 +68,9 @@ public:
     float line_length_info;
     bool zoom_in;
     bool zoom_out;
-    
+
+    bool do_update;
+
     // grid of points and lines
 //==============================================================================
     void setGrid();

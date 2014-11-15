@@ -34,13 +34,13 @@ void ofApp::draw(){
 //        j++;
 //    }
 //
-//    ofSetColor(ofColor::black);
-//    for (int i = 0; i < c.selection.items.size(); i++) {
-//        ItemId v = c.selection.items[i];
-//        font.draw("line:" + ofToString(v.container_id) + " v:" + ofToString(v.item_id),
-//                  16, ofGetWindowWidth() - 400,
-//                  20 + 20 * i);
-//    }
+    ofSetColor(ofColor::black);
+    for (int i = 0; i < c.selection.items.size(); i++) {
+        ItemId v = c.selection.items[i];
+        font.draw("line:" + ofToString(v.container_id) + " v:" + ofToString(v.item_id),
+                  16, ofGetWindowWidth() - 400,
+                  20 + 20 * i);
+    }
 
     ofPoint p = c.snap(ofPoint(ofGetMouseX(), ofGetMouseY()));
 
@@ -71,7 +71,10 @@ void ofApp::draw(){
         }
     }
 
-    c.update();
+    if (do_update) {
+        c.update();
+        do_update = false;
+    }
 
     c.draw();
     c.joints.draw();

@@ -92,6 +92,10 @@ void ofApp::update() {
 
 void ofApp::keyPressed(int key){
 
+    if (key == 'u') {
+        do_update = true;
+    }
+
     // is it this way on most keyboards???
     if (key == '=') {
         zoom_in = true;
