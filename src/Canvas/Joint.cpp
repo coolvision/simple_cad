@@ -43,27 +43,29 @@ InteractiveObject *Joint::getCopy() {
 
 void Joint::draw() {
 
-
-    ofDrawBitmapString(ofToString(updated_i), getPx(p) + ofPoint(0, 15 * 0));
-    for (int i = 1; i < motion_msgs.size(); i++) {
-        ofDrawBitmapString(motion_msgs[i]->label, getPx(p) + ofPoint(0, 15 * i));
-    }
-
     if (joint_type == JOINT_REVOLUTE) {
         if (hover || selected) {
-            gui.setPosition(getPx(p) + ofPoint(20.0f, 20.0f));
+            gui.setPosition(getPx(p) + ofPoint(80.0f, 80.0f));
             gui.draw();
         }
     }
 
     ofPoint icon_offset(13, 13);
-    
+
+    if (joint_type == JOINT_FIXED) {
+        fixed = true;
+    }
+
     if (selected) {
         ofSetColor(ofColor::steelBlue);
     } else if (hover) {
         ofSetColor(ofColor::red);
     } else {
-        ofSetColor(ofColor::black);
+        if (fixed) {
+            ofSetColor(ofColor::darkRed);
+        } else {
+            ofSetColor(ofColor::black);
+        }
     }
 
     ofPoint p1 = getPx(p);
@@ -72,4 +74,12 @@ void Joint::draw() {
     } else {
         joint_icon_r.draw(p1 - icon_offset);
     }
+
+    ofSetColor(ofColor::black);
+    ofDrawBitmapString(ofToString(updated_i), getPx(p) + ofPoint(0, 15 * 0));
+    for (int i = 0; i < motion_msgs.size(); i++) {
+        ofDrawBitmapString(motion_msgs[i]->label + " " + ofToString(motion_msgs[i]->forward_stamp), getPx(p) + ofPoint(0, 15 * (i+1)));
+    }
+    ofDrawBitmapStringHighlight(ofToString(angle), getPx(p) + ofPoint(20, -20));
+
 }

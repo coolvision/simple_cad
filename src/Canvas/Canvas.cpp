@@ -119,7 +119,17 @@ void Canvas::save(string path) {
             if (n > 0) lines_n++;
         }
         file << lines_n << endl;
-        for (int i = 0; i < lines.size(); i++) {
+
+        InteractiveContainer *l = lines[0];
+        int i = 0;
+        int n = l->getLength();
+        file << n << " ";
+        for (Joint *v = (Joint *)l->front; v != NULL; v = (Joint *)v->next) {
+            file << v->p.x << " " << v->p.y << " " << v->joint_type << " ";
+            if (v->next == lines[i]->front) break; // closed polylines
+        }
+
+        for (int i = 1; i < lines.size(); i++) {
             int n = lines[i]->getLength();
             if (n <= 0) continue;
             file << n << " ";
@@ -157,9 +167,18 @@ void Canvas::load(string path) {
 
         file >> lines_n;
 
- //       cout << "load " << lines_n <<  " lines" << endl;
+        InteractiveContainer *l = lines[0];
+        int i = 0;
+        file >> n;
+        for (int i = 0; i < n; i++) {
+            Joint v;
+            file >> v.p.x;
+            file >> v.p.y;
+            file >> v.joint_type;
+            lines[0]->addBack(&v);
+        }
 
-        for (int i = 0; i < lines_n; i++) {
+        for (i = 1; i < lines_n; i++) {
             lines.push_back(new Polyline());
             InteractiveContainer *l = lines.back();
             l->id = lines.size() - 1;
@@ -179,5 +198,5 @@ void Canvas::load(string path) {
         }
         file.close();
     }
-
+    
 }

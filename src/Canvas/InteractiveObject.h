@@ -42,6 +42,8 @@ public:
     int receiver_id;
     int origin_id;
     int sent_stamp;
+    int sender_type;
+    int forward_stamp;
 };
 
 struct LinearMotion: public Motion {
@@ -80,7 +82,8 @@ public:
         dragged = false;
         grid_snap = true;
         updated_i = 0;
-
+        angle = 0.0f;
+        fixed = false;
     }
     virtual ~InteractiveObject() {};
     virtual void draw() {};
@@ -94,6 +97,7 @@ public:
 
     ofPoint p; // position
     ofPoint start_p; // for dragging
+    float angle;
 
     // motion
     deque<Motion *> motion_msgs;
@@ -104,10 +108,16 @@ public:
     void updateRelative(ofPoint new_p, int parent_id);
     int updated_i;
 
+    // should be moved to the class for joints
+    ofxFloatSlider angle_slider;
+    ofxFloatSlider velocity;
+    ofxPanel gui;
+
     bool selected;
     bool hover;
     bool dragged;
     bool grid_snap;
+    bool fixed;
 
     InteractiveContainer *parent;
 
@@ -125,6 +135,8 @@ public:
         back = NULL;
         closed = false;
         updated_i = 0;
+        angle = 0.0f;
+        fixed = false;
     }
     virtual ~InteractiveContainer() {
         release();
@@ -154,13 +166,12 @@ public:
     bool selected;
     bool hover;
     ofPoint p;
+    float angle;
+    bool fixed;
 
     // larger indexes in front
     // using only 0 and 1 for now
     int z_index;
-
-    ofxFloatSlider angle;
-    ofxPanel gui;
 
     InteractiveObject *front;
     InteractiveObject *back;
@@ -176,6 +187,7 @@ public:
     vector<ofPoint> links_rel;
     void updateRelative(ofPoint new_p, int parent_id);
     int updated_i;
+
 
 protected:
     // array of ordered vertices,

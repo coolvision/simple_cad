@@ -97,15 +97,16 @@ void ofApp::mouseDragged(int x, int y, int button) {
                 m->receiver_id = c.lines[i]->id;
                 m->origin_id = c.lines[i]->id;
                 m->sent_stamp = c.update_i;
+                m->sender_type = 0; // a hack, should not use a magic number
                 m->label = ofToString(i) + " " + ofToString(c.update_i);
                 c.lines[i]->updated_i = c.update_i;
                 c.lines[i]->motion_msgs.push_back(m);
+                c.update_i++;
             }
             c.lines[i]->update();
         }
 
-//        c.update();
-//        c.update();
+        //c.update();
     }
 
 

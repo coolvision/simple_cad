@@ -129,11 +129,14 @@ void ofApp::setGrid() {
     float h = ofGetWindowHeight();
 
     points_step = 4 * c.zoom;
+    if (points_step < 1) {
+        points_step = 1;
+    }
     c.px_step = points_step;
     lines_step = points_step * 5;
 
-    int off_x = -1 + (int)c.canvas_offset.x % lines_step;;
-    int off_y = (int)c.canvas_offset.y % lines_step;;;
+    int off_x = -1 + (int)c.canvas_offset.x % lines_step;
+    int off_y = (int)c.canvas_offset.y % lines_step;
 
     InteractiveObject::points_step = points_step;
     InteractiveObject::zoom = c.zoom;

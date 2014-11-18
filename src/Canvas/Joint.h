@@ -32,10 +32,8 @@ public:
         type = JOINT;
 
         gui.setup();
-        gui.add(angle.setup("angle", 0.0f, -180.0f, 180.0f));
+        gui.add(angle_slider.setup("angle", 0.0f, -180.0f, 180.0f));
         gui.add(velocity.setup("velocity", 0.0f, 0.0f, 10.0f));
-
-        curr_angle = angle;
     };
     virtual ~Joint() {};
 
@@ -48,12 +46,7 @@ public:
     static ofImage joint_icon_fixed;
     static ofImage joint_icon_r;
 
-    JointType joint_type;
-
-    float curr_angle;
-	ofxFloatSlider angle;
-	ofxFloatSlider velocity;
-    ofxPanel gui;
+    int joint_type;
 
     // events
     ofEvent<JointClickEventData> click_event;

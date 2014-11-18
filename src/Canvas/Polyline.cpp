@@ -61,9 +61,17 @@ void Polyline::draw() {
         path.setFilled(true);
 //        if (hover) {
         if (hover || selected) {
-            path.setFillColor(ofColor(190, 190, 190, 200));
+            if (fixed) {
+                path.setFillColor(ofColor(80, 80, 80, 200));
+            } else {
+                path.setFillColor(ofColor(190, 190, 190, 200));
+            }
         } else {
-            path.setFillColor(ofColor(200, 200, 200, 200));
+            if (fixed) {
+                path.setFillColor(ofColor(100, 100, 100, 200));
+            } else {
+                path.setFillColor(ofColor(200, 200, 200, 200));
+            }
         }
     } else {
         path.setFilled(false);
@@ -108,10 +116,12 @@ void Polyline::draw() {
         if (v->next == front) break; // closed polylines
     }
 
+    ofSetColor(ofColor::black);
     ofDrawBitmapString(ofToString(updated_i), front->getPx(p) + ofPoint(0, 15 * 0));
-    for (int i = 1; i < motion_msgs.size(); i++) {
-        ofDrawBitmapString(motion_msgs[i]->label, front->getPx(p) + ofPoint(0, 15 * i));
+    for (int i = 0; i < motion_msgs.size(); i++) {
+        ofDrawBitmapString(motion_msgs[i]->label + " " + ofToString(motion_msgs[i]->forward_stamp), front->getPx(p) + ofPoint(0, 15 * (i+1)));
     }
+    ofDrawBitmapStringHighlight(ofToString(angle), front->getPx(p) + ofPoint(20, -20));
 
     ofDisableAntiAliasing();
     ofDisableSmoothing();
