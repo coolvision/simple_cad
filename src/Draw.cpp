@@ -71,10 +71,13 @@ void ofApp::draw(){
         }
     }
 
-    if (do_update) {
+//    if (do_update) {
+
+//    for (int i = 0; i < 30; i++) {
         c.update();
         do_update = false;
-    }
+//    }
+//    }
 
     c.draw();
     c.joints.draw();

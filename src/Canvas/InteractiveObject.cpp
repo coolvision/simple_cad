@@ -16,35 +16,35 @@ int InteractiveContainer::getId() {
     return id;
 }
 
-void InteractiveObject::updateRelative(ofPoint new_p, int parent_id) {
-
-    for (int i = 0; i < links.size(); i++) {
-
-        if (links[i] == parent_id) {
-            p = new_p + links_rel[i];
-            break;
-        }
-    }
-}
-
-void InteractiveContainer::updateRelative(ofPoint new_p, int parent_id) {
-
-    for (int i = 0; i < links.size(); i++) {
-
-        if (links[i] == parent_id) {
-
-            ofPoint shift = (new_p + links_rel[i]) - p;
-            p = new_p + links_rel[i];
-
-            for (InteractiveObject *v = front; v != NULL; v = v->next) {
-                v->p += shift;
-                if (v->next == front) break; // closed polylines
-            }
-
-            break;
-        }
-    }
-}
+//void InteractiveObject::updateRelative(ofPoint new_p, int parent_id) {
+//
+//    for (int i = 0; i < links.size(); i++) {
+//
+//        if (links[i] == parent_id) {
+//            p = new_p + links_rel[i];
+//            break;
+//        }
+//    }
+//}
+//
+//void InteractiveContainer::updateRelative(ofPoint new_p, int parent_id) {
+//
+//    for (int i = 0; i < links.size(); i++) {
+//
+//        if (links[i] == parent_id) {
+//
+//            ofPoint shift = (new_p + links_rel[i]) - p;
+//            p = new_p + links_rel[i];
+//
+//            for (InteractiveObject *v = front; v != NULL; v = v->next) {
+//                v->p += shift;
+//                if (v->next == front) break; // closed polylines
+//            }
+//
+//            break;
+//        }
+//    }
+//}
 
 ofPoint InteractiveObject::getPx(ofPoint p) {
 

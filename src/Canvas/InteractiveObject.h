@@ -34,16 +34,16 @@ class Canvas;
 
 class Motion {
 public:
+    Motion(): total_motion(0.0f) {};
     virtual void apply(InteractiveContainer *c, Canvas *canvas) {};
     virtual void apply(InteractiveObject *i, Canvas *canvas) {};
     virtual Motion *getCopy() {};
     string label;
-    int sender_id;
     int receiver_id;
-    int origin_id;
     int sent_stamp;
-    int sender_type;
     int forward_stamp;
+    int sender_type;
+    float total_motion;
 };
 
 struct LinearMotion: public Motion {
@@ -54,6 +54,12 @@ struct LinearMotion: public Motion {
 };
 
 struct UpdateRelative: public Motion {
+    void apply(InteractiveContainer *c, Canvas *canvas);
+    void apply(InteractiveObject *i, Canvas *canvas);
+    Motion *getCopy();
+};
+
+struct FitRelative: public Motion {
     void apply(InteractiveContainer *c, Canvas *canvas);
     void apply(InteractiveObject *i, Canvas *canvas);
     Motion *getCopy();
@@ -84,6 +90,8 @@ public:
         updated_i = 0;
         angle = 0.0f;
         fixed = false;
+        connected = false;
+        fit_angle = 0.0f;
     }
     virtual ~InteractiveObject() {};
     virtual void draw() {};
@@ -102,10 +110,6 @@ public:
     // motion
     deque<Motion *> motion_msgs;
     void reset();
-    // connections
-    vector<int> links;
-    vector<ofPoint> links_rel;
-    void updateRelative(ofPoint new_p, int parent_id);
     int updated_i;
 
     // should be moved to the class for joints
@@ -118,6 +122,13 @@ public:
     bool dragged;
     bool grid_snap;
     bool fixed;
+    bool connected;
+
+    string label;
+    ofPoint v1;
+    ofPoint v2;
+    float fit_angle;
+
 
     InteractiveContainer *parent;
 
@@ -182,12 +193,11 @@ public:
     // motion
     deque<Motion *> motion_msgs;
     void reset();
-    // connections
-    vector<int> links;
-    vector<ofPoint> links_rel;
-    void updateRelative(ofPoint new_p, int parent_id);
     int updated_i;
-
+    // connections
+    vector<int> links; // connected joints
+    // joints relative positions
+    vector<ofPoint> links_rel; // from center to the joints
 
 protected:
     // array of ordered vertices,

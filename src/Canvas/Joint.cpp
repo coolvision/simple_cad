@@ -76,10 +76,16 @@ void Joint::draw() {
     }
 
     ofSetColor(ofColor::black);
-    ofDrawBitmapString(ofToString(updated_i), getPx(p) + ofPoint(0, 15 * 0));
+    ofDrawBitmapString(label + " " + ofToString(updated_i) + " fa" + ofToString(fit_angle), getPx(p) + ofPoint(0, 15 * 0));
     for (int i = 0; i < motion_msgs.size(); i++) {
-        ofDrawBitmapString(motion_msgs[i]->label + " " + ofToString(motion_msgs[i]->forward_stamp), getPx(p) + ofPoint(0, 15 * (i+1)));
+        ofDrawBitmapString(motion_msgs[i]->label + " " + ofToString(motion_msgs[i]->forward_stamp) + "m" + ofToString(motion_msgs[i]->total_motion), getPx(p) + ofPoint(0, 15 * (i+1)));
     }
     ofDrawBitmapStringHighlight(ofToString(angle), getPx(p) + ofPoint(20, -20));
 
+    ofSetLineWidth(1.0f);
+    ofSetColor(ofColor::green);
+    ofLine(getPx(p), getPx(p + v1));
+    ofSetLineWidth(4.0f);
+    ofSetColor(ofColor::blue);
+    ofLine(getPx(p), getPx(p + v2));
 }

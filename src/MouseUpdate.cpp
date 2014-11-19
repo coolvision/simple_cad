@@ -91,13 +91,9 @@ void ofApp::mouseDragged(int x, int y, int button) {
         }
         for (int i = 1; i < c.lines.size(); i++) {
             if (c.lines[i]->selected) {
-                //cout << "c.lines[i]->selected " << i << endl;
                 UpdateRelative *m = new UpdateRelative();
-                m->sender_id = -1;
                 m->receiver_id = c.lines[i]->id;
-                m->origin_id = c.lines[i]->id;
                 m->sent_stamp = c.update_i;
-                m->sender_type = 0; // a hack, should not use a magic number
                 m->label = ofToString(i) + " " + ofToString(c.update_i);
                 c.lines[i]->updated_i = c.update_i;
                 c.lines[i]->motion_msgs.push_back(m);

@@ -32,7 +32,7 @@ public:
         type = JOINT;
 
         gui.setup();
-        gui.add(angle_slider.setup("angle", 0.0f, -180.0f, 180.0f));
+        gui.add(angle_slider.setup("angle", 0.0f, -360.0f, 360.0f));
         gui.add(velocity.setup("velocity", 0.0f, 0.0f, 10.0f));
     };
     virtual ~Joint() {};

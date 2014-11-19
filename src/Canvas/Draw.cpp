@@ -15,15 +15,14 @@ void Canvas::draw() {
     ofEnableAntiAliasing();
     ofEnableSmoothing();
     ofSetColor(ofColor::indigo);
-    for (Joint *j = (Joint *)lines[0]->front; j != NULL; j = (Joint *)j->next) {
 
-        ofPoint p1 = getPx(j->p);
+    for (int j = 1; j < lines.size(); j++) {
 
-        for (int i = 0; i < j->links.size(); i++) {
+        ofPoint p1 = getPx(lines[j]->p);
 
-//            ofPoint p2 = getPx(lines[j->links[i]]->p);
+        for (int i = 0; i < lines[j]->links.size(); i++) {
 
-            ofPoint p2 = getPx(j->p - j->links_rel[i]);
+            ofPoint p2 = getPx(lines[j]->p + lines[j]->links_rel[i]);
 
             ofLine(p1, p2);
 
@@ -34,7 +33,11 @@ void Canvas::draw() {
             ofCircle(p1, point_size);
             ofCircle(p2, point_size);
         }
-        if (j->next == (Joint *)lines[0]->front) break; // closed polylines
     }
 
+//    for (Joint *j = (Joint *)lines[0]->front; j != NULL; j = (Joint *)j->next) {
+//
+//
+//        if (j->next == (Joint *)lines[0]->front) break; // closed polylines
+//    }
 }
