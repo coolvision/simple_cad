@@ -97,7 +97,7 @@ void MoveSelectionAction::doAction(Canvas *c) {
     if (undo) {
         for (int i = 0; i < selection.items.size(); i++) {
             InteractiveObject *item = c->getItem(selection.items[i]);
-            item->p += v;
+            //item->p += v;
             item->parent->update();
         }
     }

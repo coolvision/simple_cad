@@ -86,23 +86,28 @@ void ofApp::mouseDragged(int x, int y, int button) {
     if (c.ui_state == UI_MOVING_SELECTION) {
         for (int i = 0; i < c.selection.items.size(); i++) {
             InteractiveObject *v = c.getItem(c.selection.items[i]);
-            v->p = v->start_p + (p_mm - c.start_click);
+//            v->p = v->start_p + (p_mm - c.start_click);
+            v->p += curr_p - prev_p;
             v->parent->update();
         }
+
+        while (c.updateMessages()) {};
+
         for (int i = 1; i < c.lines.size(); i++) {
             if (c.lines[i]->selected) {
+                c.update_i++;
                 UpdateRelative *m = new UpdateRelative();
                 m->receiver_id = c.lines[i]->id;
                 m->sent_stamp = c.update_i;
                 m->label = ofToString(i) + " " + ofToString(c.update_i);
-                c.lines[i]->updated_i = c.update_i;
+                m->type_i = UPDATE_RELATIVE;
                 c.lines[i]->motion_msgs.push_back(m);
-                c.update_i++;
+                c.lines[i]->updated[m->type_i] = c.update_i;
             }
             c.lines[i]->update();
         }
 
-        //c.update();
+        while (c.updateMessages()) {};
     }
 
 

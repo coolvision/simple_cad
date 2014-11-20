@@ -26,50 +26,9 @@ void Canvas::getConnectedPolygons(int joint_id,
     }
 }
 
-void Canvas::getConnectedJoints(int line_i, vector<Joint *> *connected_j,
-                                vector<ofPoint *> *connected_rel) {
-
-//    connected_j->clear();
-//    connected_rel->clear();
-//    for (Joint *j = (Joint *)lines[0]->front; j != NULL; j = (Joint *)j->next) {
-//
-//        for (int i = 0; i < j->links.size(); i++) {
-//            if (line_i == j->links[i]) {
-//                connected_j->push_back(j);
-//                connected_rel->push_back(&j->links_rel[i]);
-//            }
-//        }
-//    }
-}
-
-void Canvas::update() {
+bool Canvas::updateMessages() {
 
     bool moving = false;
-
-    // joints rotation from UI
-    for (Joint *j = (Joint *)lines[0]->front; j != NULL; j = (Joint *)j->next) {
-
-        j->angle_slider = j->angle_slider + j->velocity;
-
-        if (j->angle != j->angle_slider) {
-
-            float diff = (j->angle_slider - j->angle);
-
-            UpdateRelative *m = new UpdateRelative();
-            m->receiver_id = j->id;
-            m->sent_stamp = update_i;
-            m->label = ofToString(diff) + " " + ofToString(update_i);
-            j->updated_i = update_i;
-            j->angle = j->angle_slider;
-            j->motion_msgs.push_back(m);
-
-            moving = true;
-
-            update_i++;
-        }
-
-        if (j->next == (Joint *)lines[0]->front) break; // closed polylines
-    }
 
     static int i = 0;
     i++;
@@ -89,38 +48,43 @@ void Canvas::update() {
 
             while (!l->motion_msgs.empty()) {
 
+                Motion *mm = l->motion_msgs.front();
+
                 for (int m = 0; m < l->links.size(); m++) {
 
                     Joint *j = (Joint *)lines[0]->getItem(l->links[m]);
 
-                    if (j->updated_i >= l->motion_msgs.front()->sent_stamp) {
+                    if (j->updated[mm->type_i] >= mm->sent_stamp) {
                         continue;
                     }
 
                     moving = true;
 
                     l->motion_msgs.front()->apply(j, this);
-                    j->motion_msgs.push_back(l->motion_msgs.front()->getCopy());
+                    j->motion_msgs.push_back(mm->getCopy());
                     j->motion_msgs.back()->receiver_id = j->id;
                     j->motion_msgs.back()->forward_stamp = update_i;
 
 
-//                    if (j->fixed) {
-//                        //if (l->motion_msgs.front()->total_motion > 0.001) {
-//                            update_i++;
-//                            FitRelative *m = new FitRelative();
-//                            m->receiver_id = j->id;
-//                            m->sent_stamp = update_i;
-//                            m->forward_stamp = update_i;
-//                            m->label = "fit " + ofToString(update_i);
-//                            j->updated_i = update_i;
-//                            j->motion_msgs.push_back(m);
-//                        //}
-//                    }
+                    if (j->fixed) {
+                        //if (l->motion_msgs.front()->type_i != UPDATE_RELATIVE) {
+                            if (l->motion_msgs.front()->total_motion > 0.001) {
+                                update_i++;
+                                FitRelative *m = new FitRelative();
+                                m->receiver_id = j->id;
+                                m->sent_stamp = update_i;
+                                m->forward_stamp = update_i;
+                                m->label = "fit " + ofToString(update_i);
+                                m->type_i = FIT_RELATIVE;
+                                j->updated[m->type_i] = update_i;
+                                j->motion_msgs.push_back(m);
+                            }
+                        //}
+                    }
 
                 }
 
-                delete l->motion_msgs.front();
+                delete mm;
                 l->motion_msgs.pop_front();
             }
         }
@@ -136,40 +100,73 @@ void Canvas::update() {
 
             while (!j->motion_msgs.empty()) {
 
+                Motion *mm = j->motion_msgs.front();
+
                 for (int i = 0; i < connected.size(); i++) {
 
                     Polyline *l = (Polyline *)connected[i];
 
-                    if (l->updated_i >= j->motion_msgs.front()->sent_stamp) {
+                    if (mm->type_i == ROTATION && l->fixed) {
+                        continue;
+                    }
+
+                    if (l->updated[mm->type_i] >= mm->sent_stamp) {
                         continue;
                     }
                     moving = true;
-
-                    j->motion_msgs.front()->apply(l, this);
-                    l->motion_msgs.push_back(j->motion_msgs.front()->getCopy());
+                    
+                    mm->apply(l, this);
+                    l->motion_msgs.push_back(mm->getCopy());
                     l->motion_msgs.back()->receiver_id = l->id;
                     l->motion_msgs.back()->forward_stamp = update_i;
                 }
-                delete j->motion_msgs.front();
+                delete mm;
                 j->motion_msgs.pop_front();
             }
         }
     }
-
+    
     for (int i = 1; i < lines.size(); i++) {
         lines[i]->update();
     }
-
+    
     update_i++;
+
+    return moving;
+}
+
+void Canvas::update(bool moving) {
+
+    // joints rotation from UI
+    for (Joint *j = (Joint *)lines[0]->front; j != NULL; j = (Joint *)j->next) {
+
+        j->angle_slider = j->angle_slider + j->velocity;
+
+        if (j->angle != j->angle_slider) {
+
+            float diff = (j->angle_slider - j->angle);
+
+            Rotation *m = new Rotation();
+            m->receiver_id = j->id;
+            update_i++;
+            m->sent_stamp = update_i;
+            m->label = ofToString(diff) + " " + ofToString(update_i);
+            m->type_i = ROTATION;
+            j->angle = j->angle_slider;
+            j->motion_msgs.push_back(m);
+            j->updated[m->type_i] = update_i;
+            moving = true;
+
+            update_i++;
+        }
+
+        if (j->next == (Joint *)lines[0]->front) break; // closed polylines
+    }
 
     // connect joints to the polygons
     // if they are intersecting
     if (!moving) {
         for (Joint *j = (Joint *)lines[0]->front; j != NULL; j = (Joint *)j->next) {
-
-            if (j->connected) {
-                continue;
-            }
 
             bool connected = false;
             for (int i = 1; i < lines.size(); i++) {
@@ -181,6 +178,10 @@ void Canvas::update() {
 
                     if (l->fixed) {
                         j->fixed = true;
+                    }
+
+                    if (j->connected) {
+                        continue;
                     }
 
                     for (int m = 0; m < l->links.size(); m++) {
@@ -205,8 +206,6 @@ void Canvas::update() {
             if (connected) {
                 j->connected = true;
             }
-
-
         }
     }
 

@@ -137,6 +137,7 @@
 		535324261A098960005E7A43 /* Update.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Update.cpp; sourceTree = "<group>"; };
 		535324281A098960005E7A43 /* Button.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Button.cpp; sourceTree = "<group>"; };
 		535324291A098960005E7A43 /* Button.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Button.h; sourceTree = "<group>"; };
+		53F529361A1D169200D55634 /* Motion.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Motion.h; sourceTree = "<group>"; };
 		53F89CC319F19CCD00C0B047 /* MouseActions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MouseActions.cpp; sourceTree = "<group>"; };
 		53F89CC419F19CCD00C0B047 /* Events.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Events.cpp; sourceTree = "<group>"; };
 		53F89CC519F19CCD00C0B047 /* MouseUpdate.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MouseUpdate.cpp; sourceTree = "<group>"; };
@@ -319,6 +320,7 @@
 				535324251A098960005E7A43 /* Selection.cpp */,
 				535324261A098960005E7A43 /* Update.cpp */,
 				5350278C1A152635000C8E60 /* Motion.cpp */,
+				53F529361A1D169200D55634 /* Motion.h */,
 			);
 			path = Canvas;
 			sourceTree = "<group>";

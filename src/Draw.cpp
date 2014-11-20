@@ -58,8 +58,23 @@ void ofApp::draw(){
                   16, ofGetWindowWidth() - off_x, 80);
     }
 
+
+
+    //if (do_update) {
+
+//    for (int i = 0; i < 30; i++) {
+        bool moving = c.updateMessages();
+        c.update(moving);
+        //c.updateMessages();
+        while (c.updateMessages()) {};
+    
+        do_update = false;
+//    }
+   // }
+
+
     // objects
-//==============================================================================
+    //==============================================================================
     for (int i = 0; i < c.lines.size(); i++) {
         if (c.lines[i]->z_index <= 0) {
             c.lines[i]->draw();
@@ -70,14 +85,6 @@ void ofApp::draw(){
             c.lines[i]->draw();
         }
     }
-
-//    if (do_update) {
-
-//    for (int i = 0; i < 30; i++) {
-        c.update();
-        do_update = false;
-//    }
-//    }
 
     c.draw();
     c.joints.draw();

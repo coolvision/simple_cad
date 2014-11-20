@@ -117,9 +117,9 @@ void Polyline::draw() {
     }
 
     ofSetColor(ofColor::black);
-    ofDrawBitmapString(ofToString(updated_i), front->getPx(p) + ofPoint(0, 15 * 0));
+    //ofDrawBitmapString(ofToString(updated_i), front->getPx(p) + ofPoint(0, 15 * 0));
     for (int i = 0; i < motion_msgs.size(); i++) {
-        ofDrawBitmapString(motion_msgs[i]->label + " " + ofToString(motion_msgs[i]->forward_stamp) + "m" + ofToString(motion_msgs[i]->total_motion), front->getPx(p) + ofPoint(0, 15 * (i+1)));
+        ofDrawBitmapString(motion_msgs[i]->label + " m" + ofToString(motion_msgs[i]->total_motion), front->getPx(p) + ofPoint(0, 15 * (i+1)));
     }
     ofDrawBitmapStringHighlight(ofToString(angle), front->getPx(p) + ofPoint(20, -20));
 

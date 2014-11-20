@@ -39,12 +39,11 @@ public:
     void save(string path);
     void load(string path);
 
-    void update();
+    void update(bool moving = false);
+    bool updateMessages();
     void draw();
 
     // motion
-    void getConnectedJoints(int line_i, vector<Joint *> *connected_j,
-                            vector<ofPoint *> *connected_rel);
     void getConnectedPolygons(int joint_id,
                             vector<InteractiveContainer *> *connected,
                             vector<ofPoint *> *connected_rel);

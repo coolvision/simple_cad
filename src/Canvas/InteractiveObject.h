@@ -10,6 +10,7 @@
 
 #include "ofMain.h"
 #include "ofxGui.h"
+#include "Motion.h"
 
 struct ItemId {
     int container_id;
@@ -32,47 +33,6 @@ class InteractiveContainer;
 class InteractiveObject;
 class Canvas;
 
-class Motion {
-public:
-    Motion(): total_motion(0.0f) {};
-    virtual void apply(InteractiveContainer *c, Canvas *canvas) {};
-    virtual void apply(InteractiveObject *i, Canvas *canvas) {};
-    virtual Motion *getCopy() {};
-    string label;
-    int receiver_id;
-    int sent_stamp;
-    int forward_stamp;
-    int sender_type;
-    float total_motion;
-};
-
-struct LinearMotion: public Motion {
-    void apply(InteractiveContainer *c, Canvas *canvas);
-    void apply(InteractiveObject *i, Canvas *canvas);
-    Motion *getCopy();
-    ofPoint v;
-};
-
-struct UpdateRelative: public Motion {
-    void apply(InteractiveContainer *c, Canvas *canvas);
-    void apply(InteractiveObject *i, Canvas *canvas);
-    Motion *getCopy();
-};
-
-struct FitRelative: public Motion {
-    void apply(InteractiveContainer *c, Canvas *canvas);
-    void apply(InteractiveObject *i, Canvas *canvas);
-    Motion *getCopy();
-};
-
-struct Rotation: public Motion {
-    void apply(InteractiveContainer *c, Canvas *canvas);
-    void apply(InteractiveObject *i, Canvas *canvas);
-    Motion *getCopy();
-    ofPoint pivot;
-    float angle;
-};
-
 class InteractiveObject {
 public:
     static int points_step;
@@ -87,11 +47,14 @@ public:
         parent = NULL;
         dragged = false;
         grid_snap = true;
-        updated_i = 0;
+        //updated_i = 0;
         angle = 0.0f;
         fixed = false;
         connected = false;
         fit_angle = 0.0f;
+        for (int i = 0; i < MESSAGE_TYPES_N; i++) {
+            updated[i] = 0;
+        }
     }
     virtual ~InteractiveObject() {};
     virtual void draw() {};
@@ -110,7 +73,8 @@ public:
     // motion
     deque<Motion *> motion_msgs;
     void reset();
-    int updated_i;
+    //int updated_i;
+    int updated[MESSAGE_TYPES_N];
 
     // should be moved to the class for joints
     ofxFloatSlider angle_slider;
@@ -145,9 +109,12 @@ public:
         front = NULL;
         back = NULL;
         closed = false;
-        updated_i = 0;
+        //updated_i = 0;
         angle = 0.0f;
         fixed = false;
+        for (int i = 0; i < MESSAGE_TYPES_N; i++) {
+            updated[i] = 0;
+        }
     }
     virtual ~InteractiveContainer() {
         release();
@@ -193,7 +160,8 @@ public:
     // motion
     deque<Motion *> motion_msgs;
     void reset();
-    int updated_i;
+    //int updated_i;
+    int updated[MESSAGE_TYPES_N];
     // connections
     vector<int> links; // connected joints
     // joints relative positions

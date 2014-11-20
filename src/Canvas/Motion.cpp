@@ -9,9 +9,176 @@
 #include "InteractiveObject.h"
 #include "Canvas.h"
 
+//==============================================================================
+
+void UpdateRelative::apply(InteractiveContainer *c, Canvas *canvas) {
+
+    c->updated[type_i] = sent_stamp;
+
+    for (int m = 0; m < c->links.size(); m++) {
+        Joint *j = (Joint *)canvas->lines[0]->getItem(c->links[m]);
+
+        if (j->id == receiver_id) {
+
+            ofPoint shift = j->p - (c->p + c->links_rel[m]);
+            total_motion += shift.length();
+
+            for (InteractiveObject *v = c->front; v != NULL; v = v->next) {
+                v->p += shift;
+                if (v->next == c->front) break; // closed polylines
+            }
+
+            c->p = c->p + shift;
+
+//            // rotate by the angle difference
+//            float diff = j->angle - c->angle;
+//            for (InteractiveObject *v = c->front; v != NULL; v = v->next) {
+//                v->p.rotate(diff, j->p, ofPoint(0.0f, 0.0f, 1.0f));
+//                if (v->next == c->front) break; // closed polylines
+//            }
+//            c->p.rotate(diff, j->p, ofPoint(0.0f, 0.0f, 1.0f));
+//
+//            for (int m = 0; m < c->links_rel.size(); m++) {
+//                c->links_rel[m].rotate(diff, ofPoint(), ofPoint(0.0f, 0.0f, 1.0f));
+//
+//            }
+//
+//            c->angle = j->angle;
+
+//            for (int m = 0; m < c->links.size(); m++) {
+//                Joint *j = (Joint *)canvas->lines[0]->getItem(c->links[m]);
+//                j->p = c->p + c->links_rel[m];
+//            }
+            break;
+        }
+    }
+};
+
+
+void UpdateRelative::apply(InteractiveObject *i, Canvas *canvas) {
+
+    i->updated[type_i] = sent_stamp;
+
+    bool fixed = false;
+
+    vector <InteractiveContainer *> connected;
+    vector<ofPoint *> connected_rel;
+    canvas->getConnectedPolygons(i->id, &connected, &connected_rel);
+
+    for (int j = 0; j < connected.size(); j++) {
+
+        if (connected[j]->id == receiver_id) {
+
+            total_motion += ((connected[j]->p + *connected_rel[j]) - i->p).length();
+
+//            i->angle = connected[j]->angle;
+//            i->angle_slider = connected[j]->angle;
+
+            i->p = connected[j]->p + *connected_rel[j];
+        }
+    }
+};
+
+Motion *UpdateRelative::getCopy() {
+    UpdateRelative *j = new UpdateRelative();
+    *j = *this;
+    return (Motion *)j;
+}
+
+//==============================================================================
+
+void Rotation::apply(InteractiveContainer *c, Canvas *canvas) {
+
+    c->updated[type_i] = sent_stamp;
+
+    if (c->fixed) {
+        return;
+    }
+
+    for (int m = 0; m < c->links.size(); m++) {
+        Joint *j = (Joint *)canvas->lines[0]->getItem(c->links[m]);
+
+        if (j->id == receiver_id) {
+
+            ofPoint shift = j->p - (c->p + c->links_rel[m]);
+            total_motion += shift.length();
+
+            for (InteractiveObject *v = c->front; v != NULL; v = v->next) {
+                v->p += shift;
+                if (v->next == c->front) break; // closed polylines
+            }
+
+            c->p = c->p + shift;
+
+            // rotate by the angle difference
+            float diff = j->angle - c->angle;
+            for (InteractiveObject *v = c->front; v != NULL; v = v->next) {
+                v->p.rotate(diff, j->p, ofPoint(0.0f, 0.0f, 1.0f));
+                if (v->next == c->front) break; // closed polylines
+            }
+            c->p.rotate(diff, j->p, ofPoint(0.0f, 0.0f, 1.0f));
+
+            for (int m = 0; m < c->links_rel.size(); m++) {
+                c->links_rel[m].rotate(diff, ofPoint(), ofPoint(0.0f, 0.0f, 1.0f));
+            }
+
+            c->angle = j->angle;
+
+//            for (int m = 0; m < c->links.size(); m++) {
+//                Joint *j = (Joint *)canvas->lines[0]->getItem(c->links[m]);
+//                j->p = c->p + c->links_rel[m];
+//            }
+            break;
+        }
+    }
+
+}
+
+void Rotation::apply(InteractiveObject *i, Canvas *canvas) {
+
+    i->updated[type_i] = sent_stamp;
+
+    bool fixed = false;
+
+    vector <InteractiveContainer *> connected;
+    vector<ofPoint *> connected_rel;
+    canvas->getConnectedPolygons(i->id, &connected, &connected_rel);
+
+    for (int j = 0; j < connected.size(); j++) {
+
+        if (connected[j]->id == receiver_id) {
+
+            total_motion += ((connected[j]->p + *connected_rel[j]) - i->p).length();
+
+            i->p = connected[j]->p + *connected_rel[j];
+
+            i->angle = connected[j]->angle;
+            i->angle_slider = connected[j]->angle;
+
+        } else if (connected[j]->fixed) {
+
+            i->p = connected[j]->p + *connected_rel[j];
+        }
+
+    }
+}
+
+Motion *Rotation::getCopy() {
+
+    Rotation *j = new Rotation();
+    *j = *this;
+    return (Motion *)j;
+}
+
+//==============================================================================
+
 void FitRelative::apply(InteractiveContainer *c, Canvas *canvas) {
 
-    c->updated_i = sent_stamp;
+    c->updated[type_i] = sent_stamp;
+
+    if (c->fixed) {
+        return;
+    }
 
     Joint *fitted = NULL;
     Joint *off = NULL;
@@ -70,7 +237,7 @@ void FitRelative::apply(InteractiveContainer *c, Canvas *canvas) {
             c->links_rel[m].rotateRad(angle, ofPoint(), ofPoint(0.0f, 0.0f, 1.0f));
         }
 
-        total_motion = (v1 - v2).length();
+        total_motion += (v1 - v2).length();
     }
 
     for (int m = 0; m < c->links.size(); m++) {
@@ -81,87 +248,15 @@ void FitRelative::apply(InteractiveContainer *c, Canvas *canvas) {
 
 };
 
+
 void FitRelative::apply(InteractiveObject *i, Canvas *canvas) {
 
-    i->updated_i = sent_stamp;
-
+    i->updated[type_i] = sent_stamp;
+    
 };
 
 Motion *FitRelative::getCopy() {
     FitRelative *j = new FitRelative();
-    *j = *this;
-    return (Motion *)j;
-}
-
-//==============================================================================
-
-void UpdateRelative::apply(InteractiveContainer *c, Canvas *canvas) {
-
-    c->updated_i = sent_stamp;
-
-    for (int m = 0; m < c->links.size(); m++) {
-        Joint *j = (Joint *)canvas->lines[0]->getItem(c->links[m]);
-
-        if (j->id == receiver_id) {
-
-            ofPoint shift = j->p - (c->p + c->links_rel[m]);
-            total_motion += shift.length();
-
-            for (InteractiveObject *v = c->front; v != NULL; v = v->next) {
-                v->p += shift;
-                if (v->next == c->front) break; // closed polylines
-            }
-
-            c->p = c->p + shift;
-
-            // rotate by the angle difference
-            float diff = j->angle - c->angle;
-            for (InteractiveObject *v = c->front; v != NULL; v = v->next) {
-                v->p.rotate(diff, j->p, ofPoint(0.0f, 0.0f, 1.0f));
-                if (v->next == c->front) break; // closed polylines
-            }
-            c->p.rotate(diff, j->p, ofPoint(0.0f, 0.0f, 1.0f));
-
-            for (int m = 0; m < c->links_rel.size(); m++) {
-                c->links_rel[m].rotate(diff, ofPoint(), ofPoint(0.0f, 0.0f, 1.0f));
-            }
-
-            c->angle = j->angle;
-        }
-    }
-};
-
-
-void UpdateRelative::apply(InteractiveObject *i, Canvas *canvas) {
-
-    i->updated_i = sent_stamp;
-
-    bool fixed = false;
-
-    vector <InteractiveContainer *> connected;
-    vector<ofPoint *> connected_rel;
-    canvas->getConnectedPolygons(i->id, &connected, &connected_rel);
-
-    for (int j = 0; j < connected.size(); j++) {
-
-        if (connected[j]->id == receiver_id) {
-
-            total_motion += ((connected[j]->p + *connected_rel[j]) - i->p).length();
-
-            i->angle = connected[j]->angle;
-            i->angle_slider = connected[j]->angle;
-            i->p = connected[j]->p + *connected_rel[j];
-
-        }
-//        else if (connected[j]->fixed) {
-//
-//            i->p = connected[j]->p + *connected_rel[j];
-//        }
-    }
-};
-
-Motion *UpdateRelative::getCopy() {
-    UpdateRelative *j = new UpdateRelative();
     *j = *this;
     return (Motion *)j;
 }
@@ -182,28 +277,6 @@ void LinearMotion::apply(InteractiveObject *i, Canvas *canvas) {
 Motion *LinearMotion::getCopy() {
 
     LinearMotion *j = new LinearMotion();
-    *j = *this;
-    return (Motion *)j;
-}
-
-//==============================================================================
-
-void Rotation::apply(InteractiveContainer *c, Canvas *canvas) {
-
-
-    
-
-}
-
-void Rotation::apply(InteractiveObject *i, Canvas *canvas) {
-
-
-
-}
-
-Motion *Rotation::getCopy() {
-
-    Rotation *j = new Rotation();
     *j = *this;
     return (Motion *)j;
 }
