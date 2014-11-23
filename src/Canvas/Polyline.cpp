@@ -64,13 +64,25 @@ void Polyline::draw() {
             if (fixed) {
                 path.setFillColor(ofColor(80, 80, 80, 200));
             } else {
-                path.setFillColor(ofColor(190, 190, 190, 200));
+                if (controlled) {
+                    ofColor color = ofColor::steelBlue - ofColor(10);
+                    color.a = 200;
+                    path.setFillColor(color);
+                } else {
+                    path.setFillColor(ofColor(190, 190, 190, 200));
+                }
             }
         } else {
             if (fixed) {
                 path.setFillColor(ofColor(100, 100, 100, 200));
             } else {
-                path.setFillColor(ofColor(200, 200, 200, 200));
+                if (controlled) {
+                    ofColor color = ofColor::steelBlue;
+                    color.a = 200;
+                    path.setFillColor(color);
+                } else {
+                    path.setFillColor(ofColor(200, 200, 200, 200));
+                }
             }
         }
     } else {
@@ -121,7 +133,7 @@ void Polyline::draw() {
     for (int i = 0; i < motion_msgs.size(); i++) {
         ofDrawBitmapString(motion_msgs[i]->label + " m" + ofToString(motion_msgs[i]->total_motion), front->getPx(p) + ofPoint(0, 15 * (i+1)));
     }
-    ofDrawBitmapStringHighlight(ofToString(angle), front->getPx(p) + ofPoint(20, -20));
+    //ofDrawBitmapStringHighlight(ofToString(angle), front->getPx(p) + ofPoint(20, -20));
 
     ofDisableAntiAliasing();
     ofDisableSmoothing();

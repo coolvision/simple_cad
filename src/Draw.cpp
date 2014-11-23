@@ -60,17 +60,39 @@ void ofApp::draw(){
 
 
 
-    //if (do_update) {
+    if (do_update) {
 
 //    for (int i = 0; i < 30; i++) {
         bool moving = c.updateMessages();
+
+//        while (c.updateMessages()) {};
+//        bool moving = false;
+
+ //   if (!moving) {
+
+//        for (int i = 0; i < 100; i++) {
+//            if (!c.updateMessages()) {
+//                moving = false;
+//                break;
+//            }
+//        }
+
         c.update(moving);
-        //c.updateMessages();
-        while (c.updateMessages()) {};
-    
+  //  }
+//        c.updateMessages();
+
+//        for (int i = 0; i < 100; i++) {
+//            if (!c.updateMessages()) {
+//                moving = false;
+//                break;
+//            }
+//        }
+
+
+
         do_update = false;
+    }
 //    }
-   // }
 
 
     // objects

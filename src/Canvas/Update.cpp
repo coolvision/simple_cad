@@ -26,7 +26,7 @@ void Canvas::getConnectedPolygons(int joint_id,
     }
 }
 
-bool Canvas::updateMessages() {
+bool Canvas::updateMessages(bool reverse) {
 
     bool moving = false;
 
@@ -36,9 +36,6 @@ bool Canvas::updateMessages() {
     if (i % 2 == 0) {
 
         // propagate motion to the joints
-        vector <Joint *> connected_j;
-        vector<ofPoint *> connected_rel;
-
         for (int i = 1; i < lines.size(); i++) {
 
             Polyline *l = (Polyline *)lines[i];
@@ -67,8 +64,8 @@ bool Canvas::updateMessages() {
 
 
                     if (j->fixed) {
-                        //if (l->motion_msgs.front()->type_i != UPDATE_RELATIVE) {
-                            if (l->motion_msgs.front()->total_motion > 0.001) {
+                        if (l->motion_msgs.front()->type_i != UPDATE_RELATIVE) {
+                            //if (l->motion_msgs.front()->total_motion > 0.01) {
                                 update_i++;
                                 FitRelative *m = new FitRelative();
                                 m->receiver_id = j->id;
@@ -78,8 +75,24 @@ bool Canvas::updateMessages() {
                                 m->type_i = FIT_RELATIVE;
                                 j->updated[m->type_i] = update_i;
                                 j->motion_msgs.push_back(m);
-                            }
-                        //}
+
+                                // now, need to "fix" the joint here
+                                // find the fixed polygon
+                                vector <InteractiveContainer *> connected;
+                                vector<ofPoint *> connected_rel;
+                                getConnectedPolygons(j->id, &connected, &connected_rel);
+
+                                for (int q = 0; q < connected.size(); q++) {
+                                    if (connected[q]->fixed) {
+                                        ofPoint new_p = (connected[q]->p + *connected_rel[q]);
+                                        j->motion_msgs.back()->total_motion +=
+                                                    (new_p - j->p).length();
+                                        j->p = new_p;
+                                    }
+                                }
+
+                            //}
+                        }
                     }
 
                 }
@@ -107,6 +120,9 @@ bool Canvas::updateMessages() {
                     Polyline *l = (Polyline *)connected[i];
 
                     if (mm->type_i == ROTATION && l->fixed) {
+                        continue;
+                    }
+                    if (mm->type_i == FIT_RELATIVE && l->fixed) {
                         continue;
                     }
 
@@ -140,9 +156,17 @@ void Canvas::update(bool moving) {
     // joints rotation from UI
     for (Joint *j = (Joint *)lines[0]->front; j != NULL; j = (Joint *)j->next) {
 
+//        if (j->velocity < 0.001) {
+//            j->controlled = false;
+//        } else {
+//            j->controlled = true;
+//        }
+
         j->angle_slider = j->angle_slider + j->velocity;
 
         if (j->angle != j->angle_slider) {
+
+            j->controlled = true;
 
             float diff = (j->angle_slider - j->angle);
 
@@ -162,6 +186,22 @@ void Canvas::update(bool moving) {
 
         if (j->next == (Joint *)lines[0]->front) break; // closed polylines
     }
+//    for (int i = 0; i < 100; i++) {
+//        if (!updateMessages()) {
+//            break;
+//        }
+//    }
+
+    for (int i = 1; i < lines.size(); i++) {
+        InteractiveContainer *l = lines[i];
+        for (int m = 0; m < l->links.size(); m++) {
+            Joint *j = (Joint *)lines[0]->getItem(l->links[m]);
+            if (j->controlled) {
+                l->controlled = true;
+            }
+        }
+    }
+
 
     // connect joints to the polygons
     // if they are intersecting
@@ -172,6 +212,10 @@ void Canvas::update(bool moving) {
             for (int i = 1; i < lines.size(); i++) {
 
                 InteractiveContainer *l = lines[i];
+
+//                if (j->controlled) {
+//                    l->controlled = true;
+//                }
 
                 if (l->inside(getPx(j->p))) {
                     bool exists = false;

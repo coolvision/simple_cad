@@ -40,7 +40,7 @@ public:
     void load(string path);
 
     void update(bool moving = false);
-    bool updateMessages();
+    bool updateMessages(bool reverse = false);
     void draw();
 
     // motion
@@ -54,6 +54,11 @@ public:
     void addAction(Action *a);
 
     UIState ui_state;
+
+    ofPoint fitted1, off1;
+    ofPoint fitted2, off2;
+    ofPoint target_p;
+
 
 
 // storage & vis

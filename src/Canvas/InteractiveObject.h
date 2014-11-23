@@ -52,6 +52,7 @@ public:
         fixed = false;
         connected = false;
         fit_angle = 0.0f;
+        controlled = false;
         for (int i = 0; i < MESSAGE_TYPES_N; i++) {
             updated[i] = 0;
         }
@@ -87,6 +88,7 @@ public:
     bool grid_snap;
     bool fixed;
     bool connected;
+    bool controlled;
 
     string label;
     ofPoint v1;
@@ -112,6 +114,8 @@ public:
         //updated_i = 0;
         angle = 0.0f;
         fixed = false;
+        controlled = false;
+        pivot_i = 0;
         for (int i = 0; i < MESSAGE_TYPES_N; i++) {
             updated[i] = 0;
         }
@@ -146,6 +150,8 @@ public:
     ofPoint p;
     float angle;
     bool fixed;
+    bool controlled;
+    int pivot_i;
 
     // larger indexes in front
     // using only 0 and 1 for now

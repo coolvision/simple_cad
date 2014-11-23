@@ -91,7 +91,7 @@ void ofApp::mouseDragged(int x, int y, int button) {
             v->parent->update();
         }
 
-        while (c.updateMessages()) {};
+        //while (c.updateMessages()) {};
 
         for (int i = 1; i < c.lines.size(); i++) {
             if (c.lines[i]->selected) {
@@ -107,7 +107,7 @@ void ofApp::mouseDragged(int x, int y, int button) {
             c.lines[i]->update();
         }
 
-        while (c.updateMessages()) {};
+        //while (c.updateMessages()) {};
     }
 
 
