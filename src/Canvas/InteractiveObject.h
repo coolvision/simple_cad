@@ -53,9 +53,9 @@ public:
         connected = false;
         fit_angle = 0.0f;
         controlled = false;
-        for (int i = 0; i < MESSAGE_TYPES_N; i++) {
-            updated[i] = 0;
-        }
+//        for (int i = 0; i < MESSAGE_TYPES_N; i++) {
+//            updated[i] = 0;
+//        }
     }
     virtual ~InteractiveObject() {};
     virtual void draw() {};
@@ -72,10 +72,10 @@ public:
     float angle;
 
     // motion
-    deque<Motion *> motion_msgs;
-    void reset();
-    //int updated_i;
-    int updated[MESSAGE_TYPES_N];
+//    deque<Motion *> motion_msgs;
+//    void reset();
+//    //int updated_i;
+//    int updated[MESSAGE_TYPES_N];
 
     // should be moved to the class for joints
     ofxFloatSlider angle_slider;
@@ -116,9 +116,9 @@ public:
         fixed = false;
         controlled = false;
         pivot_i = 0;
-        for (int i = 0; i < MESSAGE_TYPES_N; i++) {
-            updated[i] = 0;
-        }
+//        for (int i = 0; i < MESSAGE_TYPES_N; i++) {
+//            updated[i] = 0;
+//        }
     }
     virtual ~InteractiveContainer() {
         release();
@@ -163,11 +163,12 @@ public:
 
     int id;
 
-    // motion
-    deque<Motion *> motion_msgs;
-    void reset();
-    //int updated_i;
-    int updated[MESSAGE_TYPES_N];
+//    // motion
+//    deque<Motion *> motion_msgs;
+//    void reset();
+//    //int updated_i;
+//    int updated[MESSAGE_TYPES_N];
+
     // connections
     vector<int> links; // connected joints
     // joints relative positions

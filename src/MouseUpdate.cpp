@@ -93,19 +93,19 @@ void ofApp::mouseDragged(int x, int y, int button) {
 
         //while (c.updateMessages()) {};
 
-        for (int i = 1; i < c.lines.size(); i++) {
-            if (c.lines[i]->selected) {
-                c.update_i++;
-                UpdateRelative *m = new UpdateRelative();
-                m->receiver_id = c.lines[i]->id;
-                m->sent_stamp = c.update_i;
-                m->label = ofToString(i) + " " + ofToString(c.update_i);
-                m->type_i = UPDATE_RELATIVE;
-                c.lines[i]->motion_msgs.push_back(m);
-                c.lines[i]->updated[m->type_i] = c.update_i;
-            }
-            c.lines[i]->update();
-        }
+//        for (int i = 1; i < c.lines.size(); i++) {
+//            if (c.lines[i]->selected) {
+//                c.update_i++;
+//                UpdateRelative *m = new UpdateRelative();
+//                m->receiver_id = c.lines[i]->id;
+//                m->sent_stamp = c.update_i;
+//                m->label = ofToString(i) + " " + ofToString(c.update_i);
+//                m->type_i = UPDATE_RELATIVE;
+//                c.lines[i]->motion_msgs.push_back(m);
+//                c.lines[i]->updated[m->type_i] = c.update_i;
+//            }
+//            c.lines[i]->update();
+//        }
 
         //while (c.updateMessages()) {};
     }
