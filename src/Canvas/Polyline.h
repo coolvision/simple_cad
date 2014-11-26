@@ -19,9 +19,7 @@ class Polyline;
 
 class Vertex: public InteractiveObject {
 public:
-    Vertex() {
-        type = VERTEX;
-    };
+    Vertex() {};
     virtual ~Vertex() {};
     void draw();
     InteractiveObject *getCopy();

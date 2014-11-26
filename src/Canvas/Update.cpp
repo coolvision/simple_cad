@@ -158,25 +158,25 @@ void Canvas::update(bool moving) {
 
         j->angle_slider = j->angle_slider + j->velocity;
 
-        if (j->angle != j->angle_slider) {
-
-            j->controlled = true;
-
-            float diff = (j->angle_slider - j->angle);
-
-            Rotation *m = new Rotation();
-            m->receiver_id = j->id;
-            update_i++;
-            m->sent_stamp = update_i;
-            m->label = ofToString(diff) + " " + ofToString(update_i);
-            m->type_i = ROTATION;
-            j->angle = j->angle_slider;
-            j->motion_msgs.push_back(m);
-            j->updated[m->type_i] = update_i;
-            moving = true;
-
-            update_i++;
-        }
+//        if (j->angle != j->angle_slider) {
+//
+//            j->controlled = true;
+//
+//            float diff = (j->angle_slider - j->angle);
+//
+//            Rotation *m = new Rotation();
+//            m->receiver_id = j->id;
+//            update_i++;
+//            m->sent_stamp = update_i;
+//            m->label = ofToString(diff) + " " + ofToString(update_i);
+//            m->type_i = ROTATION;
+//            j->angle = j->angle_slider;
+//            j->motion_msgs.push_back(m);
+//            j->updated[m->type_i] = update_i;
+//            moving = true;
+//
+//            update_i++;
+//        }
 
         if (j->next == (Joint *)lines[0]->front) break; // closed polylines
     }
@@ -221,7 +221,7 @@ void Canvas::update(bool moving) {
                     if (!exists) {
                         l->links.push_back(j->id);
                         l->links_rel.push_back(j->p - l->p);
-                        lines[i]->reset();
+                        //lines[i]->reset();
 
                         connected = true;
 

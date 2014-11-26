@@ -128,11 +128,11 @@ void Polyline::draw() {
         if (v->next == front) break; // closed polylines
     }
 
-    ofSetColor(ofColor::black);
+//    ofSetColor(ofColor::black);
     //ofDrawBitmapString(ofToString(updated_i), front->getPx(p) + ofPoint(0, 15 * 0));
-    for (int i = 0; i < motion_msgs.size(); i++) {
-        ofDrawBitmapString(motion_msgs[i]->label + " m" + ofToString(motion_msgs[i]->total_motion), front->getPx(p) + ofPoint(0, 15 * (i+1)));
-    }
+//    for (int i = 0; i < motion_msgs.size(); i++) {
+//        ofDrawBitmapString(motion_msgs[i]->label + " m" + ofToString(motion_msgs[i]->total_motion), front->getPx(p) + ofPoint(0, 15 * (i+1)));
+//    }
     //ofDrawBitmapStringHighlight(ofToString(angle), front->getPx(p) + ofPoint(20, -20));
 
     ofDisableAntiAliasing();

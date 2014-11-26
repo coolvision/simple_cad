@@ -29,7 +29,6 @@ class Joint: public InteractiveObject {
 public:
     Joint() {
         grid_snap = false;
-        type = JOINT;
 
         gui.setup();
         gui.add(angle_slider.setup("angle", 0.0f, -360.0f, 360.0f));

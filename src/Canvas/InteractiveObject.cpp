@@ -90,21 +90,21 @@ ItemId InteractiveObject::getId() {
 }
 
 
-void InteractiveContainer::reset() {
-
-    while (!motion_msgs.empty()) {
-        delete motion_msgs.front();
-        motion_msgs.pop_front();
-    }
-}
-
-void InteractiveObject::reset() {
-
-    while (!motion_msgs.empty()) {
-        delete motion_msgs.front();
-        motion_msgs.pop_front();
-    }
-}
+//void InteractiveContainer::reset() {
+//
+//    while (!motion_msgs.empty()) {
+//        delete motion_msgs.front();
+//        motion_msgs.pop_front();
+//    }
+//}
+//
+//void InteractiveObject::reset() {
+//
+//    while (!motion_msgs.empty()) {
+//        delete motion_msgs.front();
+//        motion_msgs.pop_front();
+//    }
+//}
 
 void InteractiveContainer::init(InteractiveObject *p) {
     InteractiveObject *i = p->getCopy();

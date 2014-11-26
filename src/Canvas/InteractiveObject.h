@@ -24,11 +24,6 @@ public:
     void clear();
 };
 
-enum ItemType {
-    VERTEX = 0,
-    JOINT
-};
-
 class InteractiveContainer;
 class InteractiveObject;
 class Canvas;
@@ -47,15 +42,11 @@ public:
         parent = NULL;
         dragged = false;
         grid_snap = true;
-        //updated_i = 0;
         angle = 0.0f;
         fixed = false;
         connected = false;
         fit_angle = 0.0f;
         controlled = false;
-//        for (int i = 0; i < MESSAGE_TYPES_N; i++) {
-//            updated[i] = 0;
-//        }
     }
     virtual ~InteractiveObject() {};
     virtual void draw() {};
@@ -70,12 +61,6 @@ public:
     ofPoint p; // position
     ofPoint start_p; // for dragging
     float angle;
-
-    // motion
-//    deque<Motion *> motion_msgs;
-//    void reset();
-//    //int updated_i;
-//    int updated[MESSAGE_TYPES_N];
 
     // should be moved to the class for joints
     ofxFloatSlider angle_slider;
@@ -95,10 +80,8 @@ public:
     ofPoint v2;
     float fit_angle;
 
-
     InteractiveContainer *parent;
 
-    ItemType type;
     int id;
 };
 
@@ -111,14 +94,9 @@ public:
         front = NULL;
         back = NULL;
         closed = false;
-        //updated_i = 0;
         angle = 0.0f;
         fixed = false;
         controlled = false;
-        pivot_i = 0;
-//        for (int i = 0; i < MESSAGE_TYPES_N; i++) {
-//            updated[i] = 0;
-//        }
     }
     virtual ~InteractiveContainer() {
         release();
@@ -162,12 +140,6 @@ public:
     bool closed; // list can be circular
 
     int id;
-
-//    // motion
-//    deque<Motion *> motion_msgs;
-//    void reset();
-//    //int updated_i;
-//    int updated[MESSAGE_TYPES_N];
 
     // connections
     vector<int> links; // connected joints
