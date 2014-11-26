@@ -10,83 +10,50 @@
 
 #include "ofMain.h"
 #include "InteractiveObject.h"
-#include "Joint.h"
+#include "Vertex.h"
 
 class Polyline: public InteractiveContainer {
 public:
-    Polyline() {};
-    virtual ~Polyline() {};
-
-    // geometry specific
-    ofPath path;
-    ofPolyline ofp;
-
-    // virtual
-    void draw();
-    void update();
-    void update(ofPoint p);
-    bool inside(ofPoint p);
-
-    InteractiveContainer() {
-        hover = false;
-        selected = false;
-        z_index = 0;
+    Polyline() {
         front = NULL;
         back = NULL;
         closed = false;
-        angle = 0.0f;
-        fixed = false;
-        controlled = false;
-    }
-    virtual ~InteractiveContainer() {
+    };
+    virtual ~Polyline() {
         release();
     };
 
-    virtual void draw() {};
-    virtual void update() {};
-    virtual void update(ofPoint p) {};
-    virtual bool inside(ofPoint p) {};
+    // interface implementation
+    void draw();
+    void update();
+    InteractiveObject *Polyline::getItem(int i);
+    
+    // geometry specific
+    ofPoint p;
+    ofPath path;
+    ofPolyline ofp;
+    void update(ofPoint p);
+    bool inside(ofPoint p);
 
+    // manage linked list
     void updateIndexes();
-
-    void cloneFrom(InteractiveContainer *p);
-    void init(InteractiveObject *p);
-    void addBack(InteractiveObject *p);
+    void cloneFrom(Polyline *p);
+    void init(Vertex *p);
+    void addBack(Vertex *p);
     void popBack();
-    void addFront(InteractiveObject *p);
-    void addBack(InteractiveContainer *p);
-    void addFront(InteractiveContainer *p);
-
+    void addFront(Vertex *p);
+    void addBack(Polyline *p);
+    void addFront(Polyline *p);
     void release();
     void reverse();
     int getLength();
 
-    bool selected;
-    bool hover;
-    ofPoint p;
-    float angle;
-    bool fixed;
-    bool controlled;
-    int pivot_i;
-
-    // larger indexes in front
-    // using only 0 and 1 for now
-    int z_index;
-
-    InteractiveObject *front;
-    InteractiveObject *back;
+    Vertex *front;
+    Vertex *back;
     bool closed; // list can be circular
-
-    int id;
-
-    // connections
-    vector<int> links; // connected joints
-    // joints relative positions
-    vector<ofPoint> links_rel; // from center to the joints
 
 protected:
     // array of ordered vertices,
     // for random access
-    vector<InteractiveObject *> items;
-
+    vector<Vertex *> items;
 };

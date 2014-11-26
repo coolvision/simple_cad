@@ -36,65 +36,51 @@ public:
     InteractiveObject() {
         hover = false;
         selected = false;
-        next = NULL;
-        prev = NULL;
         parent = NULL;
         dragged = false;
         grid_snap = true;
-        angle = 0.0f;
-        fixed = false;
-        connected = false;
-        fit_angle = 0.0f;
-        controlled = false;
     }
     virtual ~InteractiveObject() {};
+
+    // interface
     virtual void draw() {};
     virtual InteractiveObject *getCopy() {};
-    ofPoint getPx();
-    ofPoint getPx(ofPoint p);
-    ItemId getId();
 
-    InteractiveObject *next;
-    InteractiveObject *prev;
-
+    // UI
     ofPoint p; // position
     ofPoint start_p; // for dragging
-    float angle;
-
-    // should be moved to the class for joints
-    ofxFloatSlider angle_slider;
-    ofxFloatSlider velocity;
-    ofxPanel gui;
-
+    ofPoint getPx();
+    ofPoint getPx(ofPoint p);
     bool selected;
     bool hover;
     bool dragged;
     bool grid_snap;
-    bool fixed;
-    bool connected;
-    bool controlled;
-
-    string label;
-    ofPoint v1;
-    ofPoint v2;
-    float fit_angle;
 
     InteractiveContainer *parent;
 
     int id;
+    ItemId getId();
 };
 
 class InteractiveContainer {
 public:
     InteractiveContainer() {
+        hover = false;
+        selected = false;
+        z_index = 0;
     }
     virtual ~InteractiveContainer() {
     };
 
-    virtual void draw() = 0;
-    virtual void update() = 0;
+    virtual void draw() {};
+    virtual void update() {};
+    virtual InteractiveObject *getItem(int id);
 
-    int getId();
-    InteractiveObject *getItem(int id);
+    bool hover;
+    bool selected;
+    int z_index;
+
+    int id;
+    ItemId getId();
 };
 

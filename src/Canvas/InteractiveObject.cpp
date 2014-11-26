@@ -12,10 +12,17 @@ int InteractiveObject::points_step = 0;
 ofPoint InteractiveObject::offset;
 float InteractiveObject::zoom;
 
+ItemId InteractiveContainer::getId() {
+    ItemId i;
+    i.container_id = id;
+    i.item_id = 0;
+    return i;
+}
+
 ItemId InteractiveObject::getId() {
 
     ItemId i;
-    i.container_id = parent->getId();
+    i.container_id = parent->getId().container_id;
     i.item_id = id;
 
     return i;

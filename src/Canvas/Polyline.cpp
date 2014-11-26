@@ -8,6 +8,15 @@
 
 #include "Polyline.h"
 
+// can be made more efficient by maintaining an array of the vertices
+InteractiveObject *Polyline::getItem(int i) {
+
+    if (i < items.size()) {
+        return items[i];
+    }
+    return NULL;
+}
+
 void Polyline::draw() {
 
     if (front == NULL || back == NULL) {
@@ -28,7 +37,7 @@ void Polyline::draw() {
     }
 
     selected = true;
-    for (InteractiveObject *v = front; v != NULL && v->next != NULL; v = v->next) {
+    for (Vertex *v = front; v != NULL && v->next != NULL; v = v->next) {
         if (!v->selected) {
             selected = false;
             break;
@@ -76,7 +85,7 @@ void Polyline::draw() {
 
     ofSetLineWidth(1.0f);
     ofSetColor(ofColor::black);
-    for (InteractiveObject *v = front; v != NULL && v->next != NULL; v = v->next) {
+    for (Vertex *v = front; v != NULL && v->next != NULL; v = v->next) {
         if (v->hover && v->next->hover) {
             ofSetColor(ofColor::orangeRed);
             ofLine(v->getPx(v->p), v->getPx(v->next->p));
@@ -87,21 +96,21 @@ void Polyline::draw() {
         if (v->next == front) break; // closed polylines
     }
 
-    for (InteractiveObject *v = front; v != NULL; v = v->next) {
+    for (Vertex *v = front; v != NULL; v = v->next) {
         if (!v->hover && !v->selected) {
             v->draw();
         }
         if (v->next == front) break; // closed polylines
     }
 
-    for (InteractiveObject *v = front; v != NULL; v = v->next) {
+    for (Vertex *v = front; v != NULL; v = v->next) {
         if (v->selected && !v->hover) {
             v->draw();
         }
         if (v->next == front) break; // closed polylines
     }
 
-    for (InteractiveObject *v = front; v != NULL; v = v->next) {
+    for (Vertex *v = front; v != NULL; v = v->next) {
         if (v->hover) {
             v->draw();
         }
@@ -136,7 +145,7 @@ void Polyline::update() {
     updateIndexes();
 
     path.clear();
-    for (InteractiveObject *v = front; v != NULL; v = v->next) {
+    for (Vertex *v = front; v != NULL; v = v->next) {
         if (v == front) {
             path.newSubPath();
             path.moveTo(v->getPx(v->p));
@@ -149,7 +158,7 @@ void Polyline::update() {
     }
 
     ofp.clear();
-    for (InteractiveObject *v = front; v != NULL; v = v->next) {
+    for (Vertex *v = front; v != NULL; v = v->next) {
         ofp.addVertex(v->getPx(v->p));
         if (v->next == front) break; // closed polylines
     }
@@ -157,7 +166,7 @@ void Polyline::update() {
 
     ofPoint center;
     int n = 0;
-    for (InteractiveObject *v = front; v != NULL; v = v->next) {
+    for (Vertex *v = front; v != NULL; v = v->next) {
         center += v->p;
         n++;
         if (v->next == front) break; // closed polylines
@@ -166,18 +175,13 @@ void Polyline::update() {
     this->p = center;
 }
 
-
-int InteractiveContainer::getId() {
-    return id;
-}
-
-void InteractiveContainer::updateIndexes() {
+void Polyline::updateIndexes() {
 
     int n = getLength();
     items.resize(n);
 
     int l = 0;
-    for (InteractiveObject *v = front; v != NULL; v = v->next) {
+    for (Vertex *v = front; v != NULL; v = v->next) {
         items[l] = v;
         v->id = l;
         l++;
@@ -185,19 +189,19 @@ void InteractiveContainer::updateIndexes() {
     }
 }
 
-void InteractiveContainer::init(InteractiveObject *p) {
-    InteractiveObject *i = p->getCopy();
+void Polyline::init(Vertex *p) {
+    Vertex *i = p->getCopy();
     i->parent = this;
     front = i;
     back = front;
 }
 
-void InteractiveContainer::popBack() {
+void Polyline::popBack() {
 
     if (front == NULL) {
         return;
     } else {
-        InteractiveObject *tmp = back;
+        Vertex *tmp = back;
 
         if (back->prev != NULL) {
             back = back->prev;
@@ -212,13 +216,13 @@ void InteractiveContainer::popBack() {
     updateIndexes();
 }
 
-void InteractiveContainer::addBack(InteractiveObject *p) {
+void Polyline::addBack(Vertex *p) {
 
     if (front == NULL) {
         init(p);
     } else {
         // new element
-        InteractiveObject *i = p->getCopy();
+        Vertex *i = p->getCopy();
         i->parent = this;
         // update the list
         back->next = i;
@@ -228,13 +232,13 @@ void InteractiveContainer::addBack(InteractiveObject *p) {
     updateIndexes();
 }
 
-void InteractiveContainer::addFront(InteractiveObject *p) {
+void Polyline::addFront(Vertex *p) {
 
     if (front == NULL) {
         init(p);
     } else {
         // new element
-        InteractiveObject *i = p->getCopy();
+        Vertex *i = p->getCopy();
         i->parent = this;
         // update the list
         front->prev = i;
@@ -244,29 +248,29 @@ void InteractiveContainer::addFront(InteractiveObject *p) {
     updateIndexes();
 }
 
-void InteractiveContainer::addBack(InteractiveContainer *p) {
+void Polyline::addBack(Polyline *p) {
 
     if (front == NULL || p->closed) {
         return;
     }
 
-    for (InteractiveObject *v = p->front; v != NULL; v = v->next) {
+    for (Vertex *v = p->front; v != NULL; v = v->next) {
         addBack(v);
     }
 }
 
-void InteractiveContainer::addFront(InteractiveContainer *p) {
+void Polyline::addFront(Polyline *p) {
 
     if (front == NULL || p->closed) {
         return;
     }
 
-    for (InteractiveObject *v = p->back; v != NULL; v = v->prev) {
+    for (Vertex *v = p->back; v != NULL; v = v->prev) {
         addFront(v);
     }
 }
 
-void InteractiveContainer::cloneFrom(InteractiveContainer *p) {
+void Polyline::cloneFrom(Polyline *p) {
 
     *this = *p;
     front = NULL;
@@ -274,7 +278,7 @@ void InteractiveContainer::cloneFrom(InteractiveContainer *p) {
 
     release();
 
-    for (InteractiveObject *v = p->front; v != NULL; v = v->next) {
+    for (Vertex *v = p->front; v != NULL; v = v->next) {
         addBack(v);
         if (v->next == p->front) break; // closed polylines
     }
@@ -286,23 +290,11 @@ void InteractiveContainer::cloneFrom(InteractiveContainer *p) {
     update();
 }
 
-// can be made more efficient by maintaining an array of the vertices
-InteractiveObject *InteractiveContainer::getItem(int i) {
-
-    // cout << "InteractiveContainer::getItem " << i  << endl;
-    // cout << "items() " << items.size() << endl;
-
-    if (i < items.size()) {
-        return items[i];
-    }
-    return NULL;
-}
-
-void InteractiveContainer::release() {
+void Polyline::release() {
 
     if (front != NULL) {
-        InteractiveObject *v = front;
-        InteractiveObject *tmp;
+        Vertex *v = front;
+        Vertex *tmp;
         while (v != NULL) {
             tmp = v->next;
             delete v;
@@ -318,15 +310,15 @@ void InteractiveContainer::release() {
     update();
 }
 
-void InteractiveContainer::reverse() {
+void Polyline::reverse() {
 
     if (front == NULL) {
         return;
     }
 
-    InteractiveObject *tmp;
-    InteractiveObject *v = front;
-    for (InteractiveObject *v = front; v != NULL; v = tmp) {
+    Vertex *tmp;
+    Vertex *v = front;
+    for (Vertex *v = front; v != NULL; v = tmp) {
         tmp = v->next;
         v->next = v->prev;
         v->prev = tmp;
@@ -339,9 +331,9 @@ void InteractiveContainer::reverse() {
     update();
 }
 
-int InteractiveContainer::getLength() {
+int Polyline::getLength() {
     int l = 0;
-    for (InteractiveObject *v = front; v != NULL; v = v->next) {
+    for (Vertex *v = front; v != NULL; v = v->next) {
         l++;
         if (v->next == front) break; // closed polylines
     }

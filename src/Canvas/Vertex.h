@@ -15,8 +15,15 @@ class Polyline;
 
 class Vertex: public InteractiveObject {
 public:
-    Vertex() {};
+    Vertex() {
+        next = NULL;
+        prev = NULL;
+    };
     virtual ~Vertex() {};
+
+    InteractiveObject *next;
+    InteractiveObject *prev;
+    
     void draw();
     InteractiveObject *getCopy();
     static ofImage dot_icon;
