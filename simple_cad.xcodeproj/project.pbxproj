@@ -27,6 +27,7 @@
 		535324311A098960005E7A43 /* Selection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 535324251A098960005E7A43 /* Selection.cpp */; };
 		535324321A098960005E7A43 /* Update.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 535324261A098960005E7A43 /* Update.cpp */; };
 		535324331A098960005E7A43 /* Button.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 535324281A098960005E7A43 /* Button.cpp */; };
+		535823AA1A2689FE00A6FDE5 /* Vertex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 535823A81A2689FE00A6FDE5 /* Vertex.cpp */; };
 		53F89CD119F19CCD00C0B047 /* MouseActions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 53F89CC319F19CCD00C0B047 /* MouseActions.cpp */; };
 		53F89CD219F19CCD00C0B047 /* Events.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 53F89CC419F19CCD00C0B047 /* Events.cpp */; };
 		53F89CD319F19CCD00C0B047 /* MouseUpdate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 53F89CC519F19CCD00C0B047 /* MouseUpdate.cpp */; };
@@ -137,6 +138,8 @@
 		535324261A098960005E7A43 /* Update.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Update.cpp; sourceTree = "<group>"; };
 		535324281A098960005E7A43 /* Button.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Button.cpp; sourceTree = "<group>"; };
 		535324291A098960005E7A43 /* Button.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Button.h; sourceTree = "<group>"; };
+		535823A81A2689FE00A6FDE5 /* Vertex.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Vertex.cpp; sourceTree = "<group>"; };
+		535823A91A2689FE00A6FDE5 /* Vertex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Vertex.h; sourceTree = "<group>"; };
 		53F529361A1D169200D55634 /* Motion.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Motion.h; sourceTree = "<group>"; };
 		53F89CC319F19CCD00C0B047 /* MouseActions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MouseActions.cpp; sourceTree = "<group>"; };
 		53F89CC419F19CCD00C0B047 /* Events.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Events.cpp; sourceTree = "<group>"; };
@@ -305,18 +308,20 @@
 		535324181A098960005E7A43 /* Canvas */ = {
 			isa = PBXGroup;
 			children = (
+				535324201A098960005E7A43 /* InteractiveObject.h */,
+				5353241F1A098960005E7A43 /* InteractiveObject.cpp */,
+				535823A91A2689FE00A6FDE5 /* Vertex.h */,
+				535823A81A2689FE00A6FDE5 /* Vertex.cpp */,
+				535324221A098960005E7A43 /* Joint.h */,
+				535324211A098960005E7A43 /* Joint.cpp */,
+				535324241A098960005E7A43 /* Polyline.h */,
+				535324231A098960005E7A43 /* Polyline.cpp */,
 				535324191A098960005E7A43 /* Actions.cpp */,
 				5353241A1A098960005E7A43 /* Actions.h */,
 				5353241B1A098960005E7A43 /* Canvas.cpp */,
 				5353241C1A098960005E7A43 /* Canvas.h */,
 				5353241D1A098960005E7A43 /* ConnectLines.cpp */,
 				5353241E1A098960005E7A43 /* Draw.cpp */,
-				5353241F1A098960005E7A43 /* InteractiveObject.cpp */,
-				535324201A098960005E7A43 /* InteractiveObject.h */,
-				535324211A098960005E7A43 /* Joint.cpp */,
-				535324221A098960005E7A43 /* Joint.h */,
-				535324231A098960005E7A43 /* Polyline.cpp */,
-				535324241A098960005E7A43 /* Polyline.h */,
 				535324251A098960005E7A43 /* Selection.cpp */,
 				535324261A098960005E7A43 /* Update.cpp */,
 				5350278C1A152635000C8E60 /* Motion.cpp */,
@@ -705,6 +710,7 @@
 				535324301A098960005E7A43 /* Polyline.cpp in Sources */,
 				7B388D550037229D99E7F52A /* ofxFontStash.cpp in Sources */,
 				535324151A097D71005E7A43 /* ofxSlider.cpp in Sources */,
+				535823AA1A2689FE00A6FDE5 /* Vertex.cpp in Sources */,
 				53F89D0819F3280A00C0B047 /* ofTextConverter.cpp in Sources */,
 				5353242D1A098960005E7A43 /* Draw.cpp in Sources */,
 				53F89CD219F19CCD00C0B047 /* Events.cpp in Sources */,

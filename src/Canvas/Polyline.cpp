@@ -8,28 +8,14 @@
 
 #include "Polyline.h"
 
-ofImage Vertex::dot_icon;
-
 void Polyline::draw() {
 
     if (front == NULL || back == NULL) {
         return;
     }
 
-//    ofPoint center;
-//    int n = 0;
-//    for (InteractiveObject *v = front; v != NULL; v = v->next) {
-//        center += v->p;
-//        n++;
-//        if (v->next == front) break; // closed polylines
-//    }
-//    center /= (float)n;
-//    p = center;
-
     ofSetColor(ofColor::red);
     ofCircle(front->getPx(p), 5);
-
-
 
     ofPushStyle();
 
@@ -50,7 +36,6 @@ void Polyline::draw() {
         if (v->next == front) break; // closed polylines
     }
 
-//    path.setStrokeColor(ofColor::black);
     if (hover) {
         path.setStrokeColor(ofColor::orangeRed);
     } else {
@@ -59,7 +44,6 @@ void Polyline::draw() {
     path.setStrokeWidth(1.0f);
     if (closed) {
         path.setFilled(true);
-//        if (hover) {
         if (hover || selected) {
             if (fixed) {
                 path.setFillColor(ofColor(80, 80, 80, 200));
@@ -100,10 +84,6 @@ void Polyline::draw() {
             ofSetColor(ofColor::steelBlue);
             ofLine(v->getPx(v->p), v->getPx(v->next->p));
         }
-//        else {
-//            ofSetColor(ofColor::black);
-//        }
-
         if (v->next == front) break; // closed polylines
     }
 
@@ -128,51 +108,8 @@ void Polyline::draw() {
         if (v->next == front) break; // closed polylines
     }
 
-//    ofSetColor(ofColor::black);
-    //ofDrawBitmapString(ofToString(updated_i), front->getPx(p) + ofPoint(0, 15 * 0));
-//    for (int i = 0; i < motion_msgs.size(); i++) {
-//        ofDrawBitmapString(motion_msgs[i]->label + " m" + ofToString(motion_msgs[i]->total_motion), front->getPx(p) + ofPoint(0, 15 * (i+1)));
-//    }
-    //ofDrawBitmapStringHighlight(ofToString(angle), front->getPx(p) + ofPoint(20, -20));
-
     ofDisableAntiAliasing();
     ofDisableSmoothing();
-}
-
-InteractiveObject *Vertex::getCopy() {
-
-    Vertex *v = new Vertex();
-    v->p = this->p;
-    v->start_p = this->start_p;
-    v->parent = NULL;
-
-    return v;
-}
-
-void Vertex::draw() {
-
-    float point_size = 3.0f * zoom;
-    if (point_size < 1.0f) {
-        point_size = 1.0f;
-    }
-    if (point_size > 3.0f) {
-        point_size = 3.0f;
-    }
-
-    if (!hover && !selected) {
-        ofSetColor(80);
-    }
-    if (selected && !hover) {
-        ofSetColor(ofColor::steelBlue);
-    }
-    if (hover) {
-        ofSetColor(ofColor::orangeRed);
-    }
-
-//    ofPoint icon_off(2, 2);
-//    dot_icon.draw(getPx(p) - icon_off);
-
-    ofCircle(getPx(p), point_size);
 }
 
 bool Polyline::inside(ofPoint p) {
@@ -229,39 +166,186 @@ void Polyline::update() {
     this->p = center;
 }
 
-float segmentDistance(ofPoint v, ofPoint w, ofPoint p) {
 
-    // Return minimum distance between line segment vw and point p
-    float l2 = (v - w).lengthSquared();  // i.e. |w-v|^2 -  avoid a sqrt
-
-    if (l2 == 0.0) {
-        return (p, v).length();   // v == w case
-    }
-    // Consider the line extending the segment, parameterized as v + t (w - v).
-    // We find projection of point p onto the line.
-    // It falls where t = [(p-v) . (w-v)] / |w-v|^2
-    float t = (p - v).dot(w - v) / l2;
-    if (t < 0.0) {
-        return (p - v).length();       // Beyond the 'v' end of the segment
-    } else if (t > 1.0) {
-        return (p - w).length();  // Beyond the 'w' end of the segment
-    }
-    ofPoint projection = v + t * (w - v);  // Projection falls on the segment
-
-    return (p - projection).length();
+int InteractiveContainer::getId() {
+    return id;
 }
 
-ofPoint lineProjection(ofPoint v, ofPoint w, ofPoint p) {
+void InteractiveContainer::updateIndexes() {
 
-    // Return minimum distance between line segment vw and point p
-    float l2 = (v - w).lengthSquared();  // i.e. |w-v|^2 -  avoid a sqrt
-    if (l2 == 0.0) {
-        return p;   // v == w case
+    int n = getLength();
+    items.resize(n);
+
+    int l = 0;
+    for (InteractiveObject *v = front; v != NULL; v = v->next) {
+        items[l] = v;
+        v->id = l;
+        l++;
+        if (v->next == front) break; // closed polylines
     }
-    // Consider the line extending the segment, parameterized as v + t (w - v).
-    // We find projection of point p onto the line.
-    // It falls where t = [(p-v) . (w-v)] / |w-v|^2
-    float t = (p - v).dot(w - v) / l2;
-
-    return v + t * (w - v);
 }
+
+void InteractiveContainer::init(InteractiveObject *p) {
+    InteractiveObject *i = p->getCopy();
+    i->parent = this;
+    front = i;
+    back = front;
+}
+
+void InteractiveContainer::popBack() {
+
+    if (front == NULL) {
+        return;
+    } else {
+        InteractiveObject *tmp = back;
+
+        if (back->prev != NULL) {
+            back = back->prev;
+            back->next = NULL;
+            delete tmp;
+        } else {
+            delete back;
+            back = NULL;
+            front = NULL;
+        }
+    }
+    updateIndexes();
+}
+
+void InteractiveContainer::addBack(InteractiveObject *p) {
+
+    if (front == NULL) {
+        init(p);
+    } else {
+        // new element
+        InteractiveObject *i = p->getCopy();
+        i->parent = this;
+        // update the list
+        back->next = i;
+        i->prev = back;
+        back = i;
+    }
+    updateIndexes();
+}
+
+void InteractiveContainer::addFront(InteractiveObject *p) {
+
+    if (front == NULL) {
+        init(p);
+    } else {
+        // new element
+        InteractiveObject *i = p->getCopy();
+        i->parent = this;
+        // update the list
+        front->prev = i;
+        i->next = front;
+        front = i;
+    }
+    updateIndexes();
+}
+
+void InteractiveContainer::addBack(InteractiveContainer *p) {
+
+    if (front == NULL || p->closed) {
+        return;
+    }
+
+    for (InteractiveObject *v = p->front; v != NULL; v = v->next) {
+        addBack(v);
+    }
+}
+
+void InteractiveContainer::addFront(InteractiveContainer *p) {
+
+    if (front == NULL || p->closed) {
+        return;
+    }
+
+    for (InteractiveObject *v = p->back; v != NULL; v = v->prev) {
+        addFront(v);
+    }
+}
+
+void InteractiveContainer::cloneFrom(InteractiveContainer *p) {
+
+    *this = *p;
+    front = NULL;
+    back = NULL;
+
+    release();
+
+    for (InteractiveObject *v = p->front; v != NULL; v = v->next) {
+        addBack(v);
+        if (v->next == p->front) break; // closed polylines
+    }
+    if (closed) {
+        back->next = front;
+        front->prev = back;
+    }
+
+    update();
+}
+
+// can be made more efficient by maintaining an array of the vertices
+InteractiveObject *InteractiveContainer::getItem(int i) {
+
+    // cout << "InteractiveContainer::getItem " << i  << endl;
+    // cout << "items() " << items.size() << endl;
+
+    if (i < items.size()) {
+        return items[i];
+    }
+    return NULL;
+}
+
+void InteractiveContainer::release() {
+
+    if (front != NULL) {
+        InteractiveObject *v = front;
+        InteractiveObject *tmp;
+        while (v != NULL) {
+            tmp = v->next;
+            delete v;
+            v = tmp;
+            if (tmp == front) {  // closed polylines
+                break;
+            }
+        }
+    }
+    front = NULL;
+    back = NULL;
+
+    update();
+}
+
+void InteractiveContainer::reverse() {
+
+    if (front == NULL) {
+        return;
+    }
+
+    InteractiveObject *tmp;
+    InteractiveObject *v = front;
+    for (InteractiveObject *v = front; v != NULL; v = tmp) {
+        tmp = v->next;
+        v->next = v->prev;
+        v->prev = tmp;
+        v = tmp;
+        if (tmp == front) break; // closed polylines
+    }
+    tmp = front;
+    front = back;
+    back = tmp;
+    update();
+}
+
+int InteractiveContainer::getLength() {
+    int l = 0;
+    for (InteractiveObject *v = front; v != NULL; v = v->next) {
+        l++;
+        if (v->next == front) break; // closed polylines
+    }
+    return l;
+}
+
+

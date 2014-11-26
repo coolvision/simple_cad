@@ -10,7 +10,6 @@
 
 #include "ofMain.h"
 #include "ofxGui.h"
-#include "Motion.h"
 
 struct ItemId {
     int container_id;
@@ -88,66 +87,14 @@ public:
 class InteractiveContainer {
 public:
     InteractiveContainer() {
-        hover = false;
-        selected = false;
-        z_index = 0;
-        front = NULL;
-        back = NULL;
-        closed = false;
-        angle = 0.0f;
-        fixed = false;
-        controlled = false;
     }
     virtual ~InteractiveContainer() {
-        release();
     };
 
-    virtual void draw() {};
-    virtual void update() {};
-    virtual void update(ofPoint p) {};
-    virtual bool inside(ofPoint p) {};
-
-    void updateIndexes();
-
-    void cloneFrom(InteractiveContainer *p);
-    void init(InteractiveObject *p);
-    void addBack(InteractiveObject *p);
-    void popBack();
-    void addFront(InteractiveObject *p);
-    void addBack(InteractiveContainer *p);
-    void addFront(InteractiveContainer *p);
+    virtual void draw() = 0;
+    virtual void update() = 0;
 
     int getId();
-    void release();
-    void reverse();
-    int getLength();
-    InteractiveObject *getItem(int i);
-
-    bool selected;
-    bool hover;
-    ofPoint p;
-    float angle;
-    bool fixed;
-    bool controlled;
-    int pivot_i;
-
-    // larger indexes in front
-    // using only 0 and 1 for now
-    int z_index;
-
-    InteractiveObject *front;
-    InteractiveObject *back;
-    bool closed; // list can be circular
-
-    int id;
-
-    // connections
-    vector<int> links; // connected joints
-    // joints relative positions
-    vector<ofPoint> links_rel; // from center to the joints
-
-protected:
-    // array of ordered vertices,
-    // for random access
-    vector<InteractiveObject *> items;
+    InteractiveObject *getItem(int id);
 };
+
