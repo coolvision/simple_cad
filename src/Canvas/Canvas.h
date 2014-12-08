@@ -14,7 +14,6 @@
 #include "Actions.h"
 #include "Joint.h"
 
-
 float segmentDistance(ofPoint v, ofPoint w, ofPoint p);
 ofPoint lineProjection(ofPoint v, ofPoint w, ofPoint p);
 int circle_circle_intersection(double x0, double y0, double r0,
@@ -46,10 +45,14 @@ public:
     void save(string path);
     void load(string path);
 
-    void update(bool moving = false);
-    bool updateMessages(bool reverse = false);
+    void update();
+    void updateDistances();
     void draw();
-
+    void connectJoints();
+    void updateAngles();
+    void updatePolygons();
+    void updateSupported();
+    
     // motion
     void getConnectedPolygons(int joint_id,
                             vector<InteractiveContainer *> *connected,
@@ -62,21 +65,19 @@ public:
 
     UIState ui_state;
 
-    ofPoint fitted1, off1;
-    ofPoint fitted2, off2;
-    ofPoint target_p;
-
-
-
 // storage & vis
 //==============================================================================
-    vector<InteractiveContainer *> lines;
+    vector<Polyline *> lines;
+    vector<Joint *> joints;
+
+    // pointers to all vertices and joints
+    // not sure how useful it can be...
+    vector<InteractiveObject *> items;
+
     InteractiveObject *getItem(ItemId item_id);
 
     Polyline curr_line;
     Vertex add_v;
-
-    JointsContainer joints;
 
 // zoom and offset
 //==============================================================================
@@ -96,20 +97,17 @@ public:
 
     ofRectangle selection_r;
 
-    bool selected_point;
-    InteractiveObject *selected_p;
-
     // points
     bool hover_point;
     InteractiveObject *hover_point_p;
 
     // line segments
     bool hover_line;
-    InteractiveObject *hover_line_p[2];
+    Vertex *hover_line_p[2];
 
     // polygons
     bool hover_polygon;
-    InteractiveContainer *hover_polygon_p;
+    Polyline *hover_polygon_p;
 
     ofPoint snap(ofPoint p);
     ofPoint snapMm(ofPoint p);
@@ -125,5 +123,5 @@ public:
     ofPoint start_click;
     ofPoint start_p;
 
-    void connectPolylines(InteractiveContainer *p);
+    void connectPolylines(Polyline *p);
 };

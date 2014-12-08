@@ -58,8 +58,11 @@ void ofApp::draw(){
                   16, ofGetWindowWidth() - off_x, 80);
     }
 
+    //if (do_update) {
+        c.update();
+//        do_update = false;
+//    }
 
-    c.update(false);
 
     // objects
     //==============================================================================
@@ -73,10 +76,11 @@ void ofApp::draw(){
             c.lines[i]->draw();
         }
     }
+    for (int i = 0; i < c.joints.size(); i++) {
+        c.joints[i]->draw();
+    }
 
     c.draw();
-    c.joints.draw();
-
 
     if (c.ui_state == UI_DRAWING_LINE) {
         c.curr_line.draw();

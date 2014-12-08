@@ -45,7 +45,11 @@ void Polyline::draw() {
         if (v->next == front) break; // closed polylines
     }
 
-    if (hover) {
+    if (controlled) {
+        path.setStrokeColor(ofColor::darkRed);
+    } else if (selected) {
+        path.setStrokeColor(ofColor::steelBlue);
+    } else if (hover) {
         path.setStrokeColor(ofColor::orangeRed);
     } else {
         path.setStrokeColor(80);
@@ -54,29 +58,9 @@ void Polyline::draw() {
     if (closed) {
         path.setFilled(true);
         if (hover || selected) {
-            if (fixed) {
-                path.setFillColor(ofColor(80, 80, 80, 200));
-            } else {
-                if (controlled) {
-                    ofColor color = ofColor::steelBlue - ofColor(10);
-                    color.a = 200;
-                    path.setFillColor(color);
-                } else {
-                    path.setFillColor(ofColor(190, 190, 190, 200));
-                }
-            }
+            path.setFillColor(ofColor(190, 190, 190, 200));
         } else {
-            if (fixed) {
-                path.setFillColor(ofColor(100, 100, 100, 200));
-            } else {
-                if (controlled) {
-                    ofColor color = ofColor::steelBlue;
-                    color.a = 200;
-                    path.setFillColor(color);
-                } else {
-                    path.setFillColor(ofColor(200, 200, 200, 200));
-                }
-            }
+            path.setFillColor(ofColor(200, 200, 200, 200));
         }
     } else {
         path.setFilled(false);
@@ -86,10 +70,10 @@ void Polyline::draw() {
     ofSetLineWidth(1.0f);
     ofSetColor(ofColor::black);
     for (Vertex *v = front; v != NULL && v->next != NULL; v = v->next) {
-        if (v->hover && v->next->hover) {
+        if (!hover && !controlled && (v->hover && v->next->hover)) {
             ofSetColor(ofColor::orangeRed);
             ofLine(v->getPx(v->p), v->getPx(v->next->p));
-        } else if (v->selected && v->next->selected) {
+        } else if (!selected && !controlled && (v->selected && v->next->selected)) {
             ofSetColor(ofColor::steelBlue);
             ofLine(v->getPx(v->p), v->getPx(v->next->p));
         }
@@ -116,6 +100,12 @@ void Polyline::draw() {
         }
         if (v->next == front) break; // closed polylines
     }
+
+
+//    for (int i = 0; i < links.size(); i++) {
+//        ofDrawBitmapStringHighlight(ofToString(links[i]), front->getPx(p) + ofPoint(0, i * 15));
+//    }
+
 
     ofDisableAntiAliasing();
     ofDisableSmoothing();
@@ -190,7 +180,7 @@ void Polyline::updateIndexes() {
 }
 
 void Polyline::init(Vertex *p) {
-    Vertex *i = p->getCopy();
+    Vertex *i = (Vertex *)p->getCopy();
     i->parent = this;
     front = i;
     back = front;
@@ -222,7 +212,7 @@ void Polyline::addBack(Vertex *p) {
         init(p);
     } else {
         // new element
-        Vertex *i = p->getCopy();
+        Vertex *i = (Vertex *)p->getCopy();
         i->parent = this;
         // update the list
         back->next = i;
@@ -238,7 +228,7 @@ void Polyline::addFront(Vertex *p) {
         init(p);
     } else {
         // new element
-        Vertex *i = p->getCopy();
+        Vertex *i = (Vertex *)p->getCopy();
         i->parent = this;
         // update the list
         front->prev = i;

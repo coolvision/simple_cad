@@ -7,8 +7,36 @@
 //
 
 #include "Vertex.h"
+#include "Polyline.h"
 
 ofImage Vertex::dot_icon;
+
+void Vertex::release() {
+
+    if (next != NULL) {
+        next->prev = prev;
+    }
+    if (prev != NULL) {
+        prev->next = next;
+    }
+    
+    Polyline *p = (Polyline *)parent;
+
+    if (this == p->front && this == p->back) {
+        p->front = NULL;
+        p->back = NULL;
+    } else if (this == p->front) {
+        p->front = next;
+    } else if (this == p->back) {
+        p->back = prev;
+    }
+};
+
+void Vertex::update() {
+
+    Polyline *p = (Polyline *)parent;
+    p->update();
+}
 
 InteractiveObject *Vertex::getCopy() {
 

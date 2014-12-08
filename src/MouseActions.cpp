@@ -84,7 +84,7 @@ void ofApp::mousePressed(int x, int y, int button) {
         } else if (c.hover_polygon && c.hover_polygon_p)  {
 
             selected = true;
-            for (InteractiveObject *v = c.hover_polygon_p->front; v != NULL; v = v->next) {
+            for (Vertex *v = c.hover_polygon_p->front; v != NULL; v = v->next) {
                 if (!v->selected) {
                     selected = false;
                 }
@@ -110,9 +110,11 @@ void ofApp::mousePressed(int x, int y, int button) {
         }
 
         for (int i = 0; i < c.selection.items.size(); i++) {
-            InteractiveObject *vertex = c.getItem(c.selection.items[i]);
-            vertex->start_p = vertex->p;
-            vertex->dragged = true;
+            InteractiveObject *item = c.getItem(c.selection.items[i]);
+            if (item != NULL) {
+                item->start_p = item->p;
+                item->dragged = true;
+            }
         }
     }
 
@@ -133,11 +135,11 @@ void ofApp::mousePressed(int x, int y, int button) {
         // insert a new point between the points of the hover line
         if (c.hover_line && c.hover_line_p[0] && c.hover_line_p[1]) {
 
-            InteractiveObject *v0 = c.hover_line_p[0];
-            InteractiveObject *v1 = c.hover_line_p[1];
+            Vertex *v0 = c.hover_line_p[0];
+            Vertex *v1 = c.hover_line_p[1];
 
             ModifyPolylineAction *add = new ModifyPolylineAction();
-            add->p_before.cloneFrom(v0->parent);
+            add->p_before.cloneFrom((Polyline *)v0->parent);
 
             Vertex *v = new Vertex();
             *v = c.add_v;
@@ -150,7 +152,7 @@ void ofApp::mousePressed(int x, int y, int button) {
             v->start_p = v->p;
             ItemId new_id = v->getId();
 
-            add->p_after.cloneFrom(v0->parent);
+            add->p_after.cloneFrom((Polyline *)v0->parent);
             c.addAction(add);
 
             unselectMode();
@@ -163,10 +165,12 @@ void ofApp::mousePressed(int x, int y, int button) {
             c.addAction(select);
 
             c.resetHover();
-            c.hover_point_p = c.getItem(new_id);
+            c.hover_point_p = (Vertex *)c.getItem(new_id);
             c.hover_point = true;
 
             c.ui_state = UI_MOVING_SELECTION;
+
+            c.updateDistances();
         }
     }
 
@@ -197,13 +201,21 @@ void ofApp::mouseReleased(int x, int y, int button) {
             select->prev_selection = c.selection;
 
             for (int i = 0; i < c.lines.size(); i++) {
-                for (InteractiveObject *v = c.lines[i]->front; v != NULL; v = v->next) {
+                for (Vertex *v = c.lines[i]->front; v != NULL; v = v->next) {
                     if (r.inside(v->p)) {
                         select->new_selection.add(v->getId());
                     }
                     if (v->next == c.lines[i]->front) break; // closed polylines
                 }
             }
+            for (int i = 0; i < c.joints.size(); i++) {
+                Joint *v = c.joints[i];
+                if (v == NULL) continue;
+                if (r.inside(v->p)) {
+                    select->new_selection.add(v->getId());
+                }
+            }
+
             c.addAction(select);
         }
     }
@@ -245,7 +257,7 @@ void ofApp::mouseReleased(int x, int y, int button) {
             c.addAction(move_action);
 
             if (c.selection.items.size() == 1) {
-                InteractiveObject *v = c.getItem(c.selection.items[0]);
+                Vertex *v = (Vertex *)c.getItem(c.selection.items[0]);
 
                 ChangeSelectionAction *select = new ChangeSelectionAction();
                 select->prev_selection = c.selection;
@@ -256,14 +268,18 @@ void ofApp::mouseReleased(int x, int y, int button) {
 
             // connect polylines after the line's dragging
             if (c.selection.items.size() == 2) {
-                InteractiveObject *v1 = c.getItem(c.selection.items[0]);
-                InteractiveObject *v2 = c.getItem(c.selection.items[1]);
+                Vertex *v1 = (Vertex *)c.getItem(c.selection.items[0]);
+                Vertex *v2 = (Vertex *)c.getItem(c.selection.items[1]);
                 if (v1->parent == v2->parent) {
                     c.connectPolylines((Polyline *)v1->parent);
                     c.connectPolylines((Polyline *)v1->parent);
                 }
             }
         }
+
+
+
+        
 
         c.ui_state = UI_SELECT;
     }

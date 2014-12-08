@@ -18,6 +18,7 @@ public:
         front = NULL;
         back = NULL;
         closed = false;
+        controlled = false;
     };
     virtual ~Polyline() {
         release();
@@ -26,7 +27,7 @@ public:
     // interface implementation
     void draw();
     void update();
-    InteractiveObject *Polyline::getItem(int i);
+    InteractiveObject *getItem(int i);
     
     // geometry specific
     ofPoint p;
@@ -51,6 +52,11 @@ public:
     Vertex *front;
     Vertex *back;
     bool closed; // list can be circular
+
+    bool controlled;
+
+    vector<int> links; // connected joints
+    vector<ofPoint> links_rel; // relative positions of the joints
 
 protected:
     // array of ordered vertices,

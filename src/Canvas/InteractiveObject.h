@@ -12,6 +12,10 @@
 #include "ofxGui.h"
 
 struct ItemId {
+    ItemId(int c, int i) {
+        container_id = c;
+        item_id = i;
+    };
     int container_id;
     int item_id;
 };
@@ -39,12 +43,14 @@ public:
         parent = NULL;
         dragged = false;
         grid_snap = true;
-    }
+    };
     virtual ~InteractiveObject() {};
 
     // interface
     virtual void draw() {};
     virtual InteractiveObject *getCopy() {};
+    virtual void release() {};
+    virtual void update() {};
 
     // UI
     ofPoint p; // position
@@ -74,7 +80,7 @@ public:
 
     virtual void draw() {};
     virtual void update() {};
-    virtual InteractiveObject *getItem(int id);
+    virtual InteractiveObject *getItem(int id) {};
 
     bool hover;
     bool selected;

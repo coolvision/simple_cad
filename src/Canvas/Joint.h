@@ -27,19 +27,7 @@ public:
 
 class Joint: public InteractiveObject {
 public:
-    Joint() {
-        grid_snap = false;
-
-        angle = 0.0f;
-        fixed = false;
-        connected = false;
-        fit_angle = 0.0f;
-        controlled = false;
-
-        gui.setup();
-        gui.add(angle_slider.setup("angle", 0.0f, -360.0f, 360.0f));
-        gui.add(velocity.setup("velocity", 0.0f, 0.0f, 10.0f));
-    };
+    Joint();
     virtual ~Joint() {};
 
     // interface implementation
@@ -50,6 +38,8 @@ public:
     float angle;
     ofxFloatSlider angle_slider;
     ofxFloatSlider velocity;
+    ofxToggle fixed_toggle;
+
     ofxPanel gui;
     bool fixed;
     bool connected;
@@ -64,4 +54,28 @@ public:
 
     // events
     ofEvent<JointClickEventData> click_event;
+
+    // connected joints
+    vector<int> links;
+    vector<float> links_length;
+    ofPoint f; // force acting on a joint
+    float ld; // current length error
+
+    bool updated;
+    bool supported;
+    ofPoint s_v;
+    float s_l;
+    int side;
+    float distance;
+    //ofPoint target;
+
+    ofPoint intersection;
+    bool supporting;
+    int s_id[2];
+
+
+    // tmp
+    float d;
+    float d1;
+    ofPoint target;
 };

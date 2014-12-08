@@ -18,13 +18,17 @@ public:
     Vertex() {
         next = NULL;
         prev = NULL;
+//        parent = NULL;
     };
     virtual ~Vertex() {};
 
-    InteractiveObject *next;
-    InteractiveObject *prev;
-    
     void draw();
     InteractiveObject *getCopy();
+    void release();
+    void update();
+
+    Vertex *next;
+    Vertex *prev;
+
     static ofImage dot_icon;
 };

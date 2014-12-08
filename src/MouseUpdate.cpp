@@ -26,7 +26,7 @@ void ofApp::mouseMoved(int x, int y ) {
         c.resetHover();
 
         for (int i = 0; i < c.lines.size(); i++) {
-            for (InteractiveObject *v = c.lines[i]->front; v != NULL && v->next != NULL; v = v->next) {
+            for (Vertex *v = c.lines[i]->front; v != NULL && v->next != NULL; v = v->next) {
                 float d = segmentDistance(v->p, v->next->p, p_mm);
                 if (d < 2.0f) {
                     c.hover_line = true;
@@ -84,37 +84,98 @@ void ofApp::mouseDragged(int x, int y, int button) {
     c.setHoverPoint(p_mm);
 
     if (c.ui_state == UI_MOVING_SELECTION) {
+
         for (int i = 0; i < c.selection.items.size(); i++) {
             InteractiveObject *v = c.getItem(c.selection.items[i]);
-//            v->p = v->start_p + (p_mm - c.start_click);
             v->p += curr_p - prev_p;
-            v->parent->update();
+            v->update();
         }
 
-        //while (c.updateMessages()) {};
+        for (int i = 0; i < c.lines.size(); i++) {
+            if (c.lines[i]->selected) {
+                for (int j = 0; j < c.lines.size(); j++) {
+                    c.lines[j]->controlled = false;
+                }
+                for (int j = 0; j < c.joints.size(); j++) {
+                    if (c.joints[j] != NULL) {
+                        c.joints[j]->updated = false;
+                        c.joints[j]->controlled = false;
+                    }
+                }
+                break;
+            }
+        }
 
-//        for (int i = 1; i < c.lines.size(); i++) {
-//            if (c.lines[i]->selected) {
-//                c.update_i++;
-//                UpdateRelative *m = new UpdateRelative();
-//                m->receiver_id = c.lines[i]->id;
-//                m->sent_stamp = c.update_i;
-//                m->label = ofToString(i) + " " + ofToString(c.update_i);
-//                m->type_i = UPDATE_RELATIVE;
-//                c.lines[i]->motion_msgs.push_back(m);
-//                c.lines[i]->updated[m->type_i] = c.update_i;
-//            }
-//            c.lines[i]->update();
-//        }
+        for (int i = 0; i < c.lines.size(); i++) {
+            if (c.lines[i]->selected) {
+                c.lines[i]->controlled = true;
+                for (int q = 0; q < c.lines[i]->links.size(); q++) {
+                    Joint *j = (Joint *)c.getItem(ItemId(-1, c.lines[i]->links[q]));
+                    if (j != NULL) {
+                        j->p += curr_p - prev_p;
+                        j->controlled = true;
+                        j->updated = true;
+                    }
+                }
+            }
+            c.lines[i]->update();
+        }
 
-        //while (c.updateMessages()) {};
+        for (int i = 0; i < c.lines.size(); i++) {
+            if (c.lines[i]->selected) {
+
+                for (int q = 0; q < c.lines[i]->links.size(); q++) {
+                    Joint *j = (Joint *)c.getItem(ItemId(-1, c.lines[i]->links[q]));
+                    if (j != NULL) {
+                        if (j->supported) {
+
+//                            Joint *j_m = (Joint *)c.getItem(ItemId(-1, j->s_id[0]));
+//                            Joint *j_n = (Joint *)c.getItem(ItemId(-1, j->s_id[1]));
+//                            if (j_m != NULL) {
+//                                if (!j_m->controlled && !j_m->updated) {
+//                                    j_m->p += curr_p - prev_p;
+//                                    j_m->updated = true;
+//                                }
+//                            }
+//                            if (j_n != NULL) {
+//                                if (!j_n->controlled && !j_n->updated) {
+//                                    j_n->p += curr_p - prev_p;
+//                                    j_n->updated = true;;
+//                                }
+//                            }
+
+                            moveSupported(curr_p - prev_p, j);
+                        }
+                    }
+                }
+
+            }
+            c.lines[i]->update();
+        }
+
     }
-
-
-
-//    if (c.ui_state == UI_MOVING_POINT) {
-//        c.selected_p->parent->update();
-//        c.selected_p->p = c.selected_p->start_p + (p_mm - c.start_click);
-//    }
 }
 
+void ofApp::moveSupported(ofPoint m, Joint *j) {
+
+    if (j != NULL) {
+        if (j->supported) {
+            Joint *j_m = (Joint *)c.getItem(ItemId(-1, j->s_id[0]));
+            Joint *j_n = (Joint *)c.getItem(ItemId(-1, j->s_id[1]));
+            if (j_m != NULL) {
+                if (!j_m->controlled && !j_m->updated) {
+                    j_m->p += m;
+                    j_m->updated = true;
+                    moveSupported(m, j_m);
+                }
+            }
+            if (j_n != NULL) {
+                if (!j_n->controlled && !j_n->updated) {
+                    j_n->p += m;
+                    j_n->updated = true;
+                    moveSupported(m, j_n);
+                }
+            }
+        }
+    }
+}

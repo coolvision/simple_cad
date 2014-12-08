@@ -36,11 +36,16 @@ void Canvas::deleteSelection() {
     vector<bool> lines_modified;
     lines_modified.resize(lines.size());
 
+    bool joints_modified = false;
     for (int i = 0; i < lines_modified.size(); i++) {
         lines_modified[i] = false;
     }
     for (int i = 0; i < s.items.size(); i++) {
-        lines_modified[s.items[i].container_id] = true;
+        if (s.items[i].container_id > 0) {
+            lines_modified[s.items[i].container_id] = true;
+        } else {
+            joints_modified = true;
+        }
     }
 
     // modify this polylines
@@ -63,21 +68,8 @@ void Canvas::deleteSelection() {
             if (v == NULL) continue;
 
             // delete
-            if (v->next != NULL) {
-                v->next->prev = v->prev;
-            }
-            if (v->prev != NULL) {
-                v->prev->next = v->next;
-            }
-            if (v == v->parent->front && v == v->parent->back) {
-                v->parent->front = NULL;
-                v->parent->back = NULL;
-            } else if (v == v->parent->front) {
-                v->parent->front = v->next;
-            } else if (v == v->parent->back) {
-                v->parent->back = v->prev;
-            }
-            
+            v->release();
+
             delete v;
             v = NULL;
         }
@@ -97,6 +89,34 @@ void Canvas::deleteSelection() {
         addAction(clear);
     }
 
+    // do joints deleting
+    // save the before and after joints set
+    if (joints_modified) {
+        ModifyJointsAction *clear = new ModifyJointsAction();
+        for (int i = 0; i < joints.size(); i++) {
+            if (joints[i] != NULL) {
+                clear->before.push_back((Joint *)joints[i]->getCopy());
+            }
+        }
+
+        for (int j = 0; j < s.items.size(); j++) {
+
+            if (s.items[j].container_id == -1) {
+                if (s.items[j].item_id < joints.size()) {
+                    delete joints[s.items[j].item_id];
+                    joints[s.items[j].item_id] = NULL;
+                }
+            }
+        }
+
+        for (int i = 0; i < joints.size(); i++) {
+            if (joints[i] != NULL) {
+                clear->after.push_back((Joint *)joints[i]->getCopy());
+            }
+        }
+        addAction(clear);
+    }
+
     hover_point = false;
     hover_point_p = NULL;
 
@@ -113,15 +133,16 @@ void Canvas::clearSelection() {
     selection.clear();
 
     for (int i = 0; i < lines.size(); i++) {
-        for (InteractiveObject *v = lines[i]->front; v != NULL; v = v->next) {
+        for (Vertex *v = lines[i]->front; v != NULL; v = v->next) {
             v->selected = false;
             if (v->next == lines[i]->front) break; // closed polylines
         }
         lines[i]->selected = false;
     }
-
-    selected_point = false;;
-    selected_p = NULL;
+    for (int i = 0; i < joints.size(); i++) {
+        Joint *v = joints[i];
+        v->selected = false;
+    }
 }
 
 void Canvas::resetHover() {
@@ -140,11 +161,15 @@ void Canvas::resetHover() {
         if (lines[i] == NULL) {
             continue;
         }
-        for (InteractiveObject *v = lines[i]->front; v != NULL; v = v->next) {
+        for (Vertex *v = lines[i]->front; v != NULL; v = v->next) {
             v->hover = false;
             if (v->next == lines[i]->front) break; // closed polylines
         }
         lines[i]->hover = false;
+    }
+    for (int i = 0; i < joints.size(); i++) {
+        Joint *v = joints[i];
+        v->hover = false;
     }
 }
 
@@ -157,7 +182,7 @@ void Canvas::setHoverPoint(ofPoint p) {
         if (lines[i] == NULL) {
             continue;
         }
-        for (InteractiveObject *v = lines[i]->front; v != NULL; v = v->next) {
+        for (Vertex *v = lines[i]->front; v != NULL; v = v->next) {
             if (!(selection.items.size() == 1 && v->selected &&
                   ui_state == UI_MOVING_SELECTION)) {
                 float d0 = (p - v->p).length();
@@ -167,6 +192,14 @@ void Canvas::setHoverPoint(ofPoint p) {
                 }
             }
             if (v->next == lines[i]->front) break; // closed polylines
+        }
+    }
+    for (int i = 0; i < joints.size(); i++) {
+        Joint *v = joints[i];
+        float d0 = (p - v->p).length();
+        if (d0 < 2.0f && d0 < min_d) {
+            min_d = d0;
+            min_d_v = v;
         }
     }
     if (min_d_v != NULL) {
@@ -198,7 +231,7 @@ void Canvas::setHover(ofPoint p) {
             if (lines[i]->hover) {
                 hover_polygon = true;
                 hover_polygon_p = lines[i];
-                for (InteractiveObject *v = lines[i]->front; v != NULL; v = v->next) {
+                for (Vertex *v = lines[i]->front; v != NULL; v = v->next) {
                     v->hover = true;
                     if (v->next == lines[i]->front) break; // closed polylines
                 }
@@ -212,7 +245,7 @@ void Canvas::setHover(ofPoint p) {
                 continue;
             }
             // check selection of line segments
-            for (InteractiveObject *v = lines[i]->front; v != NULL && v->next != NULL; v = v->next) {
+            for (Vertex *v = lines[i]->front; v != NULL && v->next != NULL; v = v->next) {
                 float d = segmentDistance(v->p, v->next->p, p);
                 float d1 = (p - v->p).length();
                 float d2 = (p - v->next->p).length();

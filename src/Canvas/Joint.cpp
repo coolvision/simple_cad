@@ -12,23 +12,26 @@
 ofImage Joint::joint_icon_fixed;
 ofImage Joint::joint_icon_r;
 
-void JointsContainer::draw() {
+Joint::Joint() {
+    grid_snap = false;
 
-    for (InteractiveObject *v = front; v != NULL; v = v->next) {
-        v->draw();
-        if (v->next == front) break; // closed polylines
-    }
-}
+    angle = 0.0f;
+    fixed = false;
+    connected = false;
+    controlled = false;
 
-void JointsContainer::update(ofPoint p) {
+    // connecting joints into rigid triangles
+    supported = false;
+    supporting = false;
+    s_id[0] = -1;
+    s_id[1] = -1;
+    d = 0;
 
-    update();
-}
-
-void JointsContainer::update() {
-
-    updateIndexes();
-}
+    gui.setup();
+    gui.add(angle_slider.setup("angle", 0.0f, -360.0f, 360.0f));
+    gui.add(velocity.setup("velocity", 0.0f, 0.0f, 10.0f));
+    gui.add(fixed_toggle.setup("fixed", false));
+};
 
 InteractiveObject *Joint::getCopy() {
 
@@ -36,8 +39,8 @@ InteractiveObject *Joint::getCopy() {
     j->p = this->p;
     j->start_p = this->start_p;
     j->joint_type = this->joint_type;
-    j->parent = NULL;
-
+    j->id = this->id;
+    
     return (InteractiveObject *)j;
 }
 
@@ -56,16 +59,14 @@ void Joint::draw() {
         fixed = true;
     }
 
-    if (selected) {
+    if (controlled || fixed) {
+        ofSetColor(ofColor::darkRed);
+    } else if (selected) {
         ofSetColor(ofColor::steelBlue);
     } else if (hover) {
         ofSetColor(ofColor::red);
     } else {
-        if (fixed) {
-            ofSetColor(ofColor::darkRed);
-        } else {
-            ofSetColor(ofColor::black);
-        }
+        ofSetColor(ofColor::black);
     }
 
     ofPoint p1 = getPx(p);
@@ -75,10 +76,11 @@ void Joint::draw() {
         joint_icon_r.draw(p1 - icon_offset);
     }
 
-    ofSetLineWidth(1.0f);
-    ofSetColor(ofColor::green);
-    ofLine(getPx(p), getPx(p + v1));
+    ofSetColor(ofColor::red);
     ofSetLineWidth(4.0f);
-    ofSetColor(ofColor::blue);
-    ofLine(getPx(p), getPx(p + v2));
+    ofLine(getPx(p), getPx(p+f));
+
+//    ofSetColor(ofColor::blue);
+//    ofSetLineWidth(4.0f);
+//    ofLine(getPx(p), getPx(target));
 }

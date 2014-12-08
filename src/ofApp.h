@@ -31,6 +31,7 @@ public:
 // canvas
 //==============================================================================
     Canvas c;
+    void moveSupported(ofPoint m, Joint *j);
 
     ofPoint curr_p;
     ofPoint prev_p;

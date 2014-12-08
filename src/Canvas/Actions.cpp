@@ -33,10 +33,11 @@ void AddJointAction::doAction(Canvas *c) {
     label = "add joint";
 
     if (undo) {
-        Joint j;
-        j.joint_type = type;
-        j.p = p;
-        c->lines[0]->addBack(&j);
+        Joint *j = new Joint;
+        j->joint_type = type;
+        j->p = p;
+        j->id = c->joints.size();
+        c->joints.push_back(j);
     }
     undo = false;
 }
@@ -46,7 +47,8 @@ void AddJointAction::undoAction(Canvas *c) {
     label = "undo add joint";
 
     if (!undo) {
-        c->lines[0]->popBack();
+        delete c->joints.back();
+        c->joints.pop_back();
     }
     undo = true;
 }
@@ -98,7 +100,7 @@ void MoveSelectionAction::doAction(Canvas *c) {
         for (int i = 0; i < selection.items.size(); i++) {
             InteractiveObject *item = c->getItem(selection.items[i]);
             //item->p += v;
-            item->parent->update();
+            item->update();
         }
     }
     undo = false;
@@ -112,7 +114,7 @@ void MoveSelectionAction::undoAction(Canvas *c) {
         for (int i = 0; i < selection.items.size(); i++) {
             InteractiveObject *item = c->getItem(selection.items[i]);
             item->p -= v;
-            item->parent->update();
+            item->update();
         }
     }
     undo = true;
@@ -130,12 +132,16 @@ void ChangeSelectionAction::doAction(Canvas *c) {
 
     if (undo) {
         for (int i = 0; i < prev_selection.items.size(); i++) {
-            InteractiveObject *vertex = c->getItem(prev_selection.items[i]);
-            vertex->selected = false;
+            InteractiveObject *item = c->getItem(prev_selection.items[i]);
+            if (item != NULL) {
+                item->selected = false;
+            }
         }
         for (int i = 0; i < new_selection.items.size(); i++) {
-            InteractiveObject *vertex = c->getItem(new_selection.items[i]);
-            vertex->selected = true;
+            InteractiveObject *item = c->getItem(new_selection.items[i]);
+            if (item != NULL) {
+                item->selected = true;
+            }
         }
         c->selection = new_selection;
     }
@@ -175,18 +181,18 @@ void ConnectPolylinesAction::doAction(Canvas *c) {
     if (undo) {
 
         // get the current polylines
-        InteractiveContainer *p = c->lines[p1.id];
-        InteractiveContainer *l = c->lines[p2.id];
+        Polyline *p = c->lines[p1.id];
+        Polyline *l = c->lines[p2.id];
 
         if (reverse) {
             l->reverse();
         }
         if (add_back) {
-            for (InteractiveObject *v = l->front->next; v != NULL; v = v->next) {
+            for (Vertex *v = l->front->next; v != NULL; v = v->next) {
                 p->addBack(v);
             }
         } else {
-            for (InteractiveObject *v = l->back->prev; v != NULL; v = v->prev) {
+            for (Vertex *v = l->back->prev; v != NULL; v = v->prev) {
                 p->addFront(v);
             }
         }
@@ -243,3 +249,56 @@ void ModifyPolylineAction::undoAction(Canvas *c) {
 
     undo = true;
 }
+
+
+//==============================================================================
+ModifyJointsAction::ModifyJointsAction() {
+    label = "ModifyJointsAction";
+    undo = true;
+}
+
+void ModifyJointsAction::doAction(Canvas *c) {
+
+    label = "modify joints";
+
+    if (undo) {
+
+        while (!c->joints.empty()) {
+            delete c->joints.back();
+            c->joints.pop_back();
+        }
+
+        for (int i = 0; i < after.size(); i++) {
+            if (after[i] != NULL) {
+                c->joints.push_back((Joint *)after[i]->getCopy());
+            }
+        }
+    }
+
+    undo = false;
+}
+
+void ModifyJointsAction::undoAction(Canvas *c) {
+
+    label = "undo modify";
+
+    if (!undo) {
+
+        while (!c->joints.empty()) {
+            delete c->joints.back();
+            c->joints.pop_back();
+        }
+
+        for (int i = 0; i < before.size(); i++) {
+            if (before[i] != NULL) {
+                c->joints.push_back((Joint *)before[i]->getCopy());
+            }
+        }
+    }
+    
+    undo = true;
+}
+
+
+
+

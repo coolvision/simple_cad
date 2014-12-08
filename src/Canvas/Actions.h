@@ -102,3 +102,13 @@ public:
     Polyline p_after;
 };
 
+class ModifyJointsAction: public Action {
+public:
+    ModifyJointsAction();
+    virtual ~ModifyJointsAction() {};
+    virtual void doAction(Canvas *c);
+    virtual void undoAction(Canvas *c);
+
+    vector<Joint *> before;
+    vector<Joint *> after;
+};

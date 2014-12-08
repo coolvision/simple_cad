@@ -15,9 +15,9 @@ Canvas::Canvas() {
 
     curr_action_i = 0;
 
-    lines.push_back(new JointsContainer());
-    lines.back()->id = 0;
-    lines.back()->z_index = 1;
+//    lines.push_back(new JointsContainer());
+//    lines.back()->id = 0;
+//    lines.back()->z_index = 1;
 
     update_i = 0;
 }
@@ -27,7 +27,13 @@ InteractiveObject *Canvas::getItem(ItemId item_id) {
 //    cout << "Canvas::getItem " << item_id.container_id << " " << item_id.item_id << endl;
 //    cout << "lines.size() " << lines.size() << endl;
 
-    if (item_id.container_id < lines.size()) {
+    if (item_id.container_id < 0) {
+        if (item_id.item_id < joints.size() && item_id.item_id >= 0) {
+            return joints[item_id.item_id];
+        } else {
+            return NULL;
+        }
+    } else if (item_id.container_id >= 0 && item_id.container_id < lines.size()) {
         return lines[item_id.container_id]->getItem(item_id.item_id);
     }
     return NULL;
@@ -113,6 +119,22 @@ void Canvas::save(string path) {
 
     ofstream file(path.c_str());
     if (file.is_open()) {
+
+        int n = 0;
+        for (int i = 0; i < joints.size(); i++) {
+            Joint *j = joints[i];
+            if (j != NULL) {
+                n++;
+            }
+        }
+        file << n << " ";
+        for (int i = 0; i < joints.size(); i++) {
+            Joint *j = joints[i];
+            if (j != NULL) {
+                file << j->p.x << " " << j->p.y << " " << j->joint_type << " ";
+            }
+        }
+
         int lines_n = 0;
         for (int i = 0; i < lines.size(); i++) {
             int n = lines[i]->getLength();
@@ -120,21 +142,12 @@ void Canvas::save(string path) {
         }
         file << lines_n << endl;
 
-        InteractiveContainer *l = lines[0];
-        int i = 0;
-        int n = l->getLength();
-        file << n << " ";
-        for (Joint *v = (Joint *)l->front; v != NULL; v = (Joint *)v->next) {
-            file << v->p.x << " " << v->p.y << " " << v->joint_type << " ";
-            if (v->next == lines[i]->front) break; // closed polylines
-        }
-
-        for (int i = 1; i < lines.size(); i++) {
+        for (int i = 0; i < lines.size(); i++) {
             int n = lines[i]->getLength();
             if (n <= 0) continue;
             file << n << " ";
             file << lines[i]->closed << " ";
-            for (InteractiveObject *v = lines[i]->front; v != NULL; v = v->next) {
+            for (Vertex *v = lines[i]->front; v != NULL; v = v->next) {
                 file << v->p.x << " " << v->p.y << " ";
                 if (v->next == lines[i]->front) break; // closed polylines
             }
@@ -155,9 +168,10 @@ void Canvas::load(string path) {
     }
     lines.clear();
 
-    lines.push_back(new JointsContainer());
-    lines.back()->id = 0;
-    lines.back()->z_index = 1;
+    while (!joints.empty()) {
+        delete joints.back();
+        joints.pop_back();
+    }
 
     int lines_n;
     int n;
@@ -165,22 +179,21 @@ void Canvas::load(string path) {
     ifstream file(path.c_str());
     if (file.is_open()) {
 
-        file >> lines_n;
-
-        InteractiveContainer *l = lines[0];
         int i = 0;
         file >> n;
         for (int i = 0; i < n; i++) {
-            Joint v;
-            file >> v.p.x;
-            file >> v.p.y;
-            file >> v.joint_type;
-            lines[0]->addBack(&v);
+            Joint *v = new Joint();
+            file >> v->p.x;
+            file >> v->p.y;
+            file >> v->joint_type;
+            v->id = i;
+            joints.push_back(v);
         }
 
-        for (i = 1; i < lines_n; i++) {
+        file >> lines_n;
+        for (int i = 0; i < lines_n; i++) {
             lines.push_back(new Polyline());
-            InteractiveContainer *l = lines.back();
+            Polyline *l = lines.back();
             l->id = lines.size() - 1;
             file >> n;
             file >> l->closed;
@@ -198,7 +211,9 @@ void Canvas::load(string path) {
         }
         file.close();
     }
-    
+
+    connectJoints();
+    updateDistances();
 }
 
 
