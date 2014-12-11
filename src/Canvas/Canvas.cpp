@@ -131,7 +131,7 @@ void Canvas::save(string path) {
         for (int i = 0; i < joints.size(); i++) {
             Joint *j = joints[i];
             if (j != NULL) {
-                file << j->p.x << " " << j->p.y << " " << j->joint_type << " ";
+                file << j->p.x << " " << j->p.y << " " << j->fixed << " ";
             }
         }
 
@@ -183,9 +183,14 @@ void Canvas::load(string path) {
         file >> n;
         for (int i = 0; i < n; i++) {
             Joint *v = new Joint();
+            v->setupGui();
             file >> v->p.x;
             file >> v->p.y;
-            file >> v->joint_type;
+            int fixed;
+            file >> fixed;
+            v->fixed = (bool)fixed;
+            *v->fixed_toggle = v->fixed;
+            v->joint_type = JOINT_REVOLUTE;
             v->id = i;
             joints.push_back(v);
         }

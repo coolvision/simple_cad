@@ -32,6 +32,7 @@ public:
 //==============================================================================
     Canvas c;
     void moveSupported(ofPoint m, Joint *j);
+    void updateConnectedJoints(Joint *j);
 
     ofPoint curr_p;
     ofPoint prev_p;
@@ -39,6 +40,8 @@ public:
 // UI
 //==============================================================================
     ofxFontStash font;
+
+    ofImage screen_grid;
 
     // store and display available patches list
     void unselectMode();

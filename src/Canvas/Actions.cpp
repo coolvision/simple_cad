@@ -37,6 +37,7 @@ void AddJointAction::doAction(Canvas *c) {
         j->joint_type = type;
         j->p = p;
         j->id = c->joints.size();
+        j->setupGui();
         c->joints.push_back(j);
     }
     undo = false;
@@ -99,6 +100,7 @@ void MoveSelectionAction::doAction(Canvas *c) {
     if (undo) {
         for (int i = 0; i < selection.items.size(); i++) {
             InteractiveObject *item = c->getItem(selection.items[i]);
+            if (item == NULL) continue;
             //item->p += v;
             item->update();
         }
@@ -113,6 +115,7 @@ void MoveSelectionAction::undoAction(Canvas *c) {
     if (!undo) {
         for (int i = 0; i < selection.items.size(); i++) {
             InteractiveObject *item = c->getItem(selection.items[i]);
+            if (item == NULL) continue;
             item->p -= v;
             item->update();
         }
@@ -271,6 +274,8 @@ void ModifyJointsAction::doAction(Canvas *c) {
         for (int i = 0; i < after.size(); i++) {
             if (after[i] != NULL) {
                 c->joints.push_back((Joint *)after[i]->getCopy());
+            } else {
+                c->joints.push_back(NULL);
             }
         }
     }
@@ -292,6 +297,8 @@ void ModifyJointsAction::undoAction(Canvas *c) {
         for (int i = 0; i < before.size(); i++) {
             if (before[i] != NULL) {
                 c->joints.push_back((Joint *)before[i]->getCopy());
+            } else {
+                c->joints.push_back(NULL);
             }
         }
     }

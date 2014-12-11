@@ -16,36 +16,12 @@ void Canvas::draw() {
     ofEnableSmoothing();
     ofSetColor(ofColor::indigo);
 
-//    for (int l = 0; l < lines.size(); l++) {
-//
-//        ofPoint p1 = getPx(lines[l]->p);
-//        ofPoint p2;
-//
-//        for (int i = 0; i < lines[l]->links.size(); i++) {
-//
-//            Joint *j = (Joint *)getItem(ItemId(-1, lines[l]->links[i]));
-//            if (j == NULL) continue;
-//
-////            ofSetColor(ofColor::indigo);
-////            ofPoint p2 = getPx(j->p);
-////            ofLine(p1, p2);
-//
-//            ofSetColor(ofColor::darkSlateBlue);
-//            p2 = getPx(lines[l]->p + lines[l]->links_rel[i]);
-//            ofLine(p1, p2);
-//
-//            float point_size = 3.0f * zoom;
-//            if (point_size < 1.0f) {
-//                point_size = 1.0f;
-//            }
-//            ofCircle(p1, point_size);
-//            ofCircle(p2, point_size);
-//        }
-//    }
-
     float point_size = 3.0f * zoom;
     if (point_size < 1.0f) {
         point_size = 1.0f;
+    }
+    if (point_size > 5.0f) {
+        point_size = 5.0f;
     }
     ofSetColor(ofColor::black);
     for (int m = 0; m < joints.size(); m++) {
@@ -60,18 +36,52 @@ void Canvas::draw() {
             ofSetColor(ofColor::red);
             ofCircle(j_m->getPx(j_m->target), point_size);
         }
-        //else {
 
-            for (int n = 0; n < j_m->links.size(); n++) {
-                Joint *j_n = (Joint *)getItem(ItemId(-1, j_m->links[n]));
-                if (j_n == NULL) continue;
+        bool first = false;
+        Joint *base_link = NULL;
+        ofPoint base_n;
+        for (int n = 0; n < j_m->links.size(); n++) {
+            Joint *j_n = (Joint *)getItem(ItemId(-1, j_m->links[n]));
+            if (j_n == NULL) continue;
 
-                if (j_n->supported) continue;
+            ofPoint mid = j_m->p + (j_n->p - j_m->p) * 0.5f;
 
-                ofSetColor(ofColor::black);
-                ofLine(getPx(j_m->p), getPx(j_n->p));
+            if (j_m->links_status[n].hover) {
+                ofSetColor(ofColor::red);
+            } else {
+//                if (!first) {
+//                    ofSetColor(ofColor::gray);
+//                } else {
+                    ofSetColor(ofColor::black);
+//                }
+                ofCircle(j_m->getPx(mid), point_size);
             }
-       // }
+            ofLine(getPx(j_m->p), getPx(mid));
 
+            // draw the angle of this link
+//            ofPoint curr_n = j_n->p - j_m->p;
+//            float angle = j_m->links_status[n].angle;
+//            ofDrawBitmapStringHighlight(ofToString(angle),
+//                                        j_m->getPx((mid + j_m->p)/2));
+
+
+            ofSetColor(ofColor::darkSlateGray);
+            ofLine(getPx(j_m->p), getPx(j_m->rotation_target));
+            ofCircle(getPx(j_m->rotation_target), point_size);
+
+            if (!first) {
+                first = true;
+            }
+        }
+
+        for (int n = 0; n < j_m->links.size(); n++) {
+            Joint *j_n = (Joint *)getItem(ItemId(-1, j_m->links[n]));
+            if (j_n == NULL) continue;
+
+            ofPoint mid = j_m->p + (j_n->p - j_m->p) * 0.5f;
+            if (j_m->links_status[n].hover) {
+                ofSetColor(ofColor::red);
+            }
+        }
     }
 }

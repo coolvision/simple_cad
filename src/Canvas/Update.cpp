@@ -71,7 +71,7 @@ void Canvas::updateDistances() {
                     j->links[n] = -1;
                     j->links[m] = -1;
 
-                    j->d = d;
+                    //j->d = d;
                     j->intersection.x = p0.x + u * (p1.x - p0.x);
                     j->intersection.y = p0.y + u * (p1.y - p0.y);
 
@@ -113,9 +113,48 @@ void Canvas::updateSupported() {
     }
 }
 
-void Canvas::update() {
+void Canvas::updateRotationTargets() {
 
-    updateAngles();
+    for (int p = 0; p < joints.size(); p++) {
+        Joint *j = joints[p];
+        if (j == NULL) continue;
+        j->rotation_target = j->p;
+    }
+
+    for (int m = 0; m < joints.size(); m++) {
+        Joint *j_m = joints[m];
+        if (j_m == NULL) continue;
+        if (!j_m->controlled_angle) continue;
+
+        vector<Joint *> links;
+        vector<float> length;
+
+        getLinks(j_m, &links, &length);
+        ofPoint curr_n;
+
+        if (links.size() == 1) {
+
+            curr_n = ofPoint(1.0f, 0.0f, 0.0f);
+            curr_n *= length[0];
+            curr_n.rotate(j_m->angle, ofPoint(), ofPoint(0.0f, 0.0f, 1.0f));
+            links[0]->rotation_target = j_m->p + curr_n;
+
+        } else if (links.size() >= 2) {
+
+            curr_n = (links[0]->p - j_m->p).normalized();
+            curr_n *= length[1];
+            curr_n.rotate(-j_m->angle, ofPoint(), ofPoint(0.0f, 0.0f, 1.0f));
+            links[1]->rotation_target = j_m->p + curr_n;
+
+            curr_n = (links[1]->p - j_m->p).normalized();
+            curr_n *= length[0];
+            curr_n.rotate(j_m->angle, ofPoint(), ofPoint(0.0f, 0.0f, 1.0f));
+            links[0]->rotation_target = j_m->p + curr_n;
+        }
+    }
+}
+
+void Canvas::update(bool update_angles) {
 
     float total_f = 1.0f;
     float total_ld = 0.0f;
@@ -125,6 +164,7 @@ void Canvas::update() {
     static int iter = 0;
 
     updateSupported();
+    updateRotationTargets();
 
     int n_iter = 0;
     while (total_f > 0.001f) {
@@ -132,6 +172,7 @@ void Canvas::update() {
         if (n_iter % 10 == 0) {
             updateSupported();
         }
+        updateRotationTargets();
 
         if (n_iter >= 100) {
             break;
@@ -165,18 +206,28 @@ void Canvas::update() {
                     j->ld = ld;
                 }
 
-                j->f += (nd * ld) * 0.5f;
+                j->f += (nd * ld) * 0.2f;
             }
+
+            j->f += (j->rotation_target - j->p) * 0.1f;
+
             if (j->supported) {
                 ofPoint nd = (j->target - j->p).normalized();
                 float ld = (j->target - j->p).length();
                 total_ld += ld;
-                j->f += (nd * ld) * 0.5f;
+                j->f += (nd * ld) * 0.2f;
             }
 
-            if (!j->controlled && !j->fixed) {
-                j->p += j->f;
-                total_f += j->f.length();
+            if ((update_i - j->moved_i) < 3) {
+                if (!j->controlled) {
+                    j->p += j->f;
+                    total_f += j->f.length();
+                }
+            } else {
+                if (!j->fixed && !j->dragged) {
+                    j->p += j->f;
+                    total_f += j->f.length();
+                }
             }
         }
     }

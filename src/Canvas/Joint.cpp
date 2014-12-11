@@ -19,28 +19,53 @@ Joint::Joint() {
     fixed = false;
     connected = false;
     controlled = false;
+    controlled_angle = false;
+    angle_change_i = 0;
+
+    discovered = false;
+    moved_i = 0;
 
     // connecting joints into rigid triangles
     supported = false;
     supporting = false;
     s_id[0] = -1;
     s_id[1] = -1;
-    d = 0;
 
-    gui.setup();
-    gui.add(angle_slider.setup("angle", 0.0f, -360.0f, 360.0f));
-    gui.add(velocity.setup("velocity", 0.0f, 0.0f, 10.0f));
-    gui.add(fixed_toggle.setup("fixed", false));
+    gui = NULL;
+    angle_slider = NULL;
+    velocity = NULL;
+    fixed_toggle = NULL;
+    fixed_angle_toggle = NULL;
 };
+
+void Joint::setupGui() {
+
+    gui = new ofxPanel();
+    angle_slider = new ofxFloatSlider();
+    velocity = new ofxFloatSlider();
+    fixed_toggle = new ofxToggle();
+    fixed_angle_toggle = new ofxToggle();
+
+    gui->setup();
+    gui->add(fixed_toggle->setup("fixed", false));
+    gui->add(fixed_angle_toggle->setup("fixed_angle", false));
+    gui->add(angle_slider->setup("angle", 0.0f, -360.0f, 360.0f));
+    gui->add(velocity->setup("velocity", 0.0f, 0.0f, 10.0f));
+}
 
 InteractiveObject *Joint::getCopy() {
 
     Joint *j = new Joint();
-    j->p = this->p;
-    j->start_p = this->start_p;
-    j->joint_type = this->joint_type;
-    j->id = this->id;
-    
+
+    *j = *this;
+
+    j->setupGui();
+
+    *j->fixed_toggle = *fixed_toggle;
+    *j->fixed_angle_toggle = *fixed_angle_toggle;
+    *j->angle_slider = *angle_slider;
+    *j->velocity = *velocity;
+
     return (InteractiveObject *)j;
 }
 
@@ -48,8 +73,8 @@ void Joint::draw() {
 
     if (joint_type == JOINT_REVOLUTE) {
         if (hover || selected) {
-            gui.setPosition(getPx(p) + ofPoint(80.0f, 80.0f));
-            gui.draw();
+            gui->setPosition(getPx(p) + ofPoint(80.0f, 80.0f));
+            gui->draw();
         }
     }
 
@@ -59,12 +84,14 @@ void Joint::draw() {
         fixed = true;
     }
 
-    if (controlled || fixed) {
+    if (controlled || controlled_angle) {
         ofSetColor(ofColor::darkRed);
     } else if (selected) {
         ofSetColor(ofColor::steelBlue);
     } else if (hover) {
         ofSetColor(ofColor::red);
+    } else if (fixed) {
+        ofSetColor(ofColor::darkBlue);
     } else {
         ofSetColor(ofColor::black);
     }
@@ -79,6 +106,10 @@ void Joint::draw() {
     ofSetColor(ofColor::red);
     ofSetLineWidth(4.0f);
     ofLine(getPx(p), getPx(p+f));
+
+    ofDrawBitmapStringHighlight(ofToString(angle), p1);
+//    ofDrawBitmapStringHighlight("a"+ofToString(angle_change_i), p1);
+//    ofDrawBitmapStringHighlight("m"+ofToString(moved_i), p1 + ofPoint(0.0f, 15.0f));
 
 //    ofSetColor(ofColor::blue);
 //    ofSetLineWidth(4.0f);

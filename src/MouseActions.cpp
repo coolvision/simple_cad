@@ -240,7 +240,7 @@ void ofApp::mouseReleased(int x, int y, int button) {
 
         for (int i = 0; i < c.selection.items.size(); i++) {
             InteractiveObject *v = c.getItem(c.selection.items[i]);
-            //v->p = v->start_p;
+            if (v == NULL) continue;
             v->dragged = false;
         }
 
@@ -276,10 +276,6 @@ void ofApp::mouseReleased(int x, int y, int button) {
                 }
             }
         }
-
-
-
-        
 
         c.ui_state = UI_SELECT;
     }

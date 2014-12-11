@@ -40,19 +40,23 @@ class Canvas {
 public:
 
     int update_i;
+    int updating_angle_i;
 
     Canvas();
     void save(string path);
     void load(string path);
 
-    void update();
+    void update(bool update_angles = false);
     void updateDistances();
     void draw();
     void connectJoints();
     void updateAngles();
     void updatePolygons();
     void updateSupported();
-    
+    void updateRotationTargets();
+
+    void getLinks(Joint *j, vector<Joint *> *links, vector<float> *length = NULL);
+
     // motion
     void getConnectedPolygons(int joint_id,
                             vector<InteractiveContainer *> *connected,

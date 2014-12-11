@@ -72,9 +72,11 @@ void Canvas::connectJoints() {
                         break;
                     }
                 }
+                LinkStatus ls;
                 if (!exists) {
                     j_m->links.push_back(j_n->id);
                     j_m->links_length.push_back((j_m->p - j_n->p).length());
+                    j_m->links_status.push_back(ls);
                     j_m->connected = true;
                 }
 
@@ -88,6 +90,7 @@ void Canvas::connectJoints() {
                 if (!exists) {
                     j_n->links.push_back(j_m->id);
                     j_n->links_length.push_back((j_m->p - j_n->p).length());
+                    j_n->links_status.push_back(ls);
                     j_n->connected = true;
                 }
             }

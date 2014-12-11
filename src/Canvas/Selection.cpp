@@ -96,6 +96,8 @@ void Canvas::deleteSelection() {
         for (int i = 0; i < joints.size(); i++) {
             if (joints[i] != NULL) {
                 clear->before.push_back((Joint *)joints[i]->getCopy());
+            } else {
+                clear->before.push_back(NULL);
             }
         }
 
@@ -112,10 +114,18 @@ void Canvas::deleteSelection() {
         for (int i = 0; i < joints.size(); i++) {
             if (joints[i] != NULL) {
                 clear->after.push_back((Joint *)joints[i]->getCopy());
+            } else {
+                clear->after.push_back(NULL);
             }
         }
         addAction(clear);
     }
+
+//    for (int i = 0; i < joints.size(); i++) {
+//        if (joints[i] != NULL) {
+//            joints[i]->connected = false;
+//        }
+//    }
 
     hover_point = false;
     hover_point_p = NULL;
@@ -169,7 +179,9 @@ void Canvas::resetHover() {
     }
     for (int i = 0; i < joints.size(); i++) {
         Joint *v = joints[i];
-        v->hover = false;
+        if (v != NULL) {
+            v->hover = false;
+        }
     }
 }
 
@@ -196,6 +208,7 @@ void Canvas::setHoverPoint(ofPoint p) {
     }
     for (int i = 0; i < joints.size(); i++) {
         Joint *v = joints[i];
+        if (v == NULL) continue;
         float d0 = (p - v->p).length();
         if (d0 < 2.0f && d0 < min_d) {
             min_d = d0;
@@ -211,7 +224,9 @@ void Canvas::setHoverPoint(ofPoint p) {
     if (ui_state == UI_MOVING_SELECTION) {
         for (int i = 0; i < selection.items.size(); i++) {
             InteractiveObject *v = getItem(selection.items[i]);
-            v->hover = true;
+            if (v != NULL) {
+                v->hover = true;
+            }
         }
     }
 }
@@ -266,4 +281,22 @@ void Canvas::setHover(ofPoint p) {
             }
         }
     }
+
+    // check if there is a hover over a link between joints
+    for (int m = 0; m < joints.size(); m++) {
+        Joint *j_m = joints[m];
+        if (j_m == NULL) continue;
+        for (int n = 0; n < j_m->links.size(); n++) {
+            Joint *j_n = (Joint *)getItem(ItemId(-1, j_m->links[n]));
+            if (j_n == NULL) continue;
+            ofPoint mid = j_m->p + (j_n->p - j_m->p) * 0.5f;
+            float d = segmentDistance(j_m->p, mid, p);
+            if (d < 2.0f) {
+                j_m->links_status[n].hover = true;
+            } else {
+                j_m->links_status[n].hover = false;
+            }
+        }
+    }
+
 }

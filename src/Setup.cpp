@@ -17,9 +17,11 @@ void ofApp::setup(){
 
     c.zoom = 1.0f;
 
-    ofSetFrameRate(60);
+    ofSetFrameRate(30);
 
     setGrid();
+
+    screen_grid.loadImage(ofToDataPath("screen.gif"));
 
 //==============================================================================
     Button::font.setup("DejaVuSansMono.ttf");

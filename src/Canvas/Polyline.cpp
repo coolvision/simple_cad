@@ -23,7 +23,7 @@ void Polyline::draw() {
         return;
     }
 
-    ofSetColor(ofColor::red);
+    ofSetColor(ofColor(50));
     ofCircle(front->getPx(p), 5);
 
     ofPushStyle();

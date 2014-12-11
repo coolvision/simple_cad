@@ -16,24 +16,26 @@ void ofApp::draw(){
 
     drawGrid();
 
+    //ofSaveScreen(ofToDataPath("screen.gif"));
+
     int off_x = 170;
 
-//    int j = 0;
-//    int n = c.actions.size();
-//    for (int i = MIN(c.curr_action_i, n-30); i < n; i++) {
-//        if (i < 0) {
-//            continue;
-//        }
-//        if (i == c.curr_action_i) {
-//            ofSetColor(ofColor::darkRed);
-//        } else {
-//            ofSetColor(ofColor::black);
-//        }
-//        font.draw(c.actions[i]->label, 16, ofGetWindowWidth() - off_x,
-//                  120 + 20 * j);
-//        j++;
-//    }
-//
+    int j = 0;
+    int n = c.actions.size();
+    for (int i = MIN(c.curr_action_i, n-30); i < n; i++) {
+        if (i < 0) {
+            continue;
+        }
+        if (i == c.curr_action_i) {
+            ofSetColor(ofColor::darkRed);
+        } else {
+            ofSetColor(ofColor::black);
+        }
+        font.draw(c.actions[i]->label, 16, ofGetWindowWidth() - off_x,
+                  120 + 20 * j);
+        j++;
+    }
+
     ofSetColor(ofColor::black);
     for (int i = 0; i < c.selection.items.size(); i++) {
         ItemId v = c.selection.items[i];
@@ -59,7 +61,15 @@ void ofApp::draw(){
     }
 
     //if (do_update) {
-        c.update();
+
+        //c.update(false);
+
+
+    c.update_i++;
+    c.updateAngles();
+    c.update(true);
+
+
 //        do_update = false;
 //    }
 
@@ -77,7 +87,9 @@ void ofApp::draw(){
         }
     }
     for (int i = 0; i < c.joints.size(); i++) {
-        c.joints[i]->draw();
+        if (c.joints[i] != NULL) {
+            c.joints[i]->draw();
+        }
     }
 
     c.draw();
@@ -144,12 +156,15 @@ void ofApp::drawGrid() {
     float w = ofGetWindowWidth();
     float h = ofGetWindowHeight();
 
-    ofSetColor(150.0f);
-    grid_points_vbo.draw(GL_POINTS, 0, points_n_x * points_n_y);
-
+//    ofSetColor(150.0f);
+//    grid_points_vbo.draw(GL_POINTS, 0, points_n_x * points_n_y);
+//
     ofSetColor(150.0f);
     ofSetLineWidth(1.0f);
     grid_lines_vbo.draw(GL_LINES, 0, (lines_n_x + lines_n_y) * 2);
+
+//    ofSetColor(255);
+//    screen_grid.draw(0, 0);
 
     ofSetColor(ofColor::darkRed);
     ofSetLineWidth(2.0f);

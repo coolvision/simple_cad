@@ -91,19 +91,32 @@ void ofApp::mouseDragged(int x, int y, int button) {
             v->update();
         }
 
+        // find all joints connected to current selected joints
+        // "seed" joints
+        for (int j = 0; j < c.lines.size(); j++) {
+            c.lines[j]->controlled = false;
+        }
+        for (int j = 0; j < c.joints.size(); j++) {
+            if (c.joints[j] != NULL) {
+                c.joints[j]->discovered = false;
+                c.joints[j]->updated = false;
+                c.joints[j]->controlled = false;
+            }
+        }
+
+        vector<Joint *> selected_joints;
         for (int i = 0; i < c.lines.size(); i++) {
             if (c.lines[i]->selected) {
-                for (int j = 0; j < c.lines.size(); j++) {
-                    c.lines[j]->controlled = false;
-                }
-                for (int j = 0; j < c.joints.size(); j++) {
-                    if (c.joints[j] != NULL) {
-                        c.joints[j]->updated = false;
-                        c.joints[j]->controlled = false;
+                for (int q = 0; q < c.lines[i]->links.size(); q++) {
+                    Joint *j = (Joint *)c.getItem(ItemId(-1, c.lines[i]->links[q]));
+                    if (j != NULL) {
+                        selected_joints.push_back(j);
                     }
                 }
-                break;
             }
+        }
+        for (int i = 0; i < selected_joints.size(); i++) {
+            updateConnectedJoints(selected_joints[i]);
         }
 
         for (int i = 0; i < c.lines.size(); i++) {
@@ -123,27 +136,10 @@ void ofApp::mouseDragged(int x, int y, int button) {
 
         for (int i = 0; i < c.lines.size(); i++) {
             if (c.lines[i]->selected) {
-
                 for (int q = 0; q < c.lines[i]->links.size(); q++) {
                     Joint *j = (Joint *)c.getItem(ItemId(-1, c.lines[i]->links[q]));
                     if (j != NULL) {
                         if (j->supported) {
-
-//                            Joint *j_m = (Joint *)c.getItem(ItemId(-1, j->s_id[0]));
-//                            Joint *j_n = (Joint *)c.getItem(ItemId(-1, j->s_id[1]));
-//                            if (j_m != NULL) {
-//                                if (!j_m->controlled && !j_m->updated) {
-//                                    j_m->p += curr_p - prev_p;
-//                                    j_m->updated = true;
-//                                }
-//                            }
-//                            if (j_n != NULL) {
-//                                if (!j_n->controlled && !j_n->updated) {
-//                                    j_n->p += curr_p - prev_p;
-//                                    j_n->updated = true;;
-//                                }
-//                            }
-
                             moveSupported(curr_p - prev_p, j);
                         }
                     }
@@ -153,6 +149,21 @@ void ofApp::mouseDragged(int x, int y, int button) {
             c.lines[i]->update();
         }
 
+    }
+}
+
+void ofApp::updateConnectedJoints(Joint *j) {
+
+    if (j != NULL) {
+        if (j->discovered) return;
+        j->discovered = true;
+        j->moved_i = c.update_i;
+        for (int i = 0; i < j->links.size(); i++) {
+            Joint *j_i = (Joint *)c.getItem(ItemId(-1, j->links[i]));
+            if (j_i != NULL) {
+                updateConnectedJoints(j_i);
+            }
+        }
     }
 }
 

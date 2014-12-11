@@ -25,25 +25,54 @@ public:
     Joint *joint_p;
 };
 
+struct LinkStatus {
+    bool hover;
+    bool selected;
+    bool fixed;
+    float angle;
+    float velocity;
+    ofPoint target;
+    bool base;
+};
+
 class Joint: public InteractiveObject {
 public:
     Joint();
-    virtual ~Joint() {};
+    virtual ~Joint() {
+        delete gui;
+        delete angle_slider;
+        delete velocity;
+        delete fixed_toggle;
+        delete fixed_angle_toggle;
+        gui = NULL;
+        angle_slider = NULL;
+        velocity = NULL;
+        fixed_toggle = NULL;
+        fixed_angle_toggle = NULL;
+    };
 
     // interface implementation
     void draw();
     InteractiveObject *getCopy();
 
+    void setupGui();
+
     // control
     float angle;
-    ofxFloatSlider angle_slider;
-    ofxFloatSlider velocity;
-    ofxToggle fixed_toggle;
+    int angle_change_i;
 
-    ofxPanel gui;
+    ofxPanel *gui;
+    ofxFloatSlider *angle_slider;
+    ofxFloatSlider *velocity;
+    ofxToggle *fixed_toggle;
+    ofxToggle *fixed_angle_toggle;
+
     bool fixed;
-    bool connected;
     bool controlled;
+    bool controlled_angle;
+    bool fixed_angle;
+
+    bool connected;
 
     // display
     int width;
@@ -58,8 +87,13 @@ public:
     // connected joints
     vector<int> links;
     vector<float> links_length;
+    vector<LinkStatus> links_status;
+
     ofPoint f; // force acting on a joint
     float ld; // current length error
+
+    bool discovered;
+    int moved_i;
 
     bool updated;
     bool supported;
@@ -67,15 +101,15 @@ public:
     float s_l;
     int side;
     float distance;
-    //ofPoint target;
+    ofPoint rotation_target;
 
     ofPoint intersection;
     bool supporting;
     int s_id[2];
-
+    ofPoint target;
 
     // tmp
-    float d;
-    float d1;
-    ofPoint target;
+//    float d;
+//    float d1;
+
 };
