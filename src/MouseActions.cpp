@@ -116,6 +116,19 @@ void ofApp::mousePressed(int x, int y, int button) {
                 item->dragged = true;
             }
         }
+
+        if (c.move_joints != NULL) {
+            delete c.move_joints;
+        }
+        c.move_joints = new ModifyJointsAction();
+        for (int i = 0; i < c.joints.size(); i++) {
+            if (c.joints[i] != NULL) {
+                c.move_joints->before.push_back((Joint *)c.joints[i]->getCopy());
+            } else {
+                c.move_joints->before.push_back(NULL);
+            }
+        }
+
     }
 
     // start drawing a line
@@ -244,6 +257,16 @@ void ofApp::mouseReleased(int x, int y, int button) {
             v->dragged = false;
         }
 
+        // update relative polygons and joints positions
+        for (int i = 0; i < c.lines.size(); i++) {
+            Polyline *l = c.lines[i];
+            for (int m = 0; m < l->links.size(); m++) {
+                Joint *j = (Joint *)c.getItem(ItemId(-1, l->links[m]));
+                if (j == NULL) continue;
+                l->links_rel[m] = j->p - l->p;
+            }
+        }
+
         ofPoint move_v = (p_mm - c.start_click);
         if (abs(move_v.x) < 0.1f && abs(move_v.y) < 0.1f) {
             ChangeSelectionAction *select = new ChangeSelectionAction();
@@ -255,6 +278,19 @@ void ofApp::mouseReleased(int x, int y, int button) {
             move_action->selection = c.selection;
             move_action->v = move_v;
             c.addAction(move_action);
+
+            if (c.move_joints != NULL) {
+                for (int i = 0; i < c.joints.size(); i++) {
+                    if (c.joints[i] != NULL) {
+                        c.move_joints->after.push_back((Joint *)c.joints[i]->
+                                                                    getCopy());
+                    } else {
+                        c.move_joints->after.push_back(NULL);
+                    }
+                }
+                c.addAction(c.move_joints);
+                c.move_joints = NULL;
+            }
 
             if (c.selection.items.size() == 1) {
                 Vertex *v = (Vertex *)c.getItem(c.selection.items[0]);

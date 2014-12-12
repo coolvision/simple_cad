@@ -119,6 +119,13 @@ void ofApp::keyPressed(int key){
         c.load(ofToDataPath("lines.txt"));
     }
 
+    if (key == 'c' && (cmd || ctrl)) {
+        c.copy();
+    }
+    if (key == 'v' && (cmd || ctrl)) {
+        c.paste();
+    }
+
     if (key == 'z' && (cmd || ctrl) && !shift) {
 
         if (c.curr_action_i > c.actions.size() - 1) {

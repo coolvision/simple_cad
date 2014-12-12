@@ -260,6 +260,17 @@ ModifyJointsAction::ModifyJointsAction() {
     undo = true;
 }
 
+ModifyJointsAction::~ModifyJointsAction() {
+    while (!before.empty()) {
+        delete before.back();
+        before.pop_back();
+    }
+    while (!after.empty()) {
+        delete after.back();
+        after.pop_back();
+    }
+}
+
 void ModifyJointsAction::doAction(Canvas *c) {
 
     label = "modify joints";

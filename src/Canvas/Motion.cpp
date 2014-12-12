@@ -25,6 +25,11 @@ void Canvas::updateAngles() {
     for (int m = 0; m < joints.size(); m++) {
         Joint *j = joints[m];
         if (j == NULL) continue;
+
+        if (j->fixed_angle && !*j->fixed_angle_toggle) {
+            j->controlled_angle = false;
+        }
+
         j->fixed = *j->fixed_toggle;
         j->fixed_angle = *j->fixed_angle_toggle;
 
@@ -88,6 +93,16 @@ void Canvas::updatePolygons() {
     // update polygons positions
     for (int i = 0; i < lines.size(); i++) {
         Polyline *l = lines[i];
+
+        bool modified = false;
+        for (Vertex *v = l->front; v != NULL; v = v->next) {
+            if (v->dragged) {
+                modified = true;
+                break;
+            }
+            if (v->next == l->front) break; // closed polylines
+        }
+        if (modified) continue;
 
         vector<Joint *> line;
         vector<ofPoint> rel;

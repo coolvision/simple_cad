@@ -88,7 +88,6 @@ void ofApp::mouseDragged(int x, int y, int button) {
         for (int i = 0; i < c.selection.items.size(); i++) {
             InteractiveObject *v = c.getItem(c.selection.items[i]);
             v->p += curr_p - prev_p;
-            v->update();
         }
 
         // find all joints connected to current selected joints
@@ -106,6 +105,7 @@ void ofApp::mouseDragged(int x, int y, int button) {
 
         vector<Joint *> selected_joints;
         for (int i = 0; i < c.lines.size(); i++) {
+            if (c.lines[i]->getLength() == 0) continue;
             if (c.lines[i]->selected) {
                 for (int q = 0; q < c.lines[i]->links.size(); q++) {
                     Joint *j = (Joint *)c.getItem(ItemId(-1, c.lines[i]->links[q]));
@@ -120,6 +120,7 @@ void ofApp::mouseDragged(int x, int y, int button) {
         }
 
         for (int i = 0; i < c.lines.size(); i++) {
+            if (c.lines[i]->getLength() == 0) continue;
             if (c.lines[i]->selected) {
                 c.lines[i]->controlled = true;
                 for (int q = 0; q < c.lines[i]->links.size(); q++) {
@@ -131,10 +132,10 @@ void ofApp::mouseDragged(int x, int y, int button) {
                     }
                 }
             }
-            c.lines[i]->update();
         }
 
         for (int i = 0; i < c.lines.size(); i++) {
+            if (c.lines[i]->getLength() == 0) continue;
             if (c.lines[i]->selected) {
                 for (int q = 0; q < c.lines[i]->links.size(); q++) {
                     Joint *j = (Joint *)c.getItem(ItemId(-1, c.lines[i]->links[q]));
@@ -146,9 +147,11 @@ void ofApp::mouseDragged(int x, int y, int button) {
                 }
 
             }
-            c.lines[i]->update();
         }
 
+        for (int j = 0; j < c.lines.size(); j++) {
+            c.lines[j]->update();
+        }
     }
 }
 

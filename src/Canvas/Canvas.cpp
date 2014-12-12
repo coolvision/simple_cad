@@ -14,12 +14,8 @@
 Canvas::Canvas() {
 
     curr_action_i = 0;
-
-//    lines.push_back(new JointsContainer());
-//    lines.back()->id = 0;
-//    lines.back()->z_index = 1;
-
     update_i = 0;
+    move_joints = NULL;
 }
 
 InteractiveObject *Canvas::getItem(ItemId item_id) {

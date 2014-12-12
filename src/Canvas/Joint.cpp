@@ -17,6 +17,7 @@ Joint::Joint() {
 
     angle = 0.0f;
     fixed = false;
+    fixed_angle = false;
     connected = false;
     controlled = false;
     controlled_angle = false;
@@ -60,20 +61,23 @@ InteractiveObject *Joint::getCopy() {
     *j = *this;
 
     j->setupGui();
-
-    *j->fixed_toggle = *fixed_toggle;
-    *j->fixed_angle_toggle = *fixed_angle_toggle;
-    *j->angle_slider = *angle_slider;
-    *j->velocity = *velocity;
+    *j->fixed_toggle = (bool)*fixed_toggle;
+    *j->fixed_angle_toggle = (bool)*fixed_angle_toggle;
+    *j->angle_slider = (float)*angle_slider;
+    *j->velocity = (float)*velocity;
 
     return (InteractiveObject *)j;
 }
 
 void Joint::draw() {
 
-    if (joint_type == JOINT_REVOLUTE) {
-        if (hover || selected) {
-            gui->setPosition(getPx(p) + ofPoint(80.0f, 80.0f));
+    if (hover) {
+        gui_panel_p = p;
+    }
+
+    if (hover || selected || controlled_angle || fixed_angle) {
+        if (gui != NULL) {
+            gui->setPosition(getPx(p) + ofPoint(30.0f, 30.0f));
             gui->draw();
         }
     }
@@ -97,7 +101,7 @@ void Joint::draw() {
     }
 
     ofPoint p1 = getPx(p);
-    if (joint_type == JOINT_FIXED) {
+    if (fixed || fixed_angle) {
         joint_icon_fixed.draw(p1 - icon_offset);
     } else {
         joint_icon_r.draw(p1 - icon_offset);
@@ -107,7 +111,7 @@ void Joint::draw() {
     ofSetLineWidth(4.0f);
     ofLine(getPx(p), getPx(p+f));
 
-    ofDrawBitmapStringHighlight(ofToString(angle), p1);
+    //ofDrawBitmapStringHighlight(ofToString(angle), p1);
 //    ofDrawBitmapStringHighlight("a"+ofToString(angle_change_i), p1);
 //    ofDrawBitmapStringHighlight("m"+ofToString(moved_i), p1 + ofPoint(0.0f, 15.0f));
 

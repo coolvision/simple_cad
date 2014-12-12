@@ -16,9 +16,6 @@ void Canvas::connectJoints() {
         Joint *j = joints[m];
         if (j == NULL) continue;
 
-        if (j->controlled) {
-            continue;
-        }
         if (j->connected) {
             continue;
         }
@@ -26,9 +23,6 @@ void Canvas::connectJoints() {
         for (int i = 0; i < lines.size(); i++) {
 
             Polyline *l = lines[i];
-            if (l->controlled) {
-                continue;
-            }
 
             if (l->inside(getPx(j->p))) {
 
@@ -50,9 +44,6 @@ void Canvas::connectJoints() {
     for (int i = 0; i < lines.size(); i++) {
 
         Polyline *l = lines[i];
-        if (l->controlled) {
-            continue;
-        }
 
         for (int m = 0; m < l->links.size(); m++) {
             Joint *j_m = (Joint *)getItem(ItemId(-1, l->links[m]));

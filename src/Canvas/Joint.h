@@ -61,6 +61,7 @@ public:
     float angle;
     int angle_change_i;
 
+    ofPoint gui_panel_p;
     ofxPanel *gui;
     ofxFloatSlider *angle_slider;
     ofxFloatSlider *velocity;
@@ -107,9 +108,4 @@ public:
     bool supporting;
     int s_id[2];
     ofPoint target;
-
-    // tmp
-//    float d;
-//    float d1;
-
 };

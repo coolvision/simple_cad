@@ -36,16 +36,22 @@ enum UIState {
     UI_ADD_JOINT_R
 };
 
+struct Clipboard {
+    vector<Polyline *> lines;
+    vector<Joint *> joints;
+};
+
 class Canvas {
 public:
-
-    int update_i;
-    int updating_angle_i;
 
     Canvas();
     void save(string path);
     void load(string path);
 
+// motion
+//==============================================================================
+    int update_i;
+    int updating_angle_i;
     void update(bool update_angles = false);
     void updateDistances();
     void draw();
@@ -54,29 +60,27 @@ public:
     void updatePolygons();
     void updateSupported();
     void updateRotationTargets();
-
     void getLinks(Joint *j, vector<Joint *> *links, vector<float> *length = NULL);
+    ModifyJointsAction *move_joints;
 
-    // motion
-    void getConnectedPolygons(int joint_id,
-                            vector<InteractiveContainer *> *connected,
-                            vector<ofPoint *> *connected_rel);
-
+// ui state & history
+//==============================================================================
+    UIState ui_state;
     vector<Action *> actions;
     int curr_action_i;
     void resetActions();
     void addAction(Action *a);
 
-    UIState ui_state;
+// copy & paste
+//==============================================================================
+    Clipboard cb;
+    void copy();
+    void paste();
 
 // storage & vis
 //==============================================================================
     vector<Polyline *> lines;
     vector<Joint *> joints;
-
-    // pointers to all vertices and joints
-    // not sure how useful it can be...
-    vector<InteractiveObject *> items;
 
     InteractiveObject *getItem(ItemId item_id);
 

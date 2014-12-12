@@ -8,7 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		522FFFB6EB3DA57CCB07EF9A /* stb_truetype.c in Sources */ = {isa = PBXBuildFile; fileRef = DC55FEC740DD28FBDD2D4406 /* stb_truetype.c */; };
-		530DCCF31A30E73800D244E0 /* Connect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 530DCCF21A30E73800D244E0 /* Connect.cpp */; };
+		530DCCF31A30E73800D244E0 /* ConnectJoints.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 530DCCF21A30E73800D244E0 /* ConnectJoints.cpp */; };
+		530DCCFA1A3B213900D244E0 /* Clipboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 530DCCF91A3B213900D244E0 /* Clipboard.cpp */; };
 		5350278D1A152635000C8E60 /* Motion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5350278C1A152635000C8E60 /* Motion.cpp */; };
 		535324101A097D71005E7A43 /* ofxBaseGui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 535323FF1A097D71005E7A43 /* ofxBaseGui.cpp */; };
 		535324111A097D71005E7A43 /* ofxButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 535324011A097D71005E7A43 /* ofxButton.cpp */; };
@@ -105,7 +106,8 @@
 		34BF591C646B5F6EF968D620 /* CreEPS.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = CreEPS.cpp; path = ../../../addons/ofxVectorGraphics/libs/CreEPS.cpp; sourceTree = SOURCE_ROOT; };
 		4A2C7833E609686E9ECD8A8C /* ofxMSAInteractiveObject.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxMSAInteractiveObject.h; path = ../../../addons/ofxMSAInteractiveObject/src/ofxMSAInteractiveObject.h; sourceTree = SOURCE_ROOT; };
 		50DF87D612C5AAE17AAFA6C0 /* ofxXmlSettings.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxXmlSettings.cpp; path = ../../../addons/ofxXmlSettings/src/ofxXmlSettings.cpp; sourceTree = SOURCE_ROOT; };
-		530DCCF21A30E73800D244E0 /* Connect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Connect.cpp; sourceTree = "<group>"; };
+		530DCCF21A30E73800D244E0 /* ConnectJoints.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ConnectJoints.cpp; sourceTree = "<group>"; };
+		530DCCF91A3B213900D244E0 /* Clipboard.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Clipboard.cpp; sourceTree = "<group>"; };
 		5350278C1A152635000C8E60 /* Motion.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Motion.cpp; sourceTree = "<group>"; };
 		535323FF1A097D71005E7A43 /* ofxBaseGui.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxBaseGui.cpp; sourceTree = "<group>"; };
 		535324001A097D71005E7A43 /* ofxBaseGui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxBaseGui.h; sourceTree = "<group>"; };
@@ -321,12 +323,13 @@
 				5353241B1A098960005E7A43 /* Canvas.cpp */,
 				5353241A1A098960005E7A43 /* Actions.h */,
 				535324191A098960005E7A43 /* Actions.cpp */,
-				5353241D1A098960005E7A43 /* ConnectLines.cpp */,
 				5353241E1A098960005E7A43 /* Draw.cpp */,
 				535324251A098960005E7A43 /* Selection.cpp */,
+				530DCCF91A3B213900D244E0 /* Clipboard.cpp */,
 				535324261A098960005E7A43 /* Update.cpp */,
 				5350278C1A152635000C8E60 /* Motion.cpp */,
-				530DCCF21A30E73800D244E0 /* Connect.cpp */,
+				5353241D1A098960005E7A43 /* ConnectLines.cpp */,
+				530DCCF21A30E73800D244E0 /* ConnectJoints.cpp */,
 			);
 			path = Canvas;
 			sourceTree = "<group>";
@@ -705,7 +708,8 @@
 				F01092BB147FA462845C38C7 /* CreEPS.cpp in Sources */,
 				63B57AC5BF4EF088491E0317 /* ofxXmlSettings.cpp in Sources */,
 				933A2227713C720CEFF80FD9 /* tinyxml.cpp in Sources */,
-				530DCCF31A30E73800D244E0 /* Connect.cpp in Sources */,
+				530DCCFA1A3B213900D244E0 /* Clipboard.cpp in Sources */,
+				530DCCF31A30E73800D244E0 /* ConnectJoints.cpp in Sources */,
 				9D44DC88EF9E7991B4A09951 /* tinyxmlerror.cpp in Sources */,
 				5A4349E9754D6FA14C0F2A3A /* tinyxmlparser.cpp in Sources */,
 				53F89CD419F19CCD00C0B047 /* Draw.cpp in Sources */,
